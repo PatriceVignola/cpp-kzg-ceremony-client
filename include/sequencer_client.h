@@ -17,10 +17,13 @@ private:
   const uint16_t port_;
   const std::string auth_request_link_url_;
   const std::string contribution_url_;
+  const std::string ceremony_status_url_;
   const nlohmann::json contribution_schema_json_;
 
+  void print_lobby_size() const;
   std::string build_auth_request_link_url() const;
   std::string build_contribution_url() const;
+  std::string build_ceremony_status_url() const;
 };
 
 #endif // SEQUENCER_CLIENT_H
