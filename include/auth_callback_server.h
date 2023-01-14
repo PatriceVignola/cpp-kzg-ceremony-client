@@ -3,7 +3,10 @@
 
 #include "auth_info.h"
 #include <cstdint>
+
+#define WIN_DLL_EXPORT
 #include <restbed>
+#undef WIN_DLL_EXPORT
 
 class AuthCallbackServer {
 public:

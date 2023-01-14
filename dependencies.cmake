@@ -56,12 +56,21 @@ FetchContent_Declare(
 # Download and extract dependencies.
 FetchContent_MakeAvailable(cxxopts restbed cpr json valijson blst)
 
+if(WIN32)
+  set(LIB_BLST_PATH ${blst_BINARY_DIR}/blst.lib)
+  set(BLST_BUILD_SCRIPT_PATH ${blst_SOURCE_DIR}/build.bat)
+else()
+  set(LIB_BLST_PATH ${blst_BINARY_DIR}/libblst.a)
+  set(BLST_BUILD_SCRIPT_PATH ${blst_SOURCE_DIR}/build.sh)
+endif(WIN32)
+
 add_custom_command(
-  OUTPUT ${blst_BINARY_DIR}/libblst.a
+  OUTPUT ${LIB_BLST_PATH}
   WORKING_DIRECTORY ${blst_BINARY_DIR}
-  COMMAND /bin/sh ${blst_SOURCE_DIR}/build.sh
-  COMMENT "Building libblst.a")
+  COMMAND ${BLST_BUILD_SCRIPT_PATH}
+  COMMENT "Building libblst")
+
 add_custom_target(
   libblst
-  DEPENDS ${blst_BINARY_DIR}/libblst.a
+  DEPENDS ${LIB_BLST_PATH}
   COMMENT "Creating libblst target")

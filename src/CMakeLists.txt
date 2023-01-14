@@ -30,4 +30,4 @@ target_link_libraries(
           ${CRYPTO_LIB}
           cpr::cpr
           valijson
-          ${blst_BINARY_DIR}/libblst.a)
+          ${LIB_BLST_PATH})

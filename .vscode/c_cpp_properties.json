@@ -21,6 +21,26 @@
             "cStandard": "c17",
             "cppStandard": "c++14",
             "intelliSenseMode": "linux-clang-x64"
+        },
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/build/_deps/cxxopts-src/include",
+                "${workspaceFolder}/build/_deps/restbed-src/source",
+                "${workspaceFolder}/build/_deps/json-src/include",
+                "${workspaceFolder}/build/_deps/cpr-src/include",
+                "${workspaceFolder}/build/_deps/cpr-build/cpr_generated_includes",
+                "${workspaceFolder}/build/_deps/curl-src/include",
+                "${workspaceFolder}/build/_deps/jsonvalidator-src/src",
+                "${workspaceFolder}/build/_deps/valijson-src/include",
+                "${workspaceFolder}/build/_deps/blst-src/bindings"
+            ],
+            "defines": [],
+            "compilerPath": "cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64"
         }
     ],
     "version": 4

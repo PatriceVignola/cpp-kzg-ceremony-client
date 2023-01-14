@@ -2,7 +2,6 @@
 #include "include/ascii_title.h"
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <restbed>
 #include <sstream>
 
 static constexpr int success_status_code = 200;
