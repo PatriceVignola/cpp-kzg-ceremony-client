@@ -1,5 +1,5 @@
-#include "include/auth_callback_server.h"
-#include "include/ascii_title.h"
+#include "include/auth_callback_server.hpp"
+#include "include/ascii_title.hpp"
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <sstream>

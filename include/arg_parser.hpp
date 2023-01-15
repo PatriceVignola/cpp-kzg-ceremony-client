@@ -1,5 +1,5 @@
-#ifndef ARG_PARSER_H
-#define ARG_PARSER_H
+#ifndef ARG_PARSER_HPP
+#define ARG_PARSER_HPP
 
 #include <string>
 
@@ -25,4 +25,4 @@ private:
   bool help_wanted_;
 };
 
-#endif // ARG_PARSER_H
+#endif // ARG_PARSER_HPP

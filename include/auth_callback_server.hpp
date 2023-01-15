@@ -1,7 +1,7 @@
-#ifndef AUTH_CALLBACK_SERVER_H
-#define AUTH_CALLBACK_SERVER_H
+#ifndef AUTH_CALLBACK_SERVER_HPP
+#define AUTH_CALLBACK_SERVER_HPP
 
-#include "auth_info.h"
+#include "auth_info.hpp"
 #include <cstdint>
 
 #define WIN_DLL_EXPORT
@@ -23,4 +23,4 @@ private:
   std::thread service_thread_;
 };
 
-#endif // AUTH_CALLBACK_SERVER_H
+#endif // AUTH_CALLBACK_SERVER_HPP

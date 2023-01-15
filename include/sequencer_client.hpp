@@ -1,8 +1,8 @@
-#ifndef SEQUENCER_CLIENT_H
-#define SEQUENCER_CLIENT_H
+#ifndef SEQUENCER_CLIENT_HPP
+#define SEQUENCER_CLIENT_HPP
 
-#include "auth_request_link_response.h"
-#include "contribution_response.h"
+#include "auth_request_link_response.hpp"
+#include "contribution_response.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -26,4 +26,4 @@ private:
   std::string build_ceremony_status_url() const;
 };
 
-#endif // SEQUENCER_CLIENT_H
+#endif // SEQUENCER_CLIENT_HPP

@@ -1,7 +1,7 @@
-#ifndef G1_POWER_H
-#define G1_POWER_H
+#ifndef G1_POWER_HPP
+#define G1_POWER_HPP
 
-#include "hex_util.h"
+#include "hex_util.hpp"
 #include <blst.hpp>
 
 class G1Power {
@@ -14,4 +14,4 @@ private:
   blst::P1 p1_;
 };
 
-#endif // G1_POWER_H
+#endif // G1_POWER_HPP

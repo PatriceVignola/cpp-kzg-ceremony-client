@@ -1,5 +1,5 @@
-#ifndef AUTH_INFO_H
-#define AUTH_INFO_H
+#ifndef AUTH_INFO_HPP
+#define AUTH_INFO_HPP
 
 #include <string>
 
@@ -19,4 +19,4 @@ private:
   const std::string nickname_;
 };
 
-#endif // AUTH_INFO_H
+#endif // AUTH_INFO_HPP

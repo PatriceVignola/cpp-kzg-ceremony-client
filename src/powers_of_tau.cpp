@@ -1,4 +1,4 @@
-#include "include/powers_of_tau.h"
+#include "include/powers_of_tau.hpp"
 #include <algorithm>
 
 const std::vector<G1Power>& PowersOfTau::get_g1_powers() const {

@@ -1,5 +1,5 @@
-#ifndef ASCII_TITLE_H
-#define ASCII_TITLE_H
+#ifndef ASCII_TITLE_HPP
+#define ASCII_TITLE_HPP
 
 static constexpr const char* ascii_title = R"(
   ______   __    __   ______    ______  
@@ -15,4 +15,4 @@ static constexpr const char* ascii_title = R"(
 C++ KZG Ceremony Client
 )";
 
-#endif // ASCII_TITLE_H
+#endif // ASCII_TITLE_HPP

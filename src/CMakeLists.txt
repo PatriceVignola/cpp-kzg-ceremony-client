@@ -1,13 +1,13 @@
 add_executable(
   cpp-kzg-ceremony-client
-  arg_parser.cc
-  auth_callback_server.cc
-  auth_request_link_response.cc
-  contribution_response.cc
-  hex_util.cc
-  main.cc
-  powers_of_tau.cc
-  sequencer_client.cc)
+  arg_parser.cpp
+  auth_callback_server.cpp
+  auth_request_link_response.cpp
+  contribution_response.cpp
+  hex_util.cpp
+  main.cpp
+  powers_of_tau.cpp
+  sequencer_client.cpp)
 
 add_dependencies(cpp-kzg-ceremony-client libblst)
 

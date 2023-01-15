@@ -1,5 +1,5 @@
-#include "include/arg_parser.h"
-#include "include/ascii_title.h"
+#include "include/arg_parser.hpp"
+#include "include/ascii_title.hpp"
 #include <cxxopts.hpp>
 #include <sstream>
 

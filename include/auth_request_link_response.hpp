@@ -1,5 +1,5 @@
-#ifndef AUTH_REQUEST_LINK_RESPONSE_H
-#define AUTH_REQUEST_LINK_RESPONSE_H
+#ifndef AUTH_REQUEST_LINK_RESPONSE_HPP
+#define AUTH_REQUEST_LINK_RESPONSE_HPP
 
 #include <nlohmann/json.hpp>
 #include <string>
@@ -16,4 +16,4 @@ private:
   std::string github_auth_url_;
 };
 
-#endif // AUTH_REQUEST_LINK_RESPONSE_H
+#endif // AUTH_REQUEST_LINK_RESPONSE_HPP

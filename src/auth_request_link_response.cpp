@@ -1,4 +1,4 @@
-#include "include/auth_request_link_response.h"
+#include "include/auth_request_link_response.hpp"
 #include <nlohmann/json.hpp>
 
 AuthRequestLinkResponse::AuthRequestLinkResponse(

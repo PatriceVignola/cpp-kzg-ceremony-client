@@ -1,5 +1,5 @@
-#ifndef CONTRIBUTION_SCHEMA_H
-#define CONTRIBUTION_SCHEMA_H
+#ifndef CONTRIBUTION_SCHEMA_HPP
+#define CONTRIBUTION_SCHEMA_HPP
 
 static constexpr const char* contribution_schema = R"(
 {
@@ -271,4 +271,4 @@ static constexpr const char* contribution_schema = R"(
 }
 )";
 
-#endif // CONTRIBUTION_SCHEMA_H
+#endif // CONTRIBUTION_SCHEMA_HPP

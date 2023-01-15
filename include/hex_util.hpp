@@ -1,5 +1,5 @@
-#ifndef HEX_UTIL_H
-#define HEX_UTIL_H
+#ifndef HEX_UTIL_HPP
+#define HEX_UTIL_HPP
 
 #include <cstdint>
 #include <string>
@@ -9,4 +9,4 @@ namespace hex_util {
 std::vector<uint8_t> decode(const std::string& hex);
 } // namespace hex_util
 
-#endif // HEX_UTIL_H
+#endif // HEX_UTIL_HPP

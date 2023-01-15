@@ -1,7 +1,7 @@
-#ifndef CONTRIBUTION_H
-#define CONTRIBUTION_H
+#ifndef CONTRIBUTION_HPP
+#define CONTRIBUTION_HPP
 
-#include "powers_of_tau.h"
+#include "powers_of_tau.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -24,4 +24,4 @@ private:
                         Contribution& contribution);
 };
 
-#endif // CONTRIBUTION_H
+#endif // CONTRIBUTION_HPP

@@ -1,7 +1,7 @@
-#include "include/sequencer_client.h"
-#include "include/auth_request_link_response.h"
-#include "include/contribution_response.h"
-#include "include/contribution_schema.h"
+#include "include/sequencer_client.hpp"
+#include "include/auth_request_link_response.hpp"
+#include "include/contribution_response.hpp"
+#include "include/contribution_schema.hpp"
 #include <cpr/cpr.h>
 #include <iostream>
 #include <nlohmann/json.hpp>

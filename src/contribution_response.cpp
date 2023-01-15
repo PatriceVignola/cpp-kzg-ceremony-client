@@ -1,4 +1,4 @@
-#include "include/contribution_response.h"
+#include "include/contribution_response.hpp"
 #include <nlohmann/json.hpp>
 #include <sstream>
 #include <valijson/adapters/nlohmann_json_adapter.hpp>

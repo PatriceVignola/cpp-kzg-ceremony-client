@@ -1,8 +1,8 @@
-#ifndef POWERS_OF_TAU_H
-#define POWERS_OF_TAU_H
+#ifndef POWERS_OF_TAU_HPP
+#define POWERS_OF_TAU_HPP
 
-#include "g1_power.h"
-#include "g2_power.h"
+#include "g1_power.hpp"
+#include "g2_power.hpp"
 #include <nlohmann/json.hpp>
 #include <vector>
 
@@ -20,4 +20,4 @@ private:
                         PowersOfTau& powers_of_tau);
 };
 
-#endif // POWERS_OF_TAU_H
+#endif // POWERS_OF_TAU_HPP

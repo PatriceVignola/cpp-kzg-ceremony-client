@@ -1,9 +1,9 @@
-#ifndef CONTRIBUTION_RESPONSE_H
-#define CONTRIBUTION_RESPONSE_H
+#ifndef CONTRIBUTION_RESPONSE_HPP
+#define CONTRIBUTION_RESPONSE_HPP
 
-#include "contribution.h"
-#include "hex_util.h"
-#include "powers_of_tau.h"
+#include "contribution.hpp"
+#include "hex_util.hpp"
+#include "powers_of_tau.hpp"
 #include <blst.hpp>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -25,4 +25,4 @@ private:
   std::string ecdsa_signature_;
 };
 
-#endif // CONTRIBUTION_RESPONSE_H
+#endif // CONTRIBUTION_RESPONSE_HPP

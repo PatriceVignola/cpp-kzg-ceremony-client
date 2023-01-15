@@ -19,13 +19,13 @@ find . -iname CMakeLists.txt -not \( -path "./build/*" -prune \) -o -iname "*.cm
 
 # Run clang-format
 echo -e "${GREEN}Formatting C++ files...${NO_COLOR}"
-find . -iname *.h -not \( -path "./build/*" -prune \) -o -iname *.cc \
+find . -iname *.hpp -not \( -path "./build/*" -prune \) -o -iname *.cpp \
     -not \( -path "./build/*" -prune \) \
     | xargs clang-format -i
 
 # Run clang-tidy
 echo -e "${GREEN}Linting C++ files...${NO_COLOR}"
-find . -iname *.h -not \( -path "./build/*" -prune \) -o -iname *.cc \
+find . -iname *.hpp -not \( -path "./build/*" -prune \) -o -iname *.cpp \
     -not \( -path "./build/*" -prune \) \
     | xargs clang-tidy -p build
 
