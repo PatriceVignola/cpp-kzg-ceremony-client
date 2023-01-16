@@ -10,11 +10,11 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build-windows:
-    name: Build
+    name: Build Windows
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - run: ./build.sh
+    - run: ./build.bat
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
