@@ -40,6 +40,23 @@ jobs:
     - run: chmod +x ./cpp-kzg-ceremony-client-test
     - run: ./cpp-kzg-ceremony-client-test
 
+  test-alpine:
+    name: Test Alpine
+    needs: build-ubuntu
+    strategy:
+      matrix:
+        version: ["2.6", "2.7", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6.5", "3.7.3", "3.8.5", "3.9.6", "3.10.9", "3.11.13", "3.12.10", "3.13.12", "3.14.8", "3.15.6", "3.16.3", "3.17.1"]
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:${{ matrix.version }}
+    steps:
+    - name: Download binaries
+      uses: actions/download-artifact@v3
+      with:
+        name: ubuntu-binaries
+    - run: chmod +x ./cpp-kzg-ceremony-client-test
+    - run: ./cpp-kzg-ceremony-client-test
+
   sanity-check-ubuntu:
     name: Sanity Check Ubuntu Product Binary
     needs: build-ubuntu
