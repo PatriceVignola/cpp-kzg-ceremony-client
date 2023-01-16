@@ -14,8 +14,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: ./build.sh
+    - run: ./build/bin/cpp-kzg-ceremony-client-test
   build-windows:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - run: ./build.bat
+    - run: ./build/bin/cpp-kzg-ceremony-client-test
+  build-darwin:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: ./build.sh
+    - run: ./build/bin/cpp-kzg-ceremony-client-test
