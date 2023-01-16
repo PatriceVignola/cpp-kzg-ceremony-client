@@ -16,7 +16,9 @@ jobs:
       image: ubuntu:14.04
     steps:
     - uses: actions/checkout@v2
-    - run: sudo apt -y install cmake
+    - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
+    - run: chmod +x ./cmake-3.25.1-linux-x86_64.sh
+    - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
     - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
