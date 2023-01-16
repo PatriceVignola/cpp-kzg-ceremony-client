@@ -11,7 +11,9 @@ concurrency:
 jobs:
   build-ubuntu:
     name: Build Ubuntu
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:14.04
     steps:
     - uses: actions/checkout@v2
     - run: ./build.sh
@@ -28,7 +30,7 @@ jobs:
     needs: build-ubuntu
     strategy:
       matrix:
-        version: [14.04, 16.04, 18.04, 20.04, 22.04, 22.10, 23.04]
+        version: ["14.04", "16.04", "18.04", "20.04", "22.04", "22.10", "23.04"]
     runs-on: ubuntu-latest
     container:
       image: ubuntu:${{ matrix.version }}
@@ -45,7 +47,7 @@ jobs:
     needs: build-ubuntu
     strategy:
       matrix:
-        version: [14.04, 16.04, 18.04, 20.04, 22.04, 22.10, 23.04]
+        version: ["14.04", "16.04", "18.04", "20.04", "22.04", "22.10", "23.04"]
     runs-on: ubuntu-${{ matrix.version }}
     container:
       image: ubuntu:${{ matrix.version }}
