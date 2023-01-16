@@ -10,12 +10,14 @@ concurrency:
   cancel-in-progress: true
 jobs:
   clang-tidy:
+    name: Lint C++ Files
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - run: cmake -S . -B build/ -DCMAKE_BUILD_TYPE=Release
     - run: ./build.sh
   clang-format:
+    name: Check C++ Formatting
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
