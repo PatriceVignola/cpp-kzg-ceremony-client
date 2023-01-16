@@ -9,19 +9,19 @@ concurrency:
   group: windows-ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build-ubuntu:
+  build-windows:
     name: Build
-    runs-on: ubuntu-18.04
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
-        name: ubuntu-binaries
+        name: windows-binaries
         path: |
-          build/bin/cpp-kzg-ceremony-client
-          build/bin/cpp-kzg-ceremony-client-test
+          build/bin/Release/cpp-kzg-ceremony-client.exe
+          build/bin/Release/cpp-kzg-ceremony-client-test.exe
 
   test-windows:
     name: Test
