@@ -13,7 +13,7 @@ jobs:
     name: Build Ubuntu
     runs-on: ubuntu-18.04
     steps:
-      run: ./build.sh
+    - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
