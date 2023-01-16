@@ -13,6 +13,7 @@ jobs:
     name: Build Ubuntu
     runs-on: ubuntu-18.04
     steps:
+    - uses: actions/checkout@v2
     - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
