@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - run: apt install cmake-format
     - run: |
         find . -iname CMakeLists.txt -not \( -path "./build/*" -prune \) -o -iname "*.cmake" \
           -not \( -path "./build/*" -prune \) \
@@ -24,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - run: apt install cmake-format
     - run: |
         find . -iname CMakeLists.txt -not \( -path "./build/*" -prune \) -o -iname "*.cmake" \
           -not \( -path "./build/*" -prune \) \
