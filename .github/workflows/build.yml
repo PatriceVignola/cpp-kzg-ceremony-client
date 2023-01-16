@@ -1,4 +1,4 @@
-name: clang-tidy check
+name: build
 on:
   pull_request:
     types: [opened, synchronize, edited, reopened]
@@ -6,14 +6,16 @@ on:
   push:
     branches: [master]
 concurrency:
-  group: clang-tidy-check-${{ github.ref }}
+  group: build-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  clang-tidy-check:
+  build-ubuntu:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Run clang-tidy
-      uses: HorstBaerbel/action-clang-tidy@1.2
-      with:
-        builddir: 'build'
+    - run: ./build.sh
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: ./build.bat
