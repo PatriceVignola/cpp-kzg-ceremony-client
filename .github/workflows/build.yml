@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: sudo apt install wget
-    - run: sudo apt-get install xz-utils
+    - run: sudo apt install xz-utils
     - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
     - run: wget https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.6/clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04.tar.xz
     - run: chmod +x ./cmake-3.25.1-linux-x86_64.sh
@@ -26,8 +26,8 @@ jobs:
     - name: Build cpp-kzg-ceremony-client
       run: |
         PATH=$PWD/bin:$PATH \
-        CXX=clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04/bin/clang++ \
-        CC=clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04/bin/clang \
+        CXX=./clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04/bin/clang++ \
+        CC=./clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04/bin/clang \
         ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
