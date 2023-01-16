@@ -24,6 +24,8 @@ jobs:
           build/bin/cpp-kzg-ceremony-client-test
           build/lib/libgtest_main.so
           build/lib/libgtest_main.so.1.12.1
+          build/lib/libgtest.so
+          build/lib/libgtest.so.1.12.1
 
   test-ubuntu:
     name: Test Ubuntu
@@ -37,6 +39,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ubuntu-binaries
+    - run: mv ./lib/* ./bin
     - run: chmod +x ./bin/cpp-kzg-ceremony-client-test
     - run: ./bin/cpp-kzg-ceremony-client-test
 
@@ -54,6 +57,7 @@ jobs:
           build/bin/Release/cpp-kzg-ceremony-client.exe
           build/bin/Release/cpp-kzg-ceremony-client-test.exe
           build/lib/gtest_main.dll
+          build/lib/gtest.dll
 
   test-windows:
     name: Test Windows
@@ -67,6 +71,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: windows-binaries
+    - run: mv ./lib/* ./bin
     - run: .\bin\cpp-kzg-ceremony-client-test.exe
 
   build-darwin:
@@ -84,6 +89,8 @@ jobs:
           build/bin/cpp-kzg-ceremony-client-test
           build/lib/libgtest_main.dylib
           build/lib/libgtest_main.1.12.1.dylib
+          build/lib/libgtest.dylib
+          build/lib/libgtest.1.12.1.dylib
 
   test-darwin:
     name: Test Darwin
@@ -97,5 +104,6 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: darwin-binaries
-    - run: chmod +x cpp-kzg-ceremony-client-test
+    - run: mv ./lib/* ./bin
+    - run: chmod +x ./bin/cpp-kzg-ceremony-client-test
     - run: ./bin/cpp-kzg-ceremony-client-test
