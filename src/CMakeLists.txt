@@ -41,3 +41,8 @@ target_link_libraries(cpp-kzg-ceremony-client PRIVATE product-static)
 add_executable(cpp-kzg-ceremony-client-test arg_parser_test.cpp)
 target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product-static
                                                            gtest_main)
+set_target_properties(
+  cpp-kzg-ceremony-client-test
+  PROPERTIES SKIP_BUILD_RPATH FALSE
+             BUILD_WITH_INSTALL_RPATH TRUE
+             INSTALL_RPATH "$\{ORIGIN\}")
