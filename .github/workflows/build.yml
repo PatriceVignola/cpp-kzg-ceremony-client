@@ -22,10 +22,6 @@ jobs:
         path: |
           build/bin/cpp-kzg-ceremony-client
           build/bin/cpp-kzg-ceremony-client-test
-          build/lib/libgtest_main.so
-          build/lib/libgtest_main.so.1.12.1
-          build/lib/libgtest.so
-          build/lib/libgtest.so.1.12.1
 
   test-ubuntu:
     name: Test Ubuntu
@@ -39,9 +35,8 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ubuntu-binaries
-    - run: mv ./lib/* ./bin
-    - run: chmod +x ./bin/cpp-kzg-ceremony-client-test
-    - run: ./bin/cpp-kzg-ceremony-client-test
+    - run: chmod +x ./cpp-kzg-ceremony-client-test
+    - run: ./cpp-kzg-ceremony-client-test
 
   sanity-check-ubuntu:
     name: Sanity Check Ubuntu Product Binary
@@ -55,8 +50,8 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ubuntu-binaries
-    - run: chmod +x ./bin/cpp-kzg-ceremony-client
-    - run: ./bin/cpp-kzg-ceremony-client --help
+    - run: chmod +x ./cpp-kzg-ceremony-client
+    - run: ./cpp-kzg-ceremony-client --help
 
   build-windows:
     name: Build Windows
@@ -71,8 +66,6 @@ jobs:
         path: |
           build/bin/Release/cpp-kzg-ceremony-client.exe
           build/bin/Release/cpp-kzg-ceremony-client-test.exe
-          build/lib/gtest_main.dll
-          build/lib/gtest.dll
 
   test-windows:
     name: Test Windows
@@ -86,8 +79,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: windows-binaries
-    - run: mv ./lib/* ./bin
-    - run: .\bin\cpp-kzg-ceremony-client-test.exe
+    - run: .\cpp-kzg-ceremony-client-test.exe
 
   sanity-check-windows:
     name: Sanity Check Windows Product Binary
@@ -101,7 +93,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: windows-binaries
-    - run: .\bin\cpp-kzg-ceremony-client.exe
+    - run: .\cpp-kzg-ceremony-client.exe
 
   build-darwin:
     name: Build Darwin
@@ -116,10 +108,6 @@ jobs:
         path: |
           build/bin/cpp-kzg-ceremony-client
           build/bin/cpp-kzg-ceremony-client-test
-          build/lib/libgtest_main.dylib
-          build/lib/libgtest_main.1.12.1.dylib
-          build/lib/libgtest.dylib
-          build/lib/libgtest.1.12.1.dylib
 
   test-darwin:
     name: Test Darwin
@@ -133,11 +121,10 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: darwin-binaries
-    - run: mv ./lib/* ./bin
-    - run: chmod +x ./bin/cpp-kzg-ceremony-client-test
-    - run: ./bin/cpp-kzg-ceremony-client-test
+    - run: chmod +x ./cpp-kzg-ceremony-client-test
+    - run: ./cpp-kzg-ceremony-client-test
 
-  test-darwin:
+  sanity-check-darwin:
     name: Sanity Check Darwin Product Binary
     needs: build-darwin
     strategy:
@@ -149,5 +136,5 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: darwin-binaries
-    - run: chmod +x ./bin/cpp-kzg-ceremony-client
-    - run: ./bin/cpp-kzg-ceremony-client
+    - run: chmod +x ./cpp-kzg-ceremony-client
+    - run: ./pp-kzg-ceremony-client
