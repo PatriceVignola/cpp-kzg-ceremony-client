@@ -16,7 +16,7 @@ jobs:
       image: alpine:3.1
     steps:
     - uses: actions/checkout@v2
-    - run: sudo apk add cmake
+    - run: apk add cmake
     - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
