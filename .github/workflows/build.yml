@@ -28,8 +28,10 @@ jobs:
     needs: build-ubuntu
     strategy:
       matrix:
-        version: [18.04, 20.04, 22.04]
-    runs-on: ubuntu-${{ matrix.version }}
+        version: [14.04, 16.04, 18.04, 20.04, 22.04, 22.10, 23.04]
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.version }}
     steps:
     - name: Download binaries
       uses: actions/download-artifact@v3
@@ -43,8 +45,10 @@ jobs:
     needs: build-ubuntu
     strategy:
       matrix:
-        version: [18.04, 20.04, 22.04]
+        version: [14.04, 16.04, 18.04, 20.04, 22.04, 22.10, 23.04]
     runs-on: ubuntu-${{ matrix.version }}
+    container:
+      image: ubuntu:${{ matrix.version }}
     steps:
     - name: Download binaries
       uses: actions/download-artifact@v3
