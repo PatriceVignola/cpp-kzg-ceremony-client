@@ -1,0 +1,59 @@
+name: Ubuntu CI
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+    branches: [master]
+  push:
+    branches: [master]
+concurrency:
+  group: ubuntu-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-ubuntu:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - run: ./build.sh
+    - name: Upload binaries
+      uses: actions/upload-artifact@v3
+      with:
+        name: ubuntu-binaries
+        path: |
+          build/bin/cpp-kzg-ceremony-client
+          build/bin/cpp-kzg-ceremony-client-test
+
+  test-ubuntu:
+    name: Test
+    needs: build-ubuntu
+    strategy:
+      matrix:
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.version }}
+    steps:
+    - name: Download binaries
+      uses: actions/download-artifact@v3
+      with:
+        name: ubuntu-binaries
+    - run: sudo apt install openssl
+    - run: chmod +x ./cpp-kzg-ceremony-client-test
+    - run: ./cpp-kzg-ceremony-client-test
+
+  sanity-check-ubuntu:
+    name: Sanity Check
+    needs: build-ubuntu
+    strategy:
+      matrix:
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.version }}
+    steps:
+    - name: Download binaries
+      uses: actions/download-artifact@v3
+      with:
+        name: ubuntu-binaries
+    - run: chmod +x ./cpp-kzg-ceremony-client
+    - run: ./cpp-kzg-ceremony-client --help
