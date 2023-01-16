@@ -13,7 +13,7 @@ jobs:
     name: Build Ubuntu
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:14.04
+      image: ubuntu:18.04
     steps:
     - uses: actions/checkout@v2
     - run: sudo apt install wget
@@ -23,7 +23,6 @@ jobs:
     - run: chmod +x ./cmake-3.25.1-linux-x86_64.sh
     - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
     - run: tar -xf clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04.tar.xz
-    - run: $PWD/clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04/bin/clang++
     - name: Build cpp-kzg-ceremony-client
       run: |
         PATH=$PWD/bin:$PATH \
