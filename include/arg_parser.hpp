@@ -10,7 +10,7 @@ enum class AuthProvider {
 
 class ArgParser {
 public:
-  ArgParser(int argc, char** argv);
+  ArgParser(int argc, const char* const* argv);
   const std::string& get_sequencer_url() const { return sequencer_url_; }
   uint16_t get_auth_callback_port() const { return port_; }
   AuthProvider get_auth_provider() const { return auth_provider_; }

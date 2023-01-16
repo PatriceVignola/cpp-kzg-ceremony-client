@@ -53,8 +53,21 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/supranational/blst
   GIT_TAG v0.3.10)
 
+# BLST Library
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest
+  GIT_TAG release-1.12.1)
+
 # Download and extract dependencies.
-FetchContent_MakeAvailable(cxxopts restbed cpr json valijson blst)
+FetchContent_MakeAvailable(
+  cxxopts
+  restbed
+  cpr
+  json
+  valijson
+  blst
+  googletest)
 
 if(WIN32)
   set(LIB_BLST_PATH ${blst_BINARY_DIR}/blst.lib)

@@ -1,11 +1,14 @@
 #include "include/arg_parser.hpp"
 #include "include/ascii_title.hpp"
+#include <cassert>
 #include <cxxopts.hpp>
 #include <sstream>
 
-ArgParser::ArgParser(int argc, char** argv) {
+ArgParser::ArgParser(int argc, const char* const* argv) {
+  assert(argc > 0);
+
   try {
-    cxxopts::Options options("cpp-kzg-ceremony-client", ascii_title);
+    cxxopts::Options options(*argv, ascii_title);
 
     options.add_option("", "s", "sequencer", "URL of the sequencer to use",
                        cxxopts::value<std::string>()->default_value(
