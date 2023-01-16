@@ -16,7 +16,7 @@ jobs:
       image: ubuntu:14.04
     steps:
     - uses: actions/checkout@v2
-    - run: sudo apt install cmake
+    - run: sudo apt -y install cmake
     - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
