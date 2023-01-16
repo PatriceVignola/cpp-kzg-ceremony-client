@@ -28,14 +28,15 @@ TEST(TestArgParser, ThrowsErrorUnknownOption) {
           ArgParser arg_parser(args.size(), args.data());
         } catch (const std::runtime_error& error) {
           std::stringstream expected_error;
-          expected_error
+
 #ifdef _WIN32
-              << "error when parsing arguments: Option 'bar' does not exist"
+          expected_error
+              << "error when parsing arguments: Option 'bar' does not exist";
 #else
-              << "error when parsing arguments: Option ‘bar’ does not exist"
+          expected_error
+              << "error when parsing arguments: Option ‘bar’ does not exist";
 #endif
-              << std::endl
-              << ascii_title << usage_message;
+          expected_error << std::endl << ascii_title << usage_message;
 
           EXPECT_EQ(expected_error.str(), error.what());
           throw;
