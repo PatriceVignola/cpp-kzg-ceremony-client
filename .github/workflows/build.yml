@@ -11,7 +11,7 @@ concurrency:
 jobs:
   build-ubuntu:
     name: Build Ubuntu
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
     - run: ./build.sh
@@ -43,6 +43,21 @@ jobs:
     - run: chmod +x ./bin/cpp-kzg-ceremony-client-test
     - run: ./bin/cpp-kzg-ceremony-client-test
 
+  sanity-check-ubuntu:
+    name: Sanity Check Ubuntu Product Binary
+    needs: build-ubuntu
+    strategy:
+      matrix:
+        version: [18.04, 20.04, 22.04]
+    runs-on: ubuntu-${{ matrix.version }}
+    steps:
+    - name: Download binaries
+      uses: actions/download-artifact@v3
+      with:
+        name: ubuntu-binaries
+    - run: chmod +x ./bin/cpp-kzg-ceremony-client
+    - run: ./bin/cpp-kzg-ceremony-client --help
+
   build-windows:
     name: Build Windows
     runs-on: windows-latest
@@ -73,6 +88,20 @@ jobs:
         name: windows-binaries
     - run: mv ./lib/* ./bin
     - run: .\bin\cpp-kzg-ceremony-client-test.exe
+
+  sanity-check-windows:
+    name: Sanity Check Windows Product Binary
+    needs: build-windows
+    strategy:
+      matrix:
+        version: [2019, 2022]
+    runs-on: windows-${{ matrix.version }}
+    steps:
+    - name: Download binaries
+      uses: actions/download-artifact@v3
+      with:
+        name: windows-binaries
+    - run: .\bin\cpp-kzg-ceremony-client.exe
 
   build-darwin:
     name: Build Darwin
@@ -107,3 +136,18 @@ jobs:
     - run: mv ./lib/* ./bin
     - run: chmod +x ./bin/cpp-kzg-ceremony-client-test
     - run: ./bin/cpp-kzg-ceremony-client-test
+
+  test-darwin:
+    name: Sanity Check Darwin Product Binary
+    needs: build-darwin
+    strategy:
+      matrix:
+        version: [10.15, 11, 12]
+    runs-on: macos-${{ matrix.version }}
+    steps:
+    - name: Download binaries
+      uses: actions/download-artifact@v3
+      with:
+        name: darwin-binaries
+    - run: chmod +x ./bin/cpp-kzg-ceremony-client
+    - run: ./bin/cpp-kzg-ceremony-client

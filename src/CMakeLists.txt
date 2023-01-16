@@ -1,6 +1,6 @@
 # Product static lib
 add_library(
-  product-static STATIC
+  product_static STATIC
   arg_parser.cpp
   auth_callback_server.cpp
   auth_request_link_response.cpp
@@ -9,10 +9,10 @@ add_library(
   powers_of_tau.cpp
   sequencer_client.cpp)
 
-add_dependencies(product-static libblst)
+add_dependencies(product_static libblst)
 
 target_include_directories(
-  product-static
+  product_static
   PUBLIC ${CMAKE_SOURCE_DIR}
          ${cxxopts_SOURCE_DIR}/include
          ${restbed_SOURCE_DIR}/source
@@ -24,7 +24,7 @@ target_include_directories(
          ${googletest_SOURCE_DIR}/googletest/include)
 
 target_link_libraries(
-  product-static
+  product_static
   PUBLIC restbed-static
          nlohmann_json
          ${SSL_LIB}
@@ -35,12 +35,12 @@ target_link_libraries(
 
 # Product executable
 add_executable(cpp-kzg-ceremony-client main.cpp)
-target_link_libraries(cpp-kzg-ceremony-client PRIVATE product-static)
+target_link_libraries(cpp-kzg-ceremony-client PRIVATE product_static)
 
 # Test executable
 add_executable(cpp-kzg-ceremony-client-test arg_parser_test.cpp)
-target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product-static
-                                                           gtest_main)
+target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product_static
+                                                           gtest_static)
 set_target_properties(
   cpp-kzg-ceremony-client-test
   PROPERTIES SKIP_BUILD_RPATH FALSE

@@ -11,6 +11,12 @@ set(BUILD_TESTS
     OFF
     CACHE INTERNAL "")
 
+# These options are defined in the cpr library, which we don't control
+# cmake-lint: disable=C0103
+set(BUILD_SHARED_LIBS
+    OFF
+    CACHE INTERNAL "")
+
 # cxxopts Library
 FetchContent_Declare(
   cxxopts
@@ -87,3 +93,10 @@ add_custom_target(
   libblst
   DEPENDS ${LIB_BLST_PATH}
   COMMENT "Creating libblst target")
+
+add_library(
+  gtest_static STATIC ${googletest_SOURCE_DIR}/googletest/src/gtest-all.cc
+                      ${googletest_SOURCE_DIR}/googletest/src/gtest_main.cc)
+target_include_directories(
+  gtest_static PRIVATE ${googletest_SOURCE_DIR}/googletest/include
+                       ${googletest_SOURCE_DIR}/googletest)
