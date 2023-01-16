@@ -29,7 +29,11 @@ TEST(TestArgParser, ThrowsErrorUnknownOption) {
         } catch (const std::runtime_error& error) {
           std::stringstream expected_error;
           expected_error
+#ifdef _WIN32
+              << "error when parsing arguments: Option 'bar' does not exist"
+#else
               << "error when parsing arguments: Option ‘bar’ does not exist"
+#endif
               << std::endl
               << ascii_title << usage_message;
 
@@ -65,7 +69,11 @@ TEST(TestArgParser, ThrowsErrorInvalidPort) {
         try {
           ArgParser arg_parser(args.size(), args.data());
         } catch (const cxxopts::argument_incorrect_type& error) {
+#ifdef _WIN32
+          EXPECT_STREQ("Argument 'foo' failed to parse", error.what());
+#else
           EXPECT_STREQ("Argument ‘foo’ failed to parse", error.what());
+#endif
           throw;
         }
       },
@@ -81,9 +89,15 @@ TEST(TestArgParser, ThrowsExceptionShortArgsEqualDelimiter) {
         try {
           ArgParser arg_parser(args.size(), args.data());
         } catch (const cxxopts::option_syntax_exception& error) {
+#ifdef _WIN32
+          EXPECT_STREQ("Argument '-s=foo_sequencer' starts with a - but has "
+                       "incorrect syntax",
+                       error.what());
+#else
           EXPECT_STREQ("Argument ‘-s=foo_sequencer’ starts with a - but has "
                        "incorrect syntax",
                        error.what());
+#endif
           throw;
         }
       },

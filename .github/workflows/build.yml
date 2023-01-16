@@ -93,11 +93,11 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: windows-binaries
-    - run: .\cpp-kzg-ceremony-client.exe
+    - run: .\cpp-kzg-ceremony-client.exe --help
 
   build-darwin:
     name: Build Darwin
-    runs-on: macos-latest
+    runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
     - run: ./build.sh
@@ -137,4 +137,4 @@ jobs:
       with:
         name: darwin-binaries
     - run: chmod +x ./cpp-kzg-ceremony-client
-    - run: ./pp-kzg-ceremony-client
+    - run: ./cpp-kzg-ceremony-client --help
