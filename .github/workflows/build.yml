@@ -34,6 +34,7 @@ jobs:
         name: ubuntu-binaries
     - run: ./build/bin/cpp-kzg-ceremony-client-test
 
+
   build-windows:
     runs-on: windows-latest
     steps:
