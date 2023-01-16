@@ -26,7 +26,7 @@ jobs:
       run: tar -xf clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04.tar.xz
       run: 
     - name: Build cpp-kzg-ceremony-client
-    - run: |
+      run: |
         PATH=$PWD/bin:$PATH \
         CXX=clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04/bin/clang++ \
         CC=clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04/bin/clang \
