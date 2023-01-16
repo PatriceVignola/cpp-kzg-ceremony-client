@@ -1,0 +1,19 @@
+name: clang-tidy check
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+    branches: [master]
+  push:
+    branches: [master]
+concurrency:
+  group: clang-tidy-check-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  clang-tidy-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run clang-tidy
+      uses: HorstBaerbel/action-clang-tidy@1.2
+      with:
+        builddir: 'build'
