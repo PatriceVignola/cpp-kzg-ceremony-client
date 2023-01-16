@@ -19,8 +19,8 @@
 static void authenticate(const std::string& auth_url) {
   std::cout << "Your browser should now open a tab with the authentication "
                "link. If you close the tab by mistake or an error occurred "
-               "during the authentication, you can manually go to the "
-               "following URL in your browser: "
+               "during the authentication, you can manually open the following "
+               "URL in your browser: "
             << std::endl
             << std::endl
             << auth_url << std::endl
@@ -48,10 +48,9 @@ int main(int argc, char** argv) {
     }
 
     const auto& auth_provider = arg_parser.get_auth_provider();
+    const auto port = arg_parser.get_auth_callback_port();
 
     std::promise<AuthInfo> auth_info_promise;
-
-    const auto port = arg_parser.get_auth_callback_port();
     AuthCallbackServer auth_callback_server(
         port, [&auth_info_promise](AuthInfo&& auth_info) {
           auth_info_promise.set_value(std::move(auth_info));
@@ -60,32 +59,44 @@ int main(int argc, char** argv) {
     const SequencerClient sequencer_client(arg_parser.get_sequencer_url(),
                                            port);
 
-    const auto auth_request_link = sequencer_client.get_auth_request_link();
+    bool contribution_successful = false;
+    while (!contribution_successful) {
+      const auto auth_request_link = sequencer_client.get_auth_request_link();
 
-    const auto auth_url = [&auth_provider, &auth_request_link]() {
-      switch (auth_provider) {
-      case AuthProvider::Ethereum:
-        return auth_request_link.get_eth_auth_url();
-        break;
-      case AuthProvider::GitHub:
-        return auth_request_link.get_github_auth_url();
+      const auto auth_url = [&auth_provider, &auth_request_link]() {
+        switch (auth_provider) {
+        case AuthProvider::Ethereum:
+          return auth_request_link.get_eth_auth_url();
+          break;
+        case AuthProvider::GitHub:
+          return auth_request_link.get_github_auth_url();
+        }
+      }();
+
+      authenticate(auth_url);
+      auto auth_future = auth_info_promise.get_future();
+      AuthInfo auth_info = auth_future.get();
+
+      try {
+        const auto contribution_response =
+            sequencer_client.try_contribute(auth_info.get_session_id());
+
+        std::cout << "The contribution file received from the sequencer was "
+                     "successfully validated against the schema!"
+                  << std::endl;
+
+        contribution_response.validate_powers();
+        std::cout << "All powers of Tau received from the sequencer were "
+                     "successfully validated!"
+                  << std::endl;
+
+        contribution_successful = true;
+      } catch (const UnknownSessionIdError& ex) {
+        std::cout << "Session ID expired. Try authenticating again."
+                  << std::endl;
+        auth_info_promise = std::promise<AuthInfo>();
       }
-    }();
-
-    authenticate(auth_url);
-    auto auth_future = auth_info_promise.get_future();
-    AuthInfo auth_info = auth_future.get();
-
-    const auto contribution_response =
-        sequencer_client.try_contribute(auth_info.get_session_id());
-    std::cout << "The contribution file received from the sequencer was "
-                 "successfully validated against the schema!"
-              << std::endl;
-
-    contribution_response.validate_powers();
-    std::cout << "All powers of Tau received from the sequencer were "
-                 "successfully validated!"
-              << std::endl;
+    }
   } catch (const std::exception& ex) {
     std::cout << ex.what() << std::endl;
     return 1;

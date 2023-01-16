@@ -6,6 +6,8 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
+class UnknownSessionIdError : std::exception {};
+
 class SequencerClient {
 public:
   SequencerClient(std::string sequencer_url, uint16_t port);
