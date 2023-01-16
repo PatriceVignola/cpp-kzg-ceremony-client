@@ -30,15 +30,15 @@ jobs:
     needs: build-ubuntu
     strategy:
       matrix:
-        version: [18.04, 20.04, 22.04, latest]
+        version: [18.04, 20.04, 22.04]
     runs-on: ubuntu-${{ matrix.version }}
     steps:
     - name: Download binaries
       uses: actions/download-artifact@v3
       with:
         name: ubuntu-binaries
-    - run: chmod +x ./cpp-kzg-ceremony-client-test
-    - run: ./cpp-kzg-ceremony-client-test
+    - run: chmod +x ./bin/cpp-kzg-ceremony-client-test
+    - run: ./bin/cpp-kzg-ceremony-client-test
 
   build-windows:
     name: Build Windows
@@ -60,14 +60,14 @@ jobs:
     needs: build-windows
     strategy:
       matrix:
-        version: [2019, 2022, latest]
+        version: [2019, 2022]
     runs-on: windows-${{ matrix.version }}
     steps:
     - name: Download binaries
       uses: actions/download-artifact@v3
       with:
         name: windows-binaries
-    - run: .\cpp-kzg-ceremony-client-test.exe
+    - run: .\bin\cpp-kzg-ceremony-client-test.exe
 
   build-darwin:
     name: Build Darwin
@@ -90,7 +90,7 @@ jobs:
     needs: build-darwin
     strategy:
       matrix:
-        version: [10.15, 11, 12, latest]
+        version: [10.15, 11, 12]
     runs-on: macos-${{ matrix.version }}
     steps:
     - name: Download binaries
@@ -98,4 +98,4 @@ jobs:
       with:
         name: darwin-binaries
     - run: chmod +x cpp-kzg-ceremony-client-test
-    - run: ./cpp-kzg-ceremony-client-test
+    - run: ./bin/cpp-kzg-ceremony-client-test
