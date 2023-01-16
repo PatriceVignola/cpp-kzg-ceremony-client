@@ -25,8 +25,6 @@ find . -iname *.hpp -not \( -path "./build/*" -prune \) -o -iname *.cpp \
 
 # Run clang-tidy
 echo -e "${GREEN}Linting C++ files...${NO_COLOR}"
-find . -iname *.hpp -not \( -path "./build/*" -prune \) -o -iname *.cpp \
-    -not \( -path "./build/*" -prune \) \
-    | xargs clang-tidy -p build
+./clang-tidy.sh
 
 echo -e "${GREEN}Done!${NO_COLOR}"

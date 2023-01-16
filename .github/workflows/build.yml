@@ -35,6 +35,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ubuntu-binaries
+    - run: chmod +x ./cpp-kzg-ceremony-client-test
     - run: ./cpp-kzg-ceremony-client-test
 
   build-windows:
@@ -48,8 +49,8 @@ jobs:
       with:
         name: windows-binaries
         path: |
-          build/bin/Release/cpp-kzg-ceremony-client
-          build/bin/Release/cpp-kzg-ceremony-client-test
+          build/bin/Release/cpp-kzg-ceremony-client.exe
+          build/bin/Release/cpp-kzg-ceremony-client-test.exe
 
   test-windows:
     name: Test Windows
@@ -63,7 +64,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: windows-binaries
-    - run: ./cpp-kzg-ceremony-client-test
+    - run: ./cpp-kzg-ceremony-client-test.exe
 
   build-darwin:
     name: Build Darwin
@@ -91,4 +92,5 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: darwin-binaries
+    - run: chmod +x cpp-kzg-ceremony-client-test
     - run: ./cpp-kzg-ceremony-client-test

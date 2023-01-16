@@ -1,0 +1,26 @@
+name: checks
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+    branches: [master]
+  push:
+    branches: [master]
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: cmake -S . -B build/ -DCMAKE_BUILD_TYPE=Release
+    - run: ./build.sh
+  clang-format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run clang-format check
+      uses: jidicula/clang-format-action@v4.6.2
+      with:
+        clang-format-version: '14'
+        exclude-regex: ^\./build/.*$
