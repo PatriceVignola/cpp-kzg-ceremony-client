@@ -16,12 +16,12 @@ jobs:
     - uses: actions/checkout@v2
     - run: ./build.sh
     - name: Upload binaries
-        uses: actions/upload-artifact@v3
-        with:
-          name: ubuntu-binaries
-          path: |
-            build/bin/cpp-kzg-ceremony-client
-            build/bin/cpp-kzg-ceremony-client-test
+      uses: actions/upload-artifact@v3
+      with:
+        name: ubuntu-binaries
+        path: |
+          build/bin/cpp-kzg-ceremony-client
+          build/bin/cpp-kzg-ceremony-client-test
 
   test-ubuntu:
     name: Test Ubuntu
@@ -34,19 +34,18 @@ jobs:
         name: ubuntu-binaries
     - run: ./build/bin/cpp-kzg-ceremony-client-test
 
-
   build-windows:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - run: ./build.bat
     - name: Upload binaries
-        uses: actions/upload-artifact@v3
-        with:
-          name: windows-binaries
-          path: |
-            build/bin/cpp-kzg-ceremony-client
-            build/bin/cpp-kzg-ceremony-client-test
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-binaries
+        path: |
+          build/bin/cpp-kzg-ceremony-client
+          build/bin/cpp-kzg-ceremony-client-test
 
   test-windows:
     name: Test Windows
@@ -65,12 +64,12 @@ jobs:
     - uses: actions/checkout@v2
     - run: ./build.sh
     - name: Upload binaries
-        uses: actions/upload-artifact@v3
-        with:
-          name: darwin-binaries
-          path: |
-            build/bin/cpp-kzg-ceremony-client
-            build/bin/cpp-kzg-ceremony-client-test
+      uses: actions/upload-artifact@v3
+      with:
+        name: darwin-binaries
+        path: |
+          build/bin/cpp-kzg-ceremony-client
+          build/bin/cpp-kzg-ceremony-client-test
 
   test-darwin:
     name: Test Darwin
