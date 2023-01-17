@@ -16,8 +16,8 @@ jobs:
       image: alpine:3.11.13
     steps:
     - uses: actions/checkout@v2
-    - run: apk --update add cmake
-    - run: ./build.sh
+    - run: apk --update add cmake clang
+    - run: CXX=/usr/bin/clang++ CC=/usr/bin/clang ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
