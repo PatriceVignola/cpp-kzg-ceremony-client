@@ -22,17 +22,19 @@ Usage:
 TEST(TestArgParser, ThrowsErrorUnknownOption) {
   const std::array<const char*, 2> args = {"foo", "--bar"};
 
+  std::stringstream expected_error;
+#ifdef _WIN32
+  expected_error << "error when parsing arguments: Option 'bar' does not exist";
+#else
+  expected_error << "error when parsing arguments: Option ‘bar’ does not exist";
+#endif
+  expected_error << std::endl << ascii_title << usage_message;
+
   EXPECT_THROW(
       {
         try {
           ArgParser arg_parser(args.size(), args.data());
         } catch (const std::runtime_error& error) {
-          std::stringstream expected_error;
-          expected_error
-              << "error when parsing arguments: Option ‘bar’ does not exist"
-              << std::endl
-              << ascii_title << usage_message;
-
           EXPECT_EQ(expected_error.str(), error.what());
           throw;
         }
@@ -60,12 +62,18 @@ TEST(TestArgParser, ThrowsErrorInvalidAuthenticationProvider) {
 TEST(TestArgParser, ThrowsErrorInvalidPort) {
   const std::array<const char*, 2> args = {"foo", "--port=foo"};
 
+#ifdef _WIN32
+  auto expected_error = "Argument 'foo' failed to parse";
+#else
+  auto expected_error = "Argument ‘foo’ failed to parse";
+#endif
+
   EXPECT_THROW(
       {
         try {
           ArgParser arg_parser(args.size(), args.data());
         } catch (const cxxopts::argument_incorrect_type& error) {
-          EXPECT_STREQ("Argument ‘foo’ failed to parse", error.what());
+          EXPECT_STREQ(expected_error, error.what());
           throw;
         }
       },
@@ -76,14 +84,20 @@ TEST(TestArgParser, ThrowsErrorInvalidPort) {
 TEST(TestArgParser, ThrowsExceptionShortArgsEqualDelimiter) {
   const std::array<const char*, 2> args = {"foo", "-s=foo_sequencer"};
 
+#ifdef _WIN32
+  auto expected_error = "Argument '-s=foo_sequencer' starts with a - but has "
+                        "incorrect syntax";
+#else
+  auto expected_error = "Argument ‘-s=foo_sequencer’ starts with a - but has "
+                        "incorrect syntax";
+#endif
+
   EXPECT_THROW(
       {
         try {
           ArgParser arg_parser(args.size(), args.data());
         } catch (const cxxopts::option_syntax_exception& error) {
-          EXPECT_STREQ("Argument ‘-s=foo_sequencer’ starts with a - but has "
-                       "incorrect syntax",
-                       error.what());
+          EXPECT_STREQ(expected_error, error.what());
           throw;
         }
       },
