@@ -17,6 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: apk --update add cmake
+    - run: ls
+    - run: cmake --help
     - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
