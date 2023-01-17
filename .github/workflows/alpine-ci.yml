@@ -24,16 +24,15 @@ jobs:
       id: cache-cmake
       uses: actions/cache@v3
       with:
-        path: cmake-3.25.1
+        path: cmake-3.25.1/bin
         key: alpine-${{ matrix.version }}-cmake
     - name: Download CMake
       if: steps.cache-cmake.outputs.cache-hit != 'true'
       run: |
         wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1.tar.gz && \
         tar -xzf cmake-3.25.1.tar.gz && \
-        cd cmake-3.25.1 && ./bootstrap && make && cd ..
-    - run: cd cmake-3.25.1 && make install && cd ..
-    - run: ./build.sh
+        cd cmake-3.25.1 && ./bootstrap && make && make install && cd ..
+    - run: PATH=$PWD/cmake-3.25.1/bin/:$PATH ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
