@@ -1,4 +1,4 @@
-name: checks
+name: Code Quality Checks
 on:
   pull_request:
     types: [opened, synchronize, edited, reopened]
