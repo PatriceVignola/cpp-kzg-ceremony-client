@@ -37,7 +37,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ubuntu-binaries
-    - run: apt update && apt upgrade
+    - run: apt update && apt --yes upgrade
     - run: apt --yes install openssl
     - run: chmod +x ./cpp-kzg-ceremony-client-test
     - run: ./cpp-kzg-ceremony-client-test
@@ -56,6 +56,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ubuntu-binaries
+    - run: apt update && apt --yes upgrade
     - run: apt --yes install openssl
     - run: chmod +x ./cpp-kzg-ceremony-client
     - run: ./cpp-kzg-ceremony-client --help
