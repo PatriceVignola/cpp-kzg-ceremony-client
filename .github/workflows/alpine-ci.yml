@@ -32,7 +32,8 @@ jobs:
         wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1.tar.gz && \
         tar -xzf cmake-3.25.1.tar.gz && \
         cd cmake-3.25.1 && ./bootstrap && make && cd ..
-    - run: PATH=$PWD/cmake-3.25.1/bin:$PATH ./build.sh
+    - name: Build cpp-kzg-ceremony-client
+      run: PATH=$PWD/cmake-3.25.1/bin:$PATH ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
