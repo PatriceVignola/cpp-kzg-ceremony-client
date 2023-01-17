@@ -22,7 +22,7 @@ jobs:
     - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
     - run: ls .
     - run: ls ./bin
-    - run: chmod +x
+    - run: chmod +x ./bin/cmake
     - run: ./bin/cmake --help
     - run: $PWD/bin/cmake --help
     - run: |
