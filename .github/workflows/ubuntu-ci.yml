@@ -19,6 +19,8 @@ jobs:
       image: ubuntu:${{ matrix.version }}
     steps:
     - uses: actions/checkout@v2
+    - run: apt update && apt --yes upgrade
+    - run: apt --yes install cmake build-essential openssl-dev
     - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
