@@ -16,7 +16,7 @@ jobs:
       image: alpine:3.11.13
     steps:
     - uses: actions/checkout@v2
-    - run: apk --update add cmake alpine-sdk libssl-dev
+    - run: apk --update add cmake alpine-sdk openssl-dev
     - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
