@@ -20,8 +20,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: apk --update add alpine-sdk openssl-dev linux-headers wget
-    - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
-    - run: tar -xzf https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1.tar.gz
+    - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1.tar.gz
+    - run: tar -xzf cmake-3.25.1.tar.gz
     - run: cd cmake-3.25.1 && ./bootstrap && make && make install && cd ..
     - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
     - run: ./build.sh
