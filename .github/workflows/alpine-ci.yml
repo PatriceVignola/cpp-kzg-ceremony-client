@@ -40,6 +40,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: alpine-binaries
+    - run: apk --update add libstdc++
     - run: chmod +x ./cpp-kzg-ceremony-client-test
     - run: ./cpp-kzg-ceremony-client-test
 
@@ -57,5 +58,6 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: alpine-binaries
+    - run: apk --update add libstdc++
     - run: chmod +x ./cpp-kzg-ceremony-client
     - run: ./cpp-kzg-ceremony-client --help
