@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: apt update && apt --yes upgrade
-    - run: apt --yes install cmake build-essential libssl-dev
+    - run: apt --yes install cmake build-essential libssl-dev git
     - run: ./build.sh
     - name: Upload binaries
       uses: actions/upload-artifact@v3
