@@ -24,7 +24,7 @@ jobs:
       id: cache-cmake
       uses: actions/cache@v3
       with:
-        path: cmake-3.25.1/bin
+        path: cmake-3.25.1
         key: alpine-${{ matrix.version }}-cmake
     - name: Download CMake
       if: steps.cache-cmake.outputs.cache-hit != 'true'
