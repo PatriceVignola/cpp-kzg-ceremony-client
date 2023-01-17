@@ -11,9 +11,12 @@ concurrency:
 jobs:
   build-alpine:
     name: Build
+    strategy:
+      matrix:
+        version: ["3.11.13", "3.12.10", "3.13.12", "3.14.8", "3.15.6", "3.16.3", "3.17.1"]
     runs-on: ubuntu-latest
     container:
-      image: alpine:3.11.13
+      image: alpine:${{ matrix.version }}
     steps:
     - uses: actions/checkout@v2
     - run: apk --update add cmake alpine-sdk openssl-dev linux-headers
@@ -21,7 +24,7 @@ jobs:
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
-        name: alpine-binaries
+        name: alpine-${{ matrix.version }}binaries
         path: |
           build/bin/cpp-kzg-ceremony-client
           build/bin/cpp-kzg-ceremony-client-test
@@ -39,7 +42,7 @@ jobs:
     - name: Download binaries
       uses: actions/download-artifact@v3
       with:
-        name: alpine-binaries
+        name: alpine-${{ matrix.version }}-binaries
     - run: apk --update add libstdc++
     - run: chmod +x ./cpp-kzg-ceremony-client-test
     - run: ./cpp-kzg-ceremony-client-test
@@ -57,7 +60,7 @@ jobs:
     - name: Download binaries
       uses: actions/download-artifact@v3
       with:
-        name: alpine-binaries
+        name: alpine-${{ matrix.version }}-binaries
     - run: apk --update add libstdc++
     - run: chmod +x ./cpp-kzg-ceremony-client
     - run: ./cpp-kzg-ceremony-client --help
