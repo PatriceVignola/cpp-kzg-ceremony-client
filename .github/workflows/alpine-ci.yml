@@ -13,7 +13,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     container:
-      image: alpine:3.10.9
+      image: alpine:3.11.13
     steps:
     - uses: actions/checkout@v2
     - run: apk --update add cmake alpine-sdk openssl-dev linux-headers
