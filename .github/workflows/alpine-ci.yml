@@ -23,7 +23,7 @@ jobs:
     - run: ls .
     - run: ls ./bin
     - run: chmod +x
-    - run: ./cmake --help
+    - run: ./bin/cmake --help
     - run: $PWD/bin/cmake --help
     - run: |
         PATH=$PWD/bin:$PATH \
