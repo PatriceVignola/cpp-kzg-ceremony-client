@@ -4,7 +4,14 @@
 #include "powers_of_tau.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
+
+#ifdef _DLL
+#undef _DLL
 #include <uint256_t.h>
+#define _DLL
+#else
+#include <uint256_t.h>
+#endif
 
 class Contribution {
 public:
