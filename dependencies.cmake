@@ -107,9 +107,3 @@ add_library(
 target_include_directories(
   gtest_static PRIVATE ${googletest_SOURCE_DIR}/googletest/include
                        ${googletest_SOURCE_DIR}/googletest)
-
-# Build the uint256_t library
-add_library(uint256_t STATIC ${uint256_t_SOURCE_DIR}/uint256_t.cpp
-                             ${uint256_t_SOURCE_DIR}/uint128_t/uint128_t.cpp)
-target_include_directories(uint256_t PRIVATE ${uint256_t_SOURCE_DIR}
-                                             ${uint256_t_SOURCE_DIR}/uint128_t)
