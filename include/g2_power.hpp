@@ -2,14 +2,8 @@
 #define G2_POWER_HPP
 
 #include "hex_util.hpp"
+#include "include/uint256_helpers.hpp"
 #include <blst.hpp>
-#ifdef _DLL
-#undef _DLL
-#include <uint256_t.h>
-#define _DLL
-#else
-#include <uint256_t.h>
-#endif
 
 class G2Power {
 public:

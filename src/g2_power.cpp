@@ -1,11 +1,5 @@
 #include "include/g2_power.hpp"
-#ifdef _DLL
-#undef _DLL
-#include <uint256_t.h>
-#define _DLL
-#else
-#include <uint256_t.h>
-#endif
+#include "include/uint256_helpers.hpp"
 
 void G2Power::multiply(uint256_t power) {
   static constexpr size_t num_bits = 256;
