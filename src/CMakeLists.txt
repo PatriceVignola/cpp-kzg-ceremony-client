@@ -25,8 +25,7 @@ target_include_directories(
          ${valijson_SOURCE_DIR}/include
          ${blst_SOURCE_DIR}/bindings
          ${uint256_t_SOURCE_DIR}
-         ${uint256_t_SOURCE_DIR}/uint128_t
-         ${googletest_SOURCE_DIR}/googletest/include)
+         ${uint256_t_SOURCE_DIR}/uint128_t)
 
 target_link_libraries(
   product_static
@@ -47,6 +46,9 @@ target_link_libraries(cpp-kzg-ceremony-client PRIVATE product_static)
 add_executable(cpp-kzg-ceremony-client-test arg_parser_test.cpp)
 target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product_static
                                                            gtest_static)
+target_include_directories(cpp-kzg-ceremony-client-test
+                           PRIVATE ${googletest_SOURCE_DIR}/googletest/include)
+
 set_target_properties(
   cpp-kzg-ceremony-client-test
   PROPERTIES SKIP_BUILD_RPATH FALSE
