@@ -3,7 +3,10 @@
 
 #include "hex_util.hpp"
 #include <blst.hpp>
+
+#define _DLL
 #include <uint256_t.h>
+#undef _DLL
 
 class G1Power {
 public:

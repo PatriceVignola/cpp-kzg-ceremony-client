@@ -1,5 +1,4 @@
 #include "include/contribution.hpp"
-#include <uint256_t.h>
 
 static constexpr uint8_t curve_order_base = 10;
 
