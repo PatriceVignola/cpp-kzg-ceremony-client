@@ -145,10 +145,13 @@ SequencerClient::try_contribute(const std::string& session_id) const {
                 << std::endl;
     } else if (!is_rate_limited_response(response)) {
       if (!is_ok_status(response.status_code)) {
-        std::cout << "Error while trying to contribute via "
-                  << contribution_url_ << ": " << response.text
-                  << ". We will keep trying to contribute." << std::endl;
+        auto errorMessage = response.error.code != cpr::ErrorCode::OK
+                                ? response.error.message
+                                : response.text;
 
+        std::cout << "Error while trying to contribute via "
+                  << contribution_url_ << ": " << errorMessage
+                  << ". We will keep trying to contribute." << std::endl;
       } else {
         json_response = json::parse(response.text);
         slot_reserved = true;
