@@ -1,11 +1,5 @@
 #include "include/contribution.hpp"
-#ifdef _DLL
-#undef _DLL
-#include <uint256_t.h>
-#define _DLL
-#else
-#include <uint256_t.h>
-#endif
+#include "include/uint256_helpers.hpp"
 
 static constexpr uint8_t curve_order_base = 10;
 
