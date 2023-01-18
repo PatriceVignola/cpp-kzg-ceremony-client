@@ -57,3 +57,5 @@ clang-tidy %CPP_FILES% --^
     -I./build/_deps/jsonvalidator-src/src^
     -I./build/_deps/valijson-src/include^
     -I./build/_deps/blst-src/bindings
+    -I./build/_deps/uint256_t-src
+    -I./build/_deps/uint256_t-src/uint128_t

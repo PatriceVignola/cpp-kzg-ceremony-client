@@ -3,12 +3,14 @@
 
 #include "hex_util.hpp"
 #include <blst.hpp>
+#include <uint256_t.h>
 
 class G2Power {
 public:
   explicit G2Power(const std::string& hex_power)
       : p2_(hex_util::decode(hex_power).data()) {}
   bool in_group() const { return p2_.in_group(); }
+  void multiply(uint256_t power);
 
 private:
   blst::P2 p2_;

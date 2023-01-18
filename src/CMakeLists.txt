@@ -5,6 +5,9 @@ add_library(
   auth_callback_server.cpp
   auth_request_link_response.cpp
   contribution_response.cpp
+  contribution.cpp
+  g1_power.cpp
+  g2_power.cpp
   hex_util.cpp
   powers_of_tau.cpp
   sequencer_client.cpp)
@@ -21,6 +24,8 @@ target_include_directories(
          ${curl_SOURCE_DIR}/include
          ${valijson_SOURCE_DIR}/include
          ${blst_SOURCE_DIR}/bindings
+         ${uint256_t_SOURCE_DIR}
+         ${uint256_t_SOURCE_DIR}/uint128_t
          ${googletest_SOURCE_DIR}/googletest/include)
 
 target_link_libraries(
@@ -31,7 +36,8 @@ target_link_libraries(
          ${CRYPTO_LIB}
          cpr::cpr
          valijson
-         ${LIB_BLST_PATH})
+         ${LIB_BLST_PATH}
+         uint256_t)
 
 # Product executable
 add_executable(cpp-kzg-ceremony-client main.cpp)

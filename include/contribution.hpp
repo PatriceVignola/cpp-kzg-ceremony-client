@@ -4,6 +4,7 @@
 #include "powers_of_tau.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
+#include <uint256_t.h>
 
 class Contribution {
 public:
@@ -12,6 +13,7 @@ public:
   const PowersOfTau& get_powers_of_tau() const { return powers_of_tau_; }
   const std::string& get_pot_pubkey() const { return pot_pubkey_; }
   const std::string& get_bls_signature() const { return bls_signature_; }
+  void update_powers_of_tau(uint256_t secret);
 
 private:
   int num_g1_powers_;

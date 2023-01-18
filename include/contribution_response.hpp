@@ -14,9 +14,7 @@ public:
   explicit ContributionResponse(const nlohmann::json& json_response,
                                 const nlohmann::json& schema);
 
-  const std::vector<Contribution>& get_contributions() const {
-    return contributions_;
-  }
+  std::vector<Contribution>& get_contributions() { return contributions_; }
 
   void validate_powers() const;
 
