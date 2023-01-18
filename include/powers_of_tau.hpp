@@ -5,11 +5,20 @@
 #include "g2_power.hpp"
 #include <nlohmann/json.hpp>
 #include <vector>
+#ifdef _DLL
+#undef _DLL
+#include <uint256_t.h>
+#define _DLL
+#else
+#include <uint256_t.h>
+#endif
 
 class PowersOfTau {
 public:
-  const std::vector<G1Power>& get_g1_powers() const;
-  const std::vector<G2Power>& get_g2_powers() const;
+  std::vector<G1Power>& get_g1_powers();
+  std::vector<G2Power>& get_g2_powers();
+  void multiply_g1_power(int power_index, uint256_t power);
+  void multiply_g2_power(int power_index, uint256_t power);
   bool valid() const;
 
 private:

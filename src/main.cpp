@@ -9,6 +9,13 @@
 #include <blst.hpp>
 #include <cpr/cpr.h>
 #include <iostream>
+#ifdef _DLL
+#undef _DLL
+#include <uint256_t.h>
+#define _DLL
+#else
+#include <uint256_t.h>
+#endif
 
 #ifdef _WIN32
 #include <shellapi.h>
@@ -78,7 +85,7 @@ int main(int argc, char** argv) {
       AuthInfo auth_info = auth_future.get();
 
       try {
-        const auto contribution_response =
+        auto contribution_response =
             sequencer_client.try_contribute(auth_info.get_session_id());
 
         std::cout << "The contribution file received from the sequencer was "
@@ -89,6 +96,16 @@ int main(int argc, char** argv) {
         std::cout << "All powers of Tau received from the sequencer were "
                      "successfully validated!"
                   << std::endl;
+
+        auto& contributions = contribution_response.get_contributions();
+
+        // TODO (PatriceVignola): Collect secret before starting the
+        // authentication flow
+        uint256_t secret = 0;
+
+        for (auto& contribution : contributions) {
+          contribution.update_powers_of_tau(secret);
+        }
 
         contribution_successful = true;
       } catch (const UnknownSessionIdError& ex) {

@@ -65,6 +65,12 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/google/googletest
   GIT_TAG release-1.12.1)
 
+# uint256_t Library
+FetchContent_Declare(
+  uint256_t
+  GIT_REPOSITORY https://github.com/calccrypto/uint256_t
+  GIT_TAG 092e4c82e2b607da19ea4bae94f857756ce07d81)
+
 # Download and extract dependencies.
 FetchContent_MakeAvailable(
   cxxopts
@@ -73,7 +79,8 @@ FetchContent_MakeAvailable(
   json
   valijson
   blst
-  googletest)
+  googletest
+  uint256_t)
 
 if(WIN32)
   set(LIB_BLST_PATH ${blst_BINARY_DIR}/blst.lib)
@@ -100,3 +107,9 @@ add_library(
 target_include_directories(
   gtest_static PRIVATE ${googletest_SOURCE_DIR}/googletest/include
                        ${googletest_SOURCE_DIR}/googletest)
+
+# Build the uint256_t library
+add_library(uint256_t STATIC ${uint256_t_SOURCE_DIR}/uint256_t.cpp
+                             ${uint256_t_SOURCE_DIR}/uint128_t/uint128_t.cpp)
+target_include_directories(uint256_t PRIVATE ${uint256_t_SOURCE_DIR}
+                                             ${uint256_t_SOURCE_DIR}/uint128_t)
