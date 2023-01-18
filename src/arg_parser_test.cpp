@@ -18,7 +18,7 @@ Usage:
   -h, --help           Print usage
 )";
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+// NOLINTNEXTLINE
 TEST(TestArgParser, ThrowsErrorUnknownOption) {
   const std::array<const char*, 2> args = {"foo", "--bar"};
 
@@ -30,6 +30,7 @@ TEST(TestArgParser, ThrowsErrorUnknownOption) {
 #endif
   expected_error << std::endl << ascii_title << usage_message;
 
+  // NOLINTNEXTLINE
   EXPECT_THROW(
       {
         try {
@@ -42,10 +43,11 @@ TEST(TestArgParser, ThrowsErrorUnknownOption) {
       std::runtime_error);
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+// NOLINTNEXTLINE
 TEST(TestArgParser, ThrowsErrorInvalidAuthenticationProvider) {
   const std::array<const char*, 2> args = {"foo", "--auth=bar"};
 
+  // NOLINTNEXTLINE
   EXPECT_THROW(
       {
         try {
@@ -58,16 +60,17 @@ TEST(TestArgParser, ThrowsErrorInvalidAuthenticationProvider) {
       std::runtime_error);
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+// NOLINTNEXTLINE
 TEST(TestArgParser, ThrowsErrorInvalidPort) {
   const std::array<const char*, 2> args = {"foo", "--port=foo"};
 
 #ifdef _WIN32
-  auto expected_error = "Argument 'foo' failed to parse";
+  const auto* expected_error = "Argument 'foo' failed to parse";
 #else
-  auto expected_error = "Argument ‘foo’ failed to parse";
+  const auto* expected_error = "Argument ‘foo’ failed to parse";
 #endif
 
+  // NOLINTNEXTLINE
   EXPECT_THROW(
       {
         try {
@@ -80,18 +83,21 @@ TEST(TestArgParser, ThrowsErrorInvalidPort) {
       cxxopts::argument_incorrect_type);
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+// NOLINTNEXTLINE
 TEST(TestArgParser, ThrowsExceptionShortArgsEqualDelimiter) {
   const std::array<const char*, 2> args = {"foo", "-s=foo_sequencer"};
 
 #ifdef _WIN32
-  auto expected_error = "Argument '-s=foo_sequencer' starts with a - but has "
-                        "incorrect syntax";
+  const auto* expected_error =
+      "Argument '-s=foo_sequencer' starts with a - but has "
+      "incorrect syntax";
 #else
-  auto expected_error = "Argument ‘-s=foo_sequencer’ starts with a - but has "
-                        "incorrect syntax";
+  const auto* expected_error =
+      "Argument ‘-s=foo_sequencer’ starts with a - but has "
+      "incorrect syntax";
 #endif
 
+  // NOLINTNEXTLINE
   EXPECT_THROW(
       {
         try {
@@ -104,6 +110,7 @@ TEST(TestArgParser, ThrowsExceptionShortArgsEqualDelimiter) {
       cxxopts::option_syntax_exception);
 }
 
+// NOLINTNEXTLINE
 TEST(TestArgParser, HelpRequested) {
   const std::array<const char*, 2> args = {"foo", "--help"};
   ArgParser arg_parser(args.size(), args.data());
@@ -115,6 +122,7 @@ TEST(TestArgParser, HelpRequested) {
   EXPECT_EQ(expected_help_message.str(), arg_parser.get_help_message());
 }
 
+// NOLINTNEXTLINE
 TEST(TestArgParser, ValidDefaultArgs) {
   const std::array<const char*, 1> args = {"foo"};
   ArgParser arg_parser(args.size(), args.data());
@@ -125,6 +133,7 @@ TEST(TestArgParser, ValidDefaultArgs) {
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }
 
+// NOLINTNEXTLINE
 TEST(TestArgParser, ValidArgsEqualDelimiter) {
   const std::array<const char*, 4> args = {
       "foo",
@@ -139,6 +148,7 @@ TEST(TestArgParser, ValidArgsEqualDelimiter) {
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }
 
+// NOLINTNEXTLINE
 TEST(TestArgParser, ValidArgsSpaceDelimiter) {
   const std::array<const char*, 7> args = {
       "foo",  "--sequencer", "foo_sequencer", "--port",
@@ -151,6 +161,7 @@ TEST(TestArgParser, ValidArgsSpaceDelimiter) {
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }
 
+// NOLINTNEXTLINE
 TEST(TestArgParser, ValidShortArgsSpaceDelimiter) {
   const std::array<const char*, 7> args = {"foo",  "-s", "foo_sequencer", "-p",
                                            "1234", "-a", "github"};
@@ -161,12 +172,14 @@ TEST(TestArgParser, ValidShortArgsSpaceDelimiter) {
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }
 
+// NOLINTNEXTLINE
 TEST(TestArgParser, GithubAuthenticationProvider) {
   const std::array<const char*, 1> args = {"foo"};
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::Ethereum, arg_parser.get_auth_provider());
 }
 
+// NOLINTNEXTLINE
 TEST(TestArgParser, EthereumAuthenticationProvider) {
   const std::array<const char*, 1> args = {"foo"};
   ArgParser arg_parser(args.size(), args.data());
