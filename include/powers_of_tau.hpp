@@ -4,6 +4,7 @@
 #include "g1_power.hpp"
 #include "g2_power.hpp"
 #include <nlohmann/json.hpp>
+#include <uint256_t.h>
 #include <vector>
 
 class PowersOfTau {

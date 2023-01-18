@@ -9,10 +9,7 @@
 #include <blst.hpp>
 #include <cpr/cpr.h>
 #include <iostream>
-
-#define _DLL
 #include <uint256_t.h>
-#undef _DLL
 
 #ifdef _WIN32
 #include <shellapi.h>
