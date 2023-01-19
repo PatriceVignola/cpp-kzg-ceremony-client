@@ -71,6 +71,12 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/calccrypto/uint256_t
   GIT_TAG 092e4c82e2b607da19ea4bae94f857756ce07d81)
 
+# csprng Library
+FetchContent_Declare(
+  csprng
+  GIT_REPOSITORY https://github.com/Duthomhas/CSPRNG
+  GIT_TAG 8768a94b4b04213c0798b80824a04ae4990e9847)
+
 # Download and extract dependencies.
 FetchContent_MakeAvailable(
   cxxopts
@@ -81,6 +87,9 @@ FetchContent_MakeAvailable(
   blst
   googletest
   uint256_t)
+
+# csprng has a broken CMakeLists.txt file, so manaually download it instead
+FetchContent_Populate(csprng)
 
 if(WIN32)
   set(LIB_BLST_PATH ${blst_BINARY_DIR}/blst.lib)
@@ -113,3 +122,7 @@ add_library(uint256_t STATIC ${uint256_t_SOURCE_DIR}/uint256_t.cpp
                              ${uint256_t_SOURCE_DIR}/uint128_t/uint128_t.cpp)
 target_include_directories(uint256_t PRIVATE ${uint256_t_SOURCE_DIR}
                                              ${uint256_t_SOURCE_DIR}/uint128_t)
+
+# Build the cspring library
+add_library(csprng STATIC ${csprng_SOURCE_DIR}/source/csprng.cpp)
+target_include_directories(csprng PRIVATE ${csprng_SOURCE_DIR}/source)

@@ -5,10 +5,12 @@
 #include "include/auth_request_link_response.hpp"
 #include "include/contribution_response.hpp"
 #include "include/contribution_schema.hpp"
+#include "include/secret_generator.hpp"
 #include "include/sequencer_client.hpp"
 #include <blst.hpp>
 #include <cpr/cpr.h>
 #include <iostream>
+
 #ifdef _DLL
 #undef _DLL
 #include <uint256_t.h>
@@ -99,12 +101,16 @@ int main(int argc, char** argv) {
 
         auto& contributions = contribution_response.get_contributions();
 
-        // TODO (PatriceVignola): Collect secret before starting the
-        // authentication flow
-        uint256_t secret = 0;
+        // Generate one secret for each contribution
+        SecretGenerator secret_generator(arg_parser.get_entropy(),
+                                         contributions.size());
+
+        const auto& secrets = secret_generator.get_secrets();
+        auto secret_iter = secrets.begin();
 
         for (auto& contribution : contributions) {
-          contribution.update_powers_of_tau(secret);
+          contribution.update_powers_of_tau(*secret_iter);
+          ++secret_iter;
         }
 
         contribution_successful = true;
