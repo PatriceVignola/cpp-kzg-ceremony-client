@@ -10,6 +10,7 @@ add_library(
   g2_power.cpp
   hex_util.cpp
   powers_of_tau.cpp
+  secret_generator.cpp
   sequencer_client.cpp)
 
 add_dependencies(product_static libblst)
@@ -25,7 +26,8 @@ target_include_directories(
          ${valijson_SOURCE_DIR}/include
          ${blst_SOURCE_DIR}/bindings
          ${uint256_t_SOURCE_DIR}
-         ${uint256_t_SOURCE_DIR}/uint128_t)
+         ${uint256_t_SOURCE_DIR}/uint128_t
+         ${csprng_SOURCE_DIR}/source)
 
 target_link_libraries(
   product_static
@@ -36,7 +38,8 @@ target_link_libraries(
          cpr::cpr
          valijson
          ${LIB_BLST_PATH}
-         uint256_t)
+         uint256_t
+         csprng)
 
 # Product executable
 add_executable(cpp-kzg-ceremony-client main.cpp)

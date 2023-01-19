@@ -35,6 +35,8 @@ void from_json(const json& json_powers_of_tau, PowersOfTau& powers_of_tau) {
 
 ContributionResponse::ContributionResponse(const json& json_response,
                                            const json& json_schema) {
+  // Validate the contribution file against the JSON schema
+  std::cout << "Validating contribution file against the schema... ";
 
   valijson::Schema schema;
   valijson::SchemaParser parser;
@@ -67,6 +69,8 @@ ContributionResponse::ContributionResponse(const json& json_response,
     throw std::runtime_error(error_stream.str());
   }
 
+  std::cout << "Done!" << std::endl;
+
   // If we reached this point, it means the JSON was correctly validated against
   // the schema and we can safely read fields and assume their concrete types
   contributions_ =
@@ -76,10 +80,15 @@ ContributionResponse::ContributionResponse(const json& json_response,
 }
 
 void ContributionResponse::validate_powers() const {
+  std::cout << "Validating powers of Tau... ";
+
   for (const auto& contribution : contributions_) {
     if (!contribution.get_powers_of_tau().valid()) {
+      std::cout << "Validation failed." << std::endl;
       throw std::runtime_error("not all powers of Tau are elements of the "
                                "prime-ordered subgroup");
     }
   }
+
+  std::cout << "Done!" << std::endl;
 }

@@ -5,10 +5,12 @@
 #include "include/auth_request_link_response.hpp"
 #include "include/contribution_response.hpp"
 #include "include/contribution_schema.hpp"
+#include "include/secret_generator.hpp"
 #include "include/sequencer_client.hpp"
 #include <blst.hpp>
 #include <cpr/cpr.h>
 #include <iostream>
+
 #ifdef _DLL
 #undef _DLL
 #include <uint256_t.h>
@@ -54,6 +56,12 @@ int main(int argc, char** argv) {
       return 0;
     }
 
+    // Generate one secret for each contribution
+    std::cout << "Generating secrets... ";
+    static constexpr size_t num_secrets = 4;
+    SecretGenerator secret_generator(arg_parser.get_entropy(), num_secrets);
+    std::cout << "Done!" << std::endl;
+
     const auto& auth_provider = arg_parser.get_auth_provider();
     const auto port = arg_parser.get_auth_callback_port();
 
@@ -85,27 +93,23 @@ int main(int argc, char** argv) {
       AuthInfo auth_info = auth_future.get();
 
       try {
+        // Wait until a contribution slot is available
         auto contribution_response =
             sequencer_client.try_contribute(auth_info.get_session_id());
 
-        std::cout << "The contribution file received from the sequencer was "
-                     "successfully validated against the schema!"
-                  << std::endl;
-
+        // Validate the powers
         contribution_response.validate_powers();
-        std::cout << "All powers of Tau received from the sequencer were "
-                     "successfully validated!"
-                  << std::endl;
 
+        // Update the powers of Tau with the secrets generated earlier
+        std::cout << "Updating powers of Tau... ";
         auto& contributions = contribution_response.get_contributions();
-
-        // TODO (PatriceVignola): Collect secret before starting the
-        // authentication flow
-        uint256_t secret = 0;
-
+        const auto& secrets = secret_generator.get_secrets();
+        auto secret_iter = secrets.begin();
         for (auto& contribution : contributions) {
-          contribution.update_powers_of_tau(secret);
+          contribution.update_powers_of_tau(*secret_iter);
+          ++secret_iter;
         }
+        std::cout << "Done!" << std::endl;
 
         contribution_successful = true;
       } catch (const UnknownSessionIdError& ex) {

@@ -24,6 +24,14 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
         "Authentication provider to use. Choices: [ethereum, github]",
         cxxopts::value<std::string>()->default_value("ethereum"), "");
 
+    options.add_option(
+        "", "e", "entropy",
+        "A phrase to initialize the entropy. Can be any length, but will "
+        "be truncated or padded to 256 characters depending on the length. "
+        "This phrase will be fed more randomness before a secret is "
+        "generated, so it does not already need to random.",
+        cxxopts::value<std::string>(), "");
+
     options.add_option("", "h", "help", "Print usage", cxxopts::value<bool>(),
                        "");
 
@@ -31,8 +39,11 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
     auto parse_result = options.parse(argc, argv);
 
     help_wanted_ = parse_result.count("help") > 0;
-    port_ = parse_result["port"].as<uint16_t>();
-    sequencer_url_ = parse_result["sequencer"].as<std::string>();
+    if (!help_wanted_) {
+      port_ = parse_result["port"].as<uint16_t>();
+      sequencer_url_ = parse_result["sequencer"].as<std::string>();
+      entropy_ = parse_result["entropy"].as<std::string>();
+    }
 
     const auto auth_provider = parse_result["auth"].as<std::string>();
     if (auth_provider == "ethereum") {
