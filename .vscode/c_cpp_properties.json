@@ -1,15 +1,6 @@
 {
     "configurations": [
         {
-            "name": "Linux",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
-            "defines": [],
-            "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
-            "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64"
-        },
-        {
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}",
@@ -21,10 +12,20 @@
                 "${workspaceFolder}/build/_deps/curl-src/include",
                 "${workspaceFolder}/build/_deps/jsonvalidator-src/src",
                 "${workspaceFolder}/build/_deps/valijson-src/include",
-                "${workspaceFolder}/build/_deps/blst-src/bindings"
+                "${workspaceFolder}/build/_deps/blst-src/bindings",
+                "${workspaceFolder}/build/_deps/uint256_t-src",
+                "${workspaceFolder}/build/_deps/uint256_t-src/uint128_t"
             ],
             "defines": [],
-            "compilerPath": "cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64"
+        },
+        {
+            "name": "Linux",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++14",
             "intelliSenseMode": "linux-clang-x64"

@@ -92,6 +92,10 @@ int main(int argc, char** argv) {
       auto auth_future = auth_info_promise.get_future();
       AuthInfo auth_info = auth_future.get();
 
+      if (!auth_info.get_error_message().empty()) {
+        throw std::runtime_error(auth_info.get_error_message());
+      }
+
       try {
         // Wait until a contribution slot is available
         auto contribution_response =
