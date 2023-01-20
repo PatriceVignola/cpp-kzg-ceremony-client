@@ -19,7 +19,7 @@
             "defines": [],
             "cStandard": "c17",
             "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64"
+            "intelliSenseMode": "windows-msvc-x64"
         },
         {
             "name": "Linux",
