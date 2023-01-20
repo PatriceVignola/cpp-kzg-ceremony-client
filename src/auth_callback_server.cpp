@@ -22,23 +22,34 @@ AuthCallbackServer::AuthCallbackServer(
                                          const std::shared_ptr<
                                              restbed::Session>& session,
                                          const restbed::Bytes& /*body*/) {
-        auto session_id = request->get_query_parameter("session_id");
-        auto nickname = request->get_query_parameter("nickname");
-        auto provider = request->get_query_parameter("provider");
+        auto code = request->get_query_parameter("code");
 
-        std::stringstream success_message;
-        success_message << ascii_title << std::endl;
+        std::stringstream html_message;
+        html_message << ascii_title << std::endl;
 
-        success_message
-            << "You successfully authenticated with ID `" << nickname
-            << "` and provider `" << provider
-            << "`! You can now close this tab and go back to the application."
-            << std::endl;
+        if (code == "AuthErrorPayload::UserAlreadyContributed") {
+          std::string error_message =
+              "You already tried contributing with this account. You can try "
+              "contributing with another GitHub account or Ethereum address.";
+          html_message << error_message << std::endl;
 
-        on_auth_received(AuthInfo(std::move(provider), std::move(session_id),
-                                  std::move(nickname)));
+          on_auth_received(AuthInfo(std::move(error_message)));
+        } else {
+          auto session_id = request->get_query_parameter("session_id");
+          auto nickname = request->get_query_parameter("nickname");
+          auto provider = request->get_query_parameter("provider");
 
-        session->close(success_status_code, success_message.str());
+          html_message
+              << "You successfully authenticated with ID `" << nickname
+              << "` and provider `" << provider
+              << "`! You can now close this tab and go back to the application."
+              << std::endl;
+
+          on_auth_received(AuthInfo(std::move(provider), std::move(session_id),
+                                    std::move(nickname)));
+        }
+
+        session->close(success_status_code, html_message.str());
       });
     });
 
