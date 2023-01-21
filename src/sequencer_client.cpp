@@ -1,6 +1,8 @@
 #include "include/sequencer_client.hpp"
 #include "include/auth_request_link_response.hpp"
 #include "include/batch_contribution.hpp"
+#include "include/contribution_error.hpp"
+#include "include/contribution_receipt.hpp"
 #include "include/contribution_schema.hpp"
 #include <cpr/cpr.h>
 #include <iostream>
@@ -73,7 +75,7 @@ is_another_contribution_in_progress_response(const cpr::Response& response) {
 SequencerClient::SequencerClient(std::string sequencer_url, uint16_t port)
     : sequencer_url_(std::move(sequencer_url)), port_(port),
       auth_request_link_url_(build_auth_request_link_url()),
-      contribution_url_(build_contribution_url()),
+      try_contribute_url_(build_try_contribute_url()),
       ceremony_status_url_(build_ceremony_status_url()),
       contribution_schema_json_(json::parse(contribution_schema)) {}
 
@@ -127,7 +129,7 @@ SequencerClient::try_contribute(const std::string& session_id) const {
 
   while (!slot_reserved) {
     // Try to contribute
-    const cpr::Url url{contribution_url_};
+    const cpr::Url url{try_contribute_url_};
     cpr::Session contribution_session;
     contribution_session.SetHeader(
         cpr::Header{{"Authorization", "Bearer " + session_id}});
@@ -145,12 +147,12 @@ SequencerClient::try_contribute(const std::string& session_id) const {
                 << std::endl;
     } else if (!is_rate_limited_response(response)) {
       if (!is_ok_status(response.status_code)) {
-        auto errorMessage = response.error.code != cpr::ErrorCode::OK
-                                ? response.error.message
-                                : response.text;
+        auto error_message = response.error.code != cpr::ErrorCode::OK
+                                 ? response.error.message
+                                 : response.text;
 
         std::cout << "Error while trying to contribute via "
-                  << contribution_url_ << ": " << errorMessage
+                  << try_contribute_url_ << ": " << error_message
                   << ". We will keep trying to contribute." << std::endl;
       } else {
         json_response = json::parse(response.text);
@@ -169,6 +171,37 @@ SequencerClient::try_contribute(const std::string& session_id) const {
   return BatchContribution(json_response, contribution_schema_json_);
 }
 
+ContributionReceipt
+SequencerClient::contribute(const std::string& session_id,
+                            const BatchContribution& batch_contribution) const {
+  const cpr::Url url{contribute_url_};
+  cpr::Session contribute_session;
+  contribute_session.SetHeader(
+      cpr::Header{{"Authorization", "Bearer " + session_id}});
+  contribute_session.SetUrl(url);
+
+  const auto response = contribute_session.Post();
+  if (is_bad_request_status(response.status_code)) {
+    const auto json_response = json::parse(response.text);
+    const auto contribution_error = json_response.get<ContributionError>();
+
+    throw std::invalid_argument("Error `" + contribution_error.get_code() +
+                                "` while sending a contribution via " +
+                                contribute_url_ + ": " +
+                                contribution_error.get_error());
+  } else if (!is_ok_status(response.status_code)) {
+    auto error_message = response.error.code != cpr::ErrorCode::OK
+                             ? response.error.message
+                             : response.text;
+
+    throw std::runtime_error("Error while sending a contribution via " +
+                             contribute_url_ + ": " + error_message);
+  }
+
+  const auto json_response = json::parse(response.text);
+  return json_response.get<ContributionReceipt>();
+}
+
 std::string SequencerClient::build_auth_request_link_url() const {
   std::stringstream url_stream;
   url_stream << sequencer_url_
@@ -178,10 +211,14 @@ std::string SequencerClient::build_auth_request_link_url() const {
   return url_stream.str();
 }
 
-std::string SequencerClient::build_contribution_url() const {
+std::string SequencerClient::build_try_contribute_url() const {
   return sequencer_url_ + "/lobby/try_contribute";
 }
 
 std::string SequencerClient::build_ceremony_status_url() const {
   return sequencer_url_ + "/info/status";
+}
+
+std::string SequencerClient::build_contribute_url() const {
+  return sequencer_url_ + "/contribute";
 }

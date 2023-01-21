@@ -115,6 +115,11 @@ int main(int argc, char** argv) {
         }
         std::cout << "Done!" << std::endl;
 
+        std::cout << "Submitting the updated contributions... ";
+        sequencer_client.contribute(auth_info.get_session_id(),
+                                    batch_contribution);
+        std::cout << "Done!" << std::endl;
+
         contribution_successful = true;
       } catch (const UnknownSessionIdError& ex) {
         std::cout << "Session ID expired. Try authenticating again."

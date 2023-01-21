@@ -6,9 +6,13 @@ add_library(
   auth_request_link_response.cpp
   batch_contribution.cpp
   contribution.cpp
+  contribution_error.cpp
+  contribution_receipt.cpp
   hex_util.cpp
+  id_token.cpp
   power.cpp
   powers_of_tau.cpp
+  receipt.cpp
   secret_generator.cpp
   sequencer_client.cpp)
 
