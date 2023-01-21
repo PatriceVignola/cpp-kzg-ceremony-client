@@ -17,8 +17,8 @@ private:
   std::vector<Contribution> contributions_;
   std::string ecdsa_signature_;
 
-  friend void from_json(const nlohmann::json& json_contribution,
-                        BatchContribution& contribution);
+  friend void from_json(const nlohmann::json& json_batch_contribution,
+                        BatchContribution& batch_contribution);
 
   friend void to_json(nlohmann::json& json_batch_contribution,
                       const BatchContribution& batch_contribution);

@@ -10,8 +10,7 @@ private:
   IdToken id_token_;
   std::string g2_;
 
-  friend void from_json(const nlohmann::json& json_receipt,
-                        Receipt& power_of_tau);
+  friend void from_json(const nlohmann::json& json_receipt, Receipt& receipt);
 };
 
 #endif // RECEIPT_HPP

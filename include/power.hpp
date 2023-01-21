@@ -1,5 +1,5 @@
-#ifndef G1_POWER_HPP
-#define G1_POWER_HPP
+#ifndef POWER_HPP
+#define POWER_HPP
 
 #include <blst.hpp>
 #include <nlohmann/json.hpp>
@@ -22,14 +22,16 @@ private:
   TBlstPoint blst_point_;
 
   template <typename TFriendBlstPoint, size_t friend_size_in_bytes>
-  friend void
-  from_json(const nlohmann::json& json_power_of_tau,
-            Power<TFriendBlstPoint, friend_size_in_bytes>& power_of_tau);
+  // NOLINTNEXTLINE(readability-redundant-declaration)
+  friend void from_json(
+      const nlohmann::json& json_power_of_tau,
+      Power<TFriendBlstPoint, friend_size_in_bytes>& power_of_tau);
 
   template <typename TFriendBlstPoint, size_t friend_size_in_bytes>
-  friend void
-  to_json(nlohmann::json& json_power_of_tau,
-          const Power<TFriendBlstPoint, friend_size_in_bytes>& power_of_tau);
+  // NOLINTNEXTLINE(readability-redundant-declaration)
+  friend void to_json(
+      nlohmann::json& json_power_of_tau,
+      const Power<TFriendBlstPoint, friend_size_in_bytes>& power_of_tau);
 };
 
 static constexpr size_t p1_power_size_in_bytes = 96;
@@ -38,4 +40,4 @@ using G1Power = Power<blst::P1, p1_power_size_in_bytes>;
 static constexpr size_t p2_power_size_in_bytes = 192;
 using G2Power = Power<blst::P2, p2_power_size_in_bytes>;
 
-#endif // G1_POWER_HPP
+#endif // POWER_HPP

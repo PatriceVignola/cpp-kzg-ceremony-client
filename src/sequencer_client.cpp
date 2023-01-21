@@ -57,8 +57,8 @@ static bool is_unknown_session_id_response(const cpr::Response& response) {
   return *code_iter == "TryContributeError::UnknownSessionId";
 }
 
-static bool
-is_another_contribution_in_progress_response(const cpr::Response& response) {
+static bool is_another_contribution_in_progress_response(
+    const cpr::Response& response) {
   if (!is_ok_status(response.status_code)) {
     return false;
   }
@@ -122,8 +122,8 @@ void SequencerClient::print_lobby_size() const {
   }
 }
 
-BatchContribution
-SequencerClient::try_contribute(const std::string& session_id) const {
+BatchContribution SequencerClient::try_contribute(
+    const std::string& session_id) const {
   bool slot_reserved = false;
   json json_response;
 
@@ -168,17 +168,21 @@ SequencerClient::try_contribute(const std::string& session_id) const {
     std::this_thread::sleep_for(std::chrono::seconds(seconds_between_requests));
   }
 
-  return BatchContribution(json_response, contribution_schema_json_);
+  return {json_response, contribution_schema_json_};
 }
 
-ContributionReceipt
-SequencerClient::contribute(const std::string& session_id,
-                            const BatchContribution& batch_contribution) const {
+ContributionReceipt SequencerClient::contribute(
+    const std::string& session_id,
+    const BatchContribution& batch_contribution) const {
   const cpr::Url url{contribute_url_};
   cpr::Session contribute_session;
   contribute_session.SetHeader(
       cpr::Header{{"Authorization", "Bearer " + session_id}});
   contribute_session.SetUrl(url);
+
+  nlohmann::json json_batch_contribution(batch_contribution);
+  auto serialized_batch_contribution = json_batch_contribution.dump();
+  contribute_session.SetBody(cpr::Body(serialized_batch_contribution));
 
   const auto response = contribute_session.Post();
   if (is_bad_request_status(response.status_code)) {
@@ -189,7 +193,9 @@ SequencerClient::contribute(const std::string& session_id,
                                 "` while sending a contribution via " +
                                 contribute_url_ + ": " +
                                 contribution_error.get_error());
-  } else if (!is_ok_status(response.status_code)) {
+  }
+
+  if (!is_ok_status(response.status_code)) {
     auto error_message = response.error.code != cpr::ErrorCode::OK
                              ? response.error.message
                              : response.text;

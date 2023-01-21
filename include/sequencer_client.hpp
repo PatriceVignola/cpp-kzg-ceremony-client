@@ -14,9 +14,9 @@ public:
   SequencerClient(std::string sequencer_url, uint16_t port);
   AuthRequestLinkResponse get_auth_request_link() const;
   BatchContribution try_contribute(const std::string& session_id) const;
-  ContributionReceipt
-  contribute(const std::string& session_id,
-             const BatchContribution& batch_contribution) const;
+  ContributionReceipt contribute(
+      const std::string& session_id,
+      const BatchContribution& batch_contribution) const;
 
 private:
   const std::string sequencer_url_;
