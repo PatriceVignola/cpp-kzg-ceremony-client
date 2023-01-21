@@ -1,6 +1,6 @@
 #include "include/sequencer_client.hpp"
 #include "include/auth_request_link_response.hpp"
-#include "include/contribution_response.hpp"
+#include "include/batch_contribution.hpp"
 #include "include/contribution_schema.hpp"
 #include <cpr/cpr.h>
 #include <iostream>
@@ -120,7 +120,7 @@ void SequencerClient::print_lobby_size() const {
   }
 }
 
-ContributionResponse
+BatchContribution
 SequencerClient::try_contribute(const std::string& session_id) const {
   bool slot_reserved = false;
   json json_response;
@@ -166,7 +166,7 @@ SequencerClient::try_contribute(const std::string& session_id) const {
     std::this_thread::sleep_for(std::chrono::seconds(seconds_between_requests));
   }
 
-  return ContributionResponse(json_response, contribution_schema_json_);
+  return BatchContribution(json_response, contribution_schema_json_);
 }
 
 std::string SequencerClient::build_auth_request_link_url() const {

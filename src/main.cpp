@@ -3,8 +3,6 @@
 #include "include/auth_callback_server.hpp"
 #include "include/auth_info.hpp"
 #include "include/auth_request_link_response.hpp"
-#include "include/contribution_response.hpp"
-#include "include/contribution_schema.hpp"
 #include "include/secret_generator.hpp"
 #include "include/sequencer_client.hpp"
 #include <blst.hpp>
@@ -82,9 +80,11 @@ int main(int argc, char** argv) {
         switch (auth_provider) {
         case AuthProvider::Ethereum:
           return auth_request_link.get_eth_auth_url();
-          break;
         case AuthProvider::GitHub:
           return auth_request_link.get_github_auth_url();
+        default:
+          throw std::runtime_error(
+              "Error: unsupported authentication provider");
         }
       }();
 
@@ -98,15 +98,15 @@ int main(int argc, char** argv) {
 
       try {
         // Wait until a contribution slot is available
-        auto contribution_response =
+        auto batch_contribution =
             sequencer_client.try_contribute(auth_info.get_session_id());
 
         // Validate the powers
-        contribution_response.validate_powers();
+        batch_contribution.validate_powers();
 
         // Update the powers of Tau with the secrets generated earlier
         std::cout << "Updating powers of Tau... ";
-        auto& contributions = contribution_response.get_contributions();
+        auto& contributions = batch_contribution.get_contributions();
         const auto& secrets = secret_generator.get_secrets();
         auto secret_iter = secrets.begin();
         for (auto& contribution : contributions) {

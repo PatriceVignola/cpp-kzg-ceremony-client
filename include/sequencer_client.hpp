@@ -2,7 +2,7 @@
 #define SEQUENCER_CLIENT_HPP
 
 #include "auth_request_link_response.hpp"
-#include "contribution_response.hpp"
+#include "batch_contribution.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -12,7 +12,7 @@ class SequencerClient {
 public:
   SequencerClient(std::string sequencer_url, uint16_t port);
   AuthRequestLinkResponse get_auth_request_link() const;
-  ContributionResponse try_contribute(const std::string& session_id) const;
+  BatchContribution try_contribute(const std::string& session_id) const;
 
 private:
   const std::string sequencer_url_;

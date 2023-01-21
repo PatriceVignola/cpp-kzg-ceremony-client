@@ -31,6 +31,9 @@ private:
 
   friend void from_json(const nlohmann::json& json_contribution,
                         Contribution& contribution);
+
+  friend void to_json(nlohmann::json& json_contribution,
+                      const Contribution& contribution);
 };
 
 #endif // CONTRIBUTION_HPP

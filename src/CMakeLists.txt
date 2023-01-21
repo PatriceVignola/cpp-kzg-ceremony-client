@@ -4,11 +4,10 @@ add_library(
   arg_parser.cpp
   auth_callback_server.cpp
   auth_request_link_response.cpp
-  contribution_response.cpp
+  batch_contribution.cpp
   contribution.cpp
-  g1_power.cpp
-  g2_power.cpp
   hex_util.cpp
+  power.cpp
   powers_of_tau.cpp
   secret_generator.cpp
   sequencer_client.cpp)
