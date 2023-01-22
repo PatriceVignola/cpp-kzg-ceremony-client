@@ -1,5 +1,5 @@
 #include "include/sequencer_client.hpp"
-#include "include/auth_request_link_response.hpp"
+#include "include/auth_request_link.hpp"
 #include "include/batch_contribution.hpp"
 #include "include/contribution_error.hpp"
 #include "include/contribution_receipt.hpp"
@@ -79,7 +79,7 @@ SequencerClient::SequencerClient(std::string sequencer_url, uint16_t port)
       ceremony_status_url_(build_ceremony_status_url()),
       contribution_schema_json_(json::parse(contribution_schema)) {}
 
-AuthRequestLinkResponse SequencerClient::get_auth_request_link() const {
+AuthRequestLink SequencerClient::get_auth_request_link() const {
   uint64_t status_code = 0;
   json json_response;
 
@@ -104,7 +104,7 @@ AuthRequestLinkResponse SequencerClient::get_auth_request_link() const {
     }
   }
 
-  return AuthRequestLinkResponse(json_response);
+  return json_response.get<AuthRequestLink>();
 }
 
 void SequencerClient::print_lobby_size() const {
