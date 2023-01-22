@@ -6,7 +6,7 @@
 
 // NOLINTNEXTLINE
 TEST(TestAuthCallbackServer, NotifiesWithErrorIfAlreadyContributed) {
-  const auto port = 8080;
+  const auto port = port_picker::pick_unused_port();
 
   std::promise<AuthInfo> auth_info_promise;
   AuthCallbackServer auth_callback_server(

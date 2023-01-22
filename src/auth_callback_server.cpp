@@ -9,7 +9,11 @@ static constexpr int success_status_code = 200;
 
 AuthCallbackServer::AuthCallbackServer(
     uint16_t port, const std::function<void(AuthInfo)>& on_auth_received) {
-  service_thread_ = std::thread([this, port, on_auth_received]() {
+
+  std::promise<bool> server_started_promise;
+
+  service_thread_ = std::thread([this, port, &on_auth_received,
+                                 &server_started_promise]() {
     auto resource = std::make_shared<restbed::Resource>();
     resource->set_path("/auth_callback");
     resource->set_method_handler("GET", [this, on_auth_received](
@@ -19,7 +23,7 @@ AuthCallbackServer::AuthCallbackServer(
 
       size_t content_length = request->get_header("Content-Length", 0);
 
-      session->fetch(content_length, [this, request, on_auth_received](
+      session->fetch(content_length, [this, request, &on_auth_received](
                                          const std::shared_ptr<
                                              restbed::Session>& session,
                                          const restbed::Bytes& /*body*/) {
@@ -57,14 +61,32 @@ AuthCallbackServer::AuthCallbackServer(
     });
 
     service_.publish(resource);
-    service_.set_ready_handler([port](restbed::Service& /*service*/) {
-      std::cout << "Authentication server is listening on port " << port
-                << std::endl;
-    });
+    service_.set_ready_handler(
+        [port, &server_started_promise](restbed::Service& /*service*/) {
+          std::cout << "Authentication server is listening on port " << port
+                    << std::endl;
+          server_started_promise.set_value(true);
+        });
+
+    service_.set_error_handler(
+        [&server_started_promise](
+            int /*status*/, const std::exception& error,
+            const std::shared_ptr<restbed::Session>& /*session*/) {
+          std::cout << "Authentication server error: " << error.what()
+                    << std::endl;
+          server_started_promise.set_value(false);
+        });
+
     auto settings = std::make_shared<restbed::Settings>();
     settings->set_port(port);
     service_.start(settings);
   });
+
+  auto server_started = server_started_promise.get_future().get();
+
+  if (!server_started) {
+    throw std::runtime_error("Failed to start the authentication server.");
+  }
 }
 
 AuthCallbackServer::~AuthCallbackServer() {
