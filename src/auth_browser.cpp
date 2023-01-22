@@ -33,10 +33,10 @@ AuthBrowser::AuthBrowser(const std::string& auth_url) : pid_(fork()) {
     throw std::runtime_error("Failed to open authentication URL in browser");
   }
 }
-#endif
 
 AuthBrowser::~AuthBrowser() {
   if (pid_ > 0) {
     kill(pid_, SIGTERM);
   }
 }
+#endif
