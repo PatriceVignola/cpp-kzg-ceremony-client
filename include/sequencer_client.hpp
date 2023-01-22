@@ -1,7 +1,7 @@
 #ifndef SEQUENCER_CLIENT_HPP
 #define SEQUENCER_CLIENT_HPP
 
-#include "auth_request_link_response.hpp"
+#include "auth_request_link.hpp"
 #include "batch_contribution.hpp"
 #include "include/contribution_receipt.hpp"
 #include <nlohmann/json.hpp>
@@ -12,7 +12,7 @@ class UnknownSessionIdError : std::exception {};
 class SequencerClient {
 public:
   SequencerClient(std::string sequencer_url, uint16_t port);
-  AuthRequestLinkResponse get_auth_request_link() const;
+  AuthRequestLink get_auth_request_link() const;
   BatchContribution try_contribute(const std::string& session_id) const;
   ContributionReceipt contribute(
       const std::string& session_id,

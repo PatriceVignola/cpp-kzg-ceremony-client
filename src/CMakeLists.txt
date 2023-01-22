@@ -4,7 +4,7 @@ add_library(
   arg_parser.cpp
   auth_browser.cpp
   auth_callback_server.cpp
-  auth_request_link_response.cpp
+  auth_request_link.cpp
   batch_contribution.cpp
   contribution.cpp
   contribution_error.cpp
@@ -51,7 +51,8 @@ add_executable(cpp-kzg-ceremony-client main.cpp)
 target_link_libraries(cpp-kzg-ceremony-client PRIVATE product_static)
 
 # Test executable
-add_executable(cpp-kzg-ceremony-client-test arg_parser_test.cpp)
+add_executable(cpp-kzg-ceremony-client-test arg_parser_test.cpp
+                                            auth_request_link_test.cpp)
 target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product_static
                                                            gtest_static)
 target_include_directories(cpp-kzg-ceremony-client-test

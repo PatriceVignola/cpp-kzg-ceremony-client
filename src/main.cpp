@@ -3,7 +3,7 @@
 #include "include/auth_browser.hpp"
 #include "include/auth_callback_server.hpp"
 #include "include/auth_info.hpp"
-#include "include/auth_request_link_response.hpp"
+#include "include/auth_request_link.hpp"
 #include "include/port_picker.hpp"
 #include "include/secret_generator.hpp"
 #include "include/sequencer_client.hpp"
