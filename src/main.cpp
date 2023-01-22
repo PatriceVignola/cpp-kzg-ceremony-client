@@ -1,5 +1,6 @@
 #include "include/arg_parser.hpp"
 #include "include/ascii_title.hpp"
+#include "include/auth_browser.hpp"
 #include "include/auth_callback_server.hpp"
 #include "include/auth_info.hpp"
 #include "include/auth_request_link_response.hpp"
@@ -16,35 +17,6 @@
 #else
 #include <uint256_t.h>
 #endif
-
-#ifdef _WIN32
-#include <shellapi.h>
-#else
-#include <unistd.h>
-#endif
-
-static void authenticate(const std::string& auth_url) {
-  std::cout << "Your browser should now open a tab with the authentication "
-               "link. If you close the tab by mistake or an error occurred "
-               "during the authentication, you can manually open the following "
-               "URL in your browser: "
-            << std::endl
-            << std::endl
-            << auth_url << std::endl
-            << std::endl;
-
-  auto response = cpr::Get(cpr::Url{auth_url});
-
-#ifdef _WIN32
-  ShellExecuteA(0, 0, auth_url.c_str(), 0, 0, SW_SHOW);
-#else
-  auto pid = fork();
-  if (pid == 0) {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    execl("/usr/bin/xdg-open", "xdg-open", auth_url.c_str(), nullptr);
-  }
-#endif
-}
 
 int main(int argc, char** argv) {
   try {
@@ -88,7 +60,7 @@ int main(int argc, char** argv) {
         }
       }();
 
-      authenticate(auth_url);
+      AuthBrowser auth_browser(auth_url);
       auto auth_future = auth_info_promise.get_future();
       AuthInfo auth_info = auth_future.get();
 
