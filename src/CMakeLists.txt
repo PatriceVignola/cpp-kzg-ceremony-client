@@ -2,6 +2,7 @@
 add_library(
   product_static STATIC
   arg_parser.cpp
+  auth_browser.cpp
   auth_callback_server.cpp
   auth_request_link_response.cpp
   batch_contribution.cpp
