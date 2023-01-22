@@ -14,7 +14,7 @@ public:
 
 private:
 #ifndef _WIN32
-  int pid_;
+  const int pid_;
 #endif
 };
 
