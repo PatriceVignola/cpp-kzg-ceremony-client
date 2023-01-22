@@ -11,8 +11,6 @@ Usage:
 
   -s, --sequencer arg  URL of the sequencer to use (default: 
                        https://seq.ceremony.ethereum.org)
-  -p, --port arg       Local port to use for the authentication callback 
-                       (default: 8080)
   -a, --auth arg       Authentication provider to use. Choices: [ethereum, 
                        github] (default: ethereum)
   -e, --entropy arg    A phrase to initialize the entropy. Can be any 
@@ -71,33 +69,6 @@ TEST(TestArgParser, ThrowsErrorInvalidAuthenticationProvider) {
         }
       },
       std::runtime_error);
-}
-
-// NOLINTNEXTLINE
-TEST(TestArgParser, ThrowsErrorInvalidPort) {
-  const std::array<const char*, 3> args = {
-      "foo",
-      "--port=bar",
-      "--entropy=foo",
-  };
-
-#ifdef _WIN32
-  const auto* expected_error = "Argument 'bar' failed to parse";
-#else
-  const auto* expected_error = "Argument ‘bar’ failed to parse";
-#endif
-
-  // NOLINTNEXTLINE
-  EXPECT_THROW(
-      {
-        try {
-          ArgParser arg_parser(args.size(), args.data());
-        } catch (const cxxopts::argument_incorrect_type& error) {
-          EXPECT_STREQ(expected_error, error.what());
-          throw;
-        }
-      },
-      cxxopts::argument_incorrect_type);
 }
 
 // NOLINTNEXTLINE
@@ -171,7 +142,6 @@ TEST(TestArgParser, ValidDefaultArgs) {
   const std::array<const char*, 2> args = {"foo", "--entropy=bar"};
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::Ethereum, arg_parser.get_auth_provider());
-  EXPECT_EQ(8080, arg_parser.get_auth_callback_port());
   EXPECT_EQ("bar", arg_parser.get_entropy());
   EXPECT_EQ("https://seq.ceremony.ethereum.org",
             arg_parser.get_sequencer_url());
@@ -180,42 +150,40 @@ TEST(TestArgParser, ValidDefaultArgs) {
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, ValidArgsEqualDelimiter) {
-  const std::array<const char*, 5> args = {
-      "foo",           "--sequencer=foo_sequencer",
-      "--port=1234",   "--auth=github",
+  const std::array<const char*, 4> args = {
+      "foo",
+      "--sequencer=foo_sequencer",
+      "--auth=github",
       "--entropy=bar",
   };
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::GitHub, arg_parser.get_auth_provider());
   EXPECT_EQ("foo_sequencer", arg_parser.get_sequencer_url());
-  EXPECT_EQ(1234, arg_parser.get_auth_callback_port());
   EXPECT_EQ("bar", arg_parser.get_entropy());
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, ValidArgsSpaceDelimiter) {
-  const std::array<const char*, 9> args = {
-      "foo",    "--sequencer", "foo_sequencer", "--port", "1234",
-      "--auth", "github",      "--entropy",     "bar",
+  const std::array<const char*, 7> args = {
+      "foo",    "--sequencer", "foo_sequencer", "--auth",
+      "github", "--entropy",   "bar",
   };
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::GitHub, arg_parser.get_auth_provider());
   EXPECT_EQ("foo_sequencer", arg_parser.get_sequencer_url());
-  EXPECT_EQ(1234, arg_parser.get_auth_callback_port());
   EXPECT_EQ("bar", arg_parser.get_entropy());
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, ValidShortArgsSpaceDelimiter) {
-  const std::array<const char*, 9> args = {
-      "foo", "-s", "foo_sequencer", "-p", "1234", "-a", "github", "-e", "bar",
+  const std::array<const char*, 7> args = {
+      "foo", "-s", "foo_sequencer", "-a", "github", "-e", "bar",
   };
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::GitHub, arg_parser.get_auth_provider());
   EXPECT_EQ("foo_sequencer", arg_parser.get_sequencer_url());
-  EXPECT_EQ(1234, arg_parser.get_auth_callback_port());
   EXPECT_EQ("bar", arg_parser.get_entropy());
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }

@@ -3,6 +3,7 @@
 #include "include/auth_callback_server.hpp"
 #include "include/auth_info.hpp"
 #include "include/auth_request_link_response.hpp"
+#include "include/port_picker.hpp"
 #include "include/secret_generator.hpp"
 #include "include/sequencer_client.hpp"
 #include <blst.hpp>
@@ -61,7 +62,7 @@ int main(int argc, char** argv) {
     std::cout << "Done!" << std::endl;
 
     const auto& auth_provider = arg_parser.get_auth_provider();
-    const auto port = arg_parser.get_auth_callback_port();
+    const auto port = port_picker::pick_unused_port();
 
     std::promise<AuthInfo> auth_info_promise;
     AuthCallbackServer auth_callback_server(

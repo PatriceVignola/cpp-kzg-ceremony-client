@@ -1,5 +1,6 @@
 #include "include/auth_callback_server.hpp"
 #include "include/ascii_title.hpp"
+#include "include/port_picker.hpp"
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <sstream>
@@ -54,6 +55,10 @@ AuthCallbackServer::AuthCallbackServer(
     });
 
     service_.publish(resource);
+    service_.set_ready_handler([port](restbed::Service&) {
+      std::cout << "Authentication server is listening on port " << port
+                << std::endl;
+    });
     auto settings = std::make_shared<restbed::Settings>();
     settings->set_port(port);
     service_.start(settings);
