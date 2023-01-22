@@ -15,10 +15,6 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
                            "https://seq.ceremony.ethereum.org"),
                        "");
 
-    options.add_option("", "p", "port",
-                       "Local port to use for the authentication callback",
-                       cxxopts::value<uint16_t>()->default_value("8080"), "");
-
     options.add_option(
         "", "a", "auth",
         "Authentication provider to use. Choices: [ethereum, github]",
@@ -40,7 +36,6 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
 
     help_wanted_ = parse_result.count("help") > 0;
     if (!help_wanted_) {
-      port_ = parse_result["port"].as<uint16_t>();
       sequencer_url_ = parse_result["sequencer"].as<std::string>();
       entropy_ = parse_result["entropy"].as<std::string>();
     }

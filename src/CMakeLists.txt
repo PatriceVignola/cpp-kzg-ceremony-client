@@ -11,6 +11,7 @@ add_library(
   contribution_receipt.cpp
   hex_util.cpp
   id_token.cpp
+  port_picker.cpp
   power.cpp
   powers_of_tau.cpp
   receipt.cpp
