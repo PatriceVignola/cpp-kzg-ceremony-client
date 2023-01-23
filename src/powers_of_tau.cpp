@@ -1,10 +1,14 @@
 #include "include/powers_of_tau.hpp"
 #include <algorithm>
+#include <iostream>
 
 void from_json(const nlohmann::json& json_powers_of_tau,
                PowersOfTau& powers_of_tau) {
+  std::cout << "36" << std::endl;
   json_powers_of_tau.at("G1Powers").get_to(powers_of_tau.g1_powers_);
+  std::cout << "37" << std::endl;
   json_powers_of_tau.at("G2Powers").get_to(powers_of_tau.g2_powers_);
+  std::cout << "38" << std::endl;
 }
 
 void to_json(nlohmann::json& json_powers_of_tau,

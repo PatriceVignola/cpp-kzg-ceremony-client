@@ -1,4 +1,6 @@
 #include "include/contribution.hpp"
+#include <iostream>
+
 #ifdef _DLL
 #undef _DLL
 #include <uint256_t.h>
@@ -9,15 +11,23 @@
 
 void from_json(const nlohmann::json& json_contribution,
                Contribution& contribution) {
+  std::cout << "28" << std::endl;
   json_contribution.at("numG1Powers").get_to(contribution.num_g1_powers_);
+  std::cout << "29" << std::endl;
   json_contribution.at("numG2Powers").get_to(contribution.num_g2_powers_);
+  std::cout << "30" << std::endl;
   json_contribution.at("powersOfTau").get_to(contribution.powers_of_tau_);
+  std::cout << "31" << std::endl;
   json_contribution.at("potPubkey").get_to(contribution.pot_pubkey_);
+  std::cout << "32" << std::endl;
 
   // blsSignature is optional (i.e. it's absent from the initial contribution)
   if (json_contribution.find("blsSignature") != json_contribution.end()) {
+    std::cout << "33" << std::endl;
     json_contribution.at("blsSignature").get_to(contribution.bls_signature_);
+    std::cout << "34" << std::endl;
   }
+  std::cout << "35" << std::endl;
 }
 
 void to_json(nlohmann::json& json_contribution,

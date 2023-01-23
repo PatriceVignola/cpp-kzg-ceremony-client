@@ -52,15 +52,20 @@ BatchContribution::BatchContribution(
 
   std::cout << "Done!" << std::endl;
 
+  std::cout << "23" << std::endl;
   // If we reached this point, it means the JSON was correctly validated against
   // the schema and we can safely read fields and assume their concrete types
   json_batch_contribution.at("contributions").get_to(contributions_);
+  std::cout << "24" << std::endl;
 
   // ecdsaSignature is optional (i.e. it's absent from the initial contribution)
   if (json_batch_contribution.find("ecdsaSignature") !=
       json_batch_contribution.end()) {
+    std::cout << "25" << std::endl;
     json_batch_contribution.at("ecdsaSignature").get_to(ecdsa_signature_);
+    std::cout << "26" << std::endl;
   }
+  std::cout << "27" << std::endl;
 }
 
 void BatchContribution::validate_powers() const {
