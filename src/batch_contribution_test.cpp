@@ -137,42 +137,64 @@ TEST(TestBatchContribution, ParsesJsonCorrectly) {
     contribution_json["blsSignature"] = bls_signature;
   }
 
+  std::cout << "1" << std::endl;
   BatchContribution batch_contribution(batch_contribution_json,
                                        contribution_schema_json);
+  std::cout << "2" << std::endl;
 
   const auto& contributions_json = batch_contribution_json.at("contributions");
+  std::cout << "3" << std::endl;
   ASSERT_EQ(contributions_json.size(),
             batch_contribution.get_contributions().size());
+  std::cout << "4" << std::endl;
 
   for (size_t i = 0; i < batch_contribution.get_contributions().size(); ++i) {
+    std::cout << i << ": 5" << std::endl;
     const auto& contribution = batch_contribution.get_contributions()[i];
+    std::cout << i << ": 6" << std::endl;
     const auto& contribution_json = contributions_json.at(i);
+    std::cout << i << ": 7" << std::endl;
 
     EXPECT_EQ(contribution_json.at("numG1Powers"),
               contribution.get_num_g1_powers());
+    std::cout << i << ": 8" << std::endl;
     EXPECT_EQ(contribution_json.at("numG2Powers"),
               contribution.get_num_g2_powers());
+    std::cout << i << ": 9" << std::endl;
 
     const auto& powers_of_tau = contribution.get_powers_of_tau();
+    std::cout << i << ": 10" << std::endl;
     const auto& g1_powers = powers_of_tau.get_g1_powers();
+    std::cout << i << ": 11" << std::endl;
     const auto& g2_powers = powers_of_tau.get_g2_powers();
+    std::cout << i << ": 12" << std::endl;
 
     const auto& powers_of_tau_json = contribution_json.at("powersOfTau");
+    std::cout << i << ": 13" << std::endl;
     const auto& g1_powers_json = powers_of_tau_json.at("G1Powers");
+    std::cout << i << ": 14" << std::endl;
     const auto& g2_powers_json = powers_of_tau_json.at("G2Powers");
+    std::cout << i << ": 15" << std::endl;
 
     EXPECT_EQ(g1_powers_json.size(), g1_powers.size());
+    std::cout << i << ": 16" << std::endl;
     EXPECT_EQ(g2_powers_json.size(), g2_powers.size());
+    std::cout << i << ": 17" << std::endl;
   }
 
+  std::cout << "18" << std::endl;
   auto serialized_batch_contribution =
       nlohmann::json(batch_contribution).dump();
+  std::cout << "19" << std::endl;
   auto serialized_batch_contribution_json = batch_contribution_json.dump();
+  std::cout << "20" << std::endl;
 
   auto diff = nlohmann::json::diff(nlohmann::json(batch_contribution),
                                    batch_contribution_json);
+  std::cout << "21" << std::endl;
 
   EXPECT_TRUE(diff.empty());
+  std::cout << "22" << std::endl;
 }
 
 // NOLINTNEXTLINE
