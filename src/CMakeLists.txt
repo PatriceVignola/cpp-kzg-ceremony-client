@@ -53,7 +53,8 @@ target_link_libraries(cpp-kzg-ceremony-client PRIVATE product_static)
 # Test executable
 add_executable(
   cpp-kzg-ceremony-client-test
-  arg_parser_test.cpp auth_callback_server_test.cpp auth_request_link_test.cpp)
+  arg_parser_test.cpp auth_callback_server_test.cpp auth_request_link_test.cpp
+  batch_contribution_test.cpp)
 target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product_static
                                                            gtest_static)
 target_include_directories(cpp-kzg-ceremony-client-test

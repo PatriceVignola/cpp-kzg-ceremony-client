@@ -25,7 +25,6 @@ private:
   const std::string try_contribute_url_;
   const std::string ceremony_status_url_;
   const std::string contribute_url_;
-  const nlohmann::json contribution_schema_json_;
 
   void print_lobby_size() const;
   std::string build_auth_request_link_url() const;
