@@ -1,5 +1,6 @@
 #include "include/power.hpp"
 #include "include/hex_util.hpp"
+#include <iostream>
 
 #ifdef _DLL
 #undef _DLL
@@ -23,7 +24,7 @@ void to_json(nlohmann::json& json_power_of_tau,
   // TODO (PatriceVignola): Use an std::array instead when hex_util supports
   // spans
   std::vector<uint8_t> serialized_power(size_in_bytes);
-  power_of_tau.blst_point_.serialize(serialized_power.data());
+  power_of_tau.blst_point_.compress(serialized_power.data());
   json_power_of_tau = hex_util::encode(serialized_power);
 }
 

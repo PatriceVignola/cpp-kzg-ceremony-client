@@ -34,10 +34,10 @@ private:
       const Power<TFriendBlstPoint, friend_size_in_bytes>& power_of_tau);
 };
 
-static constexpr size_t p1_power_size_in_bytes = 96;
+static constexpr size_t p1_power_size_in_bytes = 48;
 using G1Power = Power<blst::P1, p1_power_size_in_bytes>;
 
-static constexpr size_t p2_power_size_in_bytes = 192;
+static constexpr size_t p2_power_size_in_bytes = 96;
 using G2Power = Power<blst::P2, p2_power_size_in_bytes>;
 
 #endif // POWER_HPP

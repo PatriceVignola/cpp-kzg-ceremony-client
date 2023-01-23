@@ -57,8 +57,10 @@ add_executable(
   batch_contribution_test.cpp)
 target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product_static
                                                            gtest_static)
-target_include_directories(cpp-kzg-ceremony-client-test
-                           PRIVATE ${googletest_SOURCE_DIR}/googletest/include)
+target_include_directories(
+  cpp-kzg-ceremony-client-test
+  PRIVATE ${googletest_SOURCE_DIR}/googletest/include
+          ${googletest_SOURCE_DIR}/googlemock/include)
 
 set_target_properties(
   cpp-kzg-ceremony-client-test

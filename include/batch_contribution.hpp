@@ -7,7 +7,7 @@
 
 class BatchContribution {
 public:
-  BatchContribution(const nlohmann::json& json_response,
+  BatchContribution(const nlohmann::json& json_batch_contribution,
                     const nlohmann::json& json_schema);
 
   std::vector<Contribution>& get_contributions() { return contributions_; }

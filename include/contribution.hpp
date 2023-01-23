@@ -18,8 +18,6 @@ public:
   int get_num_g1_powers() const { return num_g1_powers_; }
   int get_num_g2_powers() const { return num_g2_powers_; }
   const PowersOfTau& get_powers_of_tau() const { return powers_of_tau_; }
-  const std::string& get_pot_pubkey() const { return pot_pubkey_; }
-  const std::string& get_bls_signature() const { return bls_signature_; }
   void update_powers_of_tau(uint256_t secret);
 
 private:

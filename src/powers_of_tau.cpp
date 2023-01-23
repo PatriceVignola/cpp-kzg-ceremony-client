@@ -14,8 +14,15 @@ void to_json(nlohmann::json& json_powers_of_tau,
 }
 
 std::vector<G1Power>& PowersOfTau::get_g1_powers() { return g1_powers_; }
-
 std::vector<G2Power>& PowersOfTau::get_g2_powers() { return g2_powers_; }
+
+const std::vector<G1Power>& PowersOfTau::get_g1_powers() const {
+  return g1_powers_;
+}
+
+const std::vector<G2Power>& PowersOfTau::get_g2_powers() const {
+  return g2_powers_;
+}
 
 bool PowersOfTau::valid() const {
   return std::all_of(g1_powers_.begin(), g1_powers_.end(),

@@ -1,8 +1,6 @@
 #ifndef CONTRIBUTION_SCHEMA_HPP
 #define CONTRIBUTION_SCHEMA_HPP
 
-#include <nlohmann/json.hpp>
-
 static const auto contribution_schema_json = R"(
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",

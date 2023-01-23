@@ -55,7 +55,12 @@ BatchContribution::BatchContribution(
   // If we reached this point, it means the JSON was correctly validated against
   // the schema and we can safely read fields and assume their concrete types
   json_batch_contribution.at("contributions").get_to(contributions_);
-  json_batch_contribution.at("ecdsaSignature").get_to(ecdsa_signature_);
+
+  // ecdsaSignature is optional (i.e. it's absent from the initial contribution)
+  if (json_batch_contribution.find("ecdsaSignature") !=
+      json_batch_contribution.end()) {
+    json_batch_contribution.at("ecdsaSignature").get_to(ecdsa_signature_);
+  }
 }
 
 void BatchContribution::validate_powers() const {

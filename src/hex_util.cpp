@@ -1,25 +1,21 @@
 #include "include/hex_util.hpp"
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 
 namespace hex_util {
 std::string encode(const std::vector<uint8_t>& hex_bytes) {
-  std::string encoded_hex;
-  encoded_hex.reserve(hex_bytes.size() * 2 + 2);
-
-  std::stringstream stream;
-
-  encoded_hex += "0x";
+  std::stringstream encoded_hex_stream;
+  encoded_hex_stream << "0x" << std::hex;
 
   for (uint8_t byte : hex_bytes) {
-    constexpr static int hex_base = 16;
-    stream << "0x" << std::setfill('0') << std::setw(sizeof(byte) * 2)
-           << std::hex << byte;
+    encoded_hex_stream << std::setw(2) << std::setfill('0')
+                       << static_cast<int>(byte);
   }
 
-  return encoded_hex;
+  return encoded_hex_stream.str();
 }
 
 std::vector<uint8_t> decode(const std::string& hex) {
