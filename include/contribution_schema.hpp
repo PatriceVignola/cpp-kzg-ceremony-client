@@ -1,7 +1,7 @@
 #ifndef CONTRIBUTION_SCHEMA_HPP
 #define CONTRIBUTION_SCHEMA_HPP
 
-static constexpr const char* contribution_schema = R"(
+static constexpr auto contribution_schema = R"(
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",

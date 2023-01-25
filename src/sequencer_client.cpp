@@ -76,8 +76,7 @@ SequencerClient::SequencerClient(std::string sequencer_url, uint16_t port)
     : sequencer_url_(std::move(sequencer_url)), port_(port),
       auth_request_link_url_(build_auth_request_link_url()),
       try_contribute_url_(build_try_contribute_url()),
-      ceremony_status_url_(build_ceremony_status_url()),
-      contribution_schema_json_(json::parse(contribution_schema)) {}
+      ceremony_status_url_(build_ceremony_status_url()) {}
 
 AuthRequestLink SequencerClient::get_auth_request_link() const {
   uint64_t status_code = 0;
@@ -168,7 +167,7 @@ BatchContribution SequencerClient::try_contribute(
     std::this_thread::sleep_for(std::chrono::seconds(seconds_between_requests));
   }
 
-  return {json_response, contribution_schema_json_};
+  return {json_response, json::parse(contribution_schema)};
 }
 
 ContributionReceipt SequencerClient::contribute(
