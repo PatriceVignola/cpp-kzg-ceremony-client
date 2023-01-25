@@ -15,7 +15,19 @@ void from_json(const nlohmann::json& json_power_of_tau,
                Power<TBlstPoint, size_in_bytes>& power_of_tau) {
   const auto power = json_power_of_tau.get<std::string>();
   const auto power_bytes = hex_util::decode(power);
+
+  std::cout << "power_bytes.size(): " << std::to_string(power_bytes.size())
+            << std::endl;
+
+  for (uint8_t byte : power_bytes) {
+    std::cout << std::to_string(byte) << " ";
+  }
+
+  std::cout << std::endl;
+
   power_of_tau.blst_point_ = TBlstPoint(power_bytes.data(), power_bytes.size());
+
+  std::cout << "AFTER" << std::endl;
 }
 
 template <typename TBlstPoint, size_t size_in_bytes>
