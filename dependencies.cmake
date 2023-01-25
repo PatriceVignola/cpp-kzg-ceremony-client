@@ -102,7 +102,7 @@ endif(WIN32)
 add_custom_command(
   OUTPUT ${LIB_BLST_PATH}
   WORKING_DIRECTORY ${blst_BINARY_DIR}
-  COMMAND ${BLST_BUILD_SCRIPT_PATH}
+  COMMAND ${BLST_BUILD_SCRIPT_PATH} -D__BLST_PORTABLE__
   COMMENT "Building libblst")
 
 add_custom_target(
