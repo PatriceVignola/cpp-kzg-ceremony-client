@@ -4,6 +4,8 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
+using nlohmann::json;
+
 class TestContribution : public ::testing::TestWithParam<int> {};
 
 static constexpr int ecdsa_signature_length = 132;
@@ -138,7 +140,7 @@ TEST(TestBatchContribution, ParsesJsonCorrectly) {
   }
 
   BatchContribution batch_contribution(batch_contribution_json,
-                                       contribution_schema_json);
+                                       json::parse(contribution_schema));
 
   const auto& contributions_json = batch_contribution_json.at("contributions");
   ASSERT_EQ(contributions_json.size(),
@@ -187,7 +189,8 @@ TEST(TestBatchContribution, ThrowsErrorIfEcdsaSignatureTooShort) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -211,7 +214,8 @@ TEST(TestBatchContribution, ThrowsErrorIfEcdsaSignatureTooLong) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -235,7 +239,8 @@ TEST(TestBatchContribution, ThrowsErrorIfEcdsaSignatureInvalidCharacter) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -256,7 +261,8 @@ TEST(TestBatchContribution, ThrowsErrorIfMissingContributionsKey) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (
             const nlohmann::json_abi_v3_11_2::detail::out_of_range& error) {
           EXPECT_STREQ(
@@ -277,7 +283,8 @@ TEST(TestBatchContribution, ThrowsErrorIfLessThan4Contributions) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(error.what(),
                       ::testing::HasSubstr(
@@ -301,7 +308,8 @@ TEST_P(TestContribution, ThrowsErrorIfNumG1PowersTooHigh) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -326,7 +334,8 @@ TEST_P(TestContribution, ThrowsErrorIfNumG1PowersTooLow) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -350,7 +359,8 @@ TEST_P(TestContribution, ThrowsErrorIfNumG2PowersMissing) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -374,7 +384,8 @@ TEST_P(TestContribution, ThrowsErrorIfNumG2PowersMoreThan65) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -398,7 +409,8 @@ TEST_P(TestContribution, ThrowsErrorIfNumG2PowersLessThan65) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(error.what(),
                       ::testing::HasSubstr(
@@ -421,7 +433,8 @@ TEST_P(TestContribution, ThrowsErrorIfPowersOfTauMissing) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -444,7 +457,8 @@ TEST_P(TestContribution, ThrowsErrorIfPowersOfTauNotObject) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(error.what(),
                       ::testing::HasSubstr(
@@ -470,7 +484,8 @@ TEST_P(TestContribution, ThrowsErrorIfNotEnoughG1Powers) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(error.what(), ::testing::HasSubstr(
                                         "Array should contain no fewer than " +
@@ -497,7 +512,8 @@ TEST_P(TestContribution, ThrowsErrorIfTooManyG1Powers) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(error.what(), ::testing::HasSubstr(
                                         "Array should contain no more than " +
@@ -525,7 +541,8 @@ TEST_P(TestContribution, ThrowsErrorIfG1PowerHexTooShort) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -553,7 +570,8 @@ TEST_P(TestContribution, ThrowsErrorIfG1PowerHexTooLong) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -581,7 +599,8 @@ TEST_P(TestContribution, ThrowsErrorIfG1PowerHexInvalidCharacter) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -606,7 +625,8 @@ TEST_P(TestContribution, ThrowsErrorIfLessThan65G2Powers) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(error.what(),
                       ::testing::HasSubstr(
@@ -631,7 +651,8 @@ TEST_P(TestContribution, ThrowsErrorIfMoreThan65G2Powers) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(error.what(),
                       ::testing::HasSubstr(
@@ -658,7 +679,8 @@ TEST_P(TestContribution, ThrowsErrorIfG2PowerHexTooShort) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -686,7 +708,8 @@ TEST_P(TestContribution, ThrowsErrorIfG2PowerHexTooLong) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -714,7 +737,8 @@ TEST_P(TestContribution, ThrowsErrorIfG2PowerHexInvalidCharacter) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -738,7 +762,8 @@ TEST_P(TestContribution, ThrowsErrorIfPotPubkeyMissing) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (
             const nlohmann::json_abi_v3_11_2::detail::out_of_range& error) {
           EXPECT_STREQ(
@@ -763,7 +788,8 @@ TEST_P(TestContribution, ThrowsErrorIfPotPubkeyNotString) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(error.what(),
                       ::testing::HasSubstr(
@@ -790,7 +816,8 @@ TEST_P(TestContribution, ThrowsErrorIfBlsSignatureTooShort) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -818,7 +845,8 @@ TEST_P(TestContribution, ThrowsErrorIfBlsSignatureTooLong) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
@@ -846,7 +874,8 @@ TEST_P(TestContribution, ThrowsErrorIfBlsSignatureInvalidCharacter) {
   EXPECT_THROW(
       {
         try {
-          BatchContribution(batch_contribution_json, contribution_schema_json);
+          BatchContribution(batch_contribution_json,
+                            json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),

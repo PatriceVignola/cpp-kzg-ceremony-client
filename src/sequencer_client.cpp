@@ -167,7 +167,7 @@ BatchContribution SequencerClient::try_contribute(
     std::this_thread::sleep_for(std::chrono::seconds(seconds_between_requests));
   }
 
-  return {json_response, contribution_schema_json};
+  return {json_response, json::parse(contribution_schema)};
 }
 
 ContributionReceipt SequencerClient::contribute(

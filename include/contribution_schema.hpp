@@ -1,7 +1,7 @@
 #ifndef CONTRIBUTION_SCHEMA_HPP
 #define CONTRIBUTION_SCHEMA_HPP
 
-static const auto contribution_schema_json = R"(
+static constexpr auto contribution_schema = R"(
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
@@ -269,6 +269,6 @@ static const auto contribution_schema_json = R"(
     }
   }
 }
-)"_json;
+)";
 
 #endif // CONTRIBUTION_SCHEMA_HPP
