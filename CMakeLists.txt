@@ -3,6 +3,7 @@ project(cpp-kzg-ceremony-client)
 
 # Avoid "illegal instruction" in BLST when running the executable on a machine
 # that didn't build it
+add_definitions(-D__BLST_PORTABLE__)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__BLST_PORTABLE__")
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
