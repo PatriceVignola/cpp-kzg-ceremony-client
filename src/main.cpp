@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     // Generate one secret for each contribution
     std::cout << "Generating secrets... ";
     static constexpr size_t num_secrets = 4;
-    SecretGenerator secret_generator(arg_parser.get_entropy(), num_secrets);
+    SecretGenerator<> secret_generator(arg_parser.get_entropy(), num_secrets);
     std::cout << "Done!" << std::endl;
 
     const auto& auth_provider = arg_parser.get_auth_provider();
