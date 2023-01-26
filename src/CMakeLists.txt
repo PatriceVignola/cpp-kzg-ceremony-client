@@ -59,6 +59,7 @@ add_executable(
   contribution_error_test.cpp
   contribution_receipt_test.cpp
   hex_util_test.cpp
+  receipt_test.cpp
   secret_generator_test.cpp)
 
 target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product_static
