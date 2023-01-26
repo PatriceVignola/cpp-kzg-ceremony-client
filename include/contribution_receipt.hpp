@@ -6,6 +6,10 @@
 #include <string>
 
 class ContributionReceipt {
+public:
+  const std::string& get_signature() const { return signature_; }
+  const Receipt& get_receipt() const { return receipt_; }
+
 private:
   Receipt receipt_;
   std::string signature_;
