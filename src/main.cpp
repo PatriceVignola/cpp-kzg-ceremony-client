@@ -89,9 +89,21 @@ int main(int argc, char** argv) {
         std::cout << "Done!" << std::endl;
 
         std::cout << "Submitting the updated contributions... ";
-        sequencer_client.contribute(auth_info.get_session_id(),
-                                    batch_contribution);
+        const auto contribution_receipt = sequencer_client.contribute(
+            auth_info.get_session_id(), batch_contribution);
         std::cout << "Done!" << std::endl;
+
+        std::cout << "Your contribution was successfully submitted! Here is "
+                     "your contribution info:"
+                  << std::endl;
+
+        const auto& receipt = contribution_receipt.get_receipt();
+        const auto& id_token = receipt.get_id_token();
+
+        std::cout << "Nickname: " << id_token.get_nickname() << std::endl;
+        std::cout << "Provider: " << id_token.get_provider() << std::endl;
+        std::cout << "Signature: " << contribution_receipt.get_signature()
+                  << std::endl;
 
         contribution_successful = true;
       } catch (const UnknownSessionIdError& ex) {
