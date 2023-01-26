@@ -4,7 +4,7 @@
 
 // NOLINTNEXTLINE
 TEST(TestContributionReceipt, ThrowsErrorIfReceiptNotFound) {
-  static const auto contribution_error_json = R"(
+  static const auto contribution_receipt_json = R"(
     {
       "signature": "foo"
     }
@@ -14,7 +14,7 @@ TEST(TestContributionReceipt, ThrowsErrorIfReceiptNotFound) {
   EXPECT_THROW(
       {
         try {
-          contribution_error_json.get<ContributionReceipt>();
+          contribution_receipt_json.get<ContributionReceipt>();
         } catch (
             const nlohmann::json_abi_v3_11_2::detail::out_of_range& error) {
           EXPECT_STREQ(
@@ -28,7 +28,7 @@ TEST(TestContributionReceipt, ThrowsErrorIfReceiptNotFound) {
 
 // NOLINTNEXTLINE
 TEST(TestContributionReceipt, ThrowsErrorIfSignatureNotFound) {
-  static const auto contribution_error_json = R"(
+  static const auto contribution_receipt_json = R"(
     {
       "receipt": "{\"id_token\": {\"sub\": \"dummy_sub\",\"nickname\": \"dummy_nickname\",\"provider\": \"dummy_provider\",\"exp\": 1234},\"g2\": \"dummy_g2\"}"
     }
@@ -38,7 +38,7 @@ TEST(TestContributionReceipt, ThrowsErrorIfSignatureNotFound) {
   EXPECT_THROW(
       {
         try {
-          contribution_error_json.get<ContributionReceipt>();
+          contribution_receipt_json.get<ContributionReceipt>();
         } catch (
             const nlohmann::json_abi_v3_11_2::detail::out_of_range& error) {
           EXPECT_STREQ(
@@ -52,7 +52,7 @@ TEST(TestContributionReceipt, ThrowsErrorIfSignatureNotFound) {
 
 // NOLINTNEXTLINE
 TEST(TestContributionReceipt, ParsesJsonCorrectly) {
-  static const auto contribution_error_json = R"(
+  static const auto contribution_receipt_json = R"(
     {
       "signature": "dummy_signature",
       "receipt": "{\"id_token\": {\"sub\": \"dummy_sub\",\"nickname\": \"dummy_nickname\",\"provider\": \"dummy_provider\",\"exp\": 1234},\"g2\": \"dummy_g2\"}"
@@ -60,7 +60,7 @@ TEST(TestContributionReceipt, ParsesJsonCorrectly) {
   )"_json;
 
   const auto contribution_receipt =
-      contribution_error_json.get<ContributionReceipt>();
+      contribution_receipt_json.get<ContributionReceipt>();
 
   EXPECT_EQ("dummy_signature", contribution_receipt.get_signature());
   EXPECT_EQ("dummy_sub",
