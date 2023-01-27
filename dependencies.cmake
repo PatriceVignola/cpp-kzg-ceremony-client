@@ -111,11 +111,18 @@ add_custom_target(
   COMMENT "Creating libblst target")
 
 add_library(
-  gtest_static STATIC ${googletest_SOURCE_DIR}/googletest/src/gtest-all.cc
-                      ${googletest_SOURCE_DIR}/googletest/src/gtest_main.cc)
+  gtest_static STATIC
+  ${googletest_SOURCE_DIR}/googletest/src/gtest-all.cc
+  ${googletest_SOURCE_DIR}/googletest/src/gtest_main.cc
+  ${googletest_SOURCE_DIR}/googlemock/src/gmock-all.cc
+  ${googletest_SOURCE_DIR}/googlemock/src/gmock_main.cc)
+
 target_include_directories(
-  gtest_static PRIVATE ${googletest_SOURCE_DIR}/googletest/include
-                       ${googletest_SOURCE_DIR}/googletest)
+  gtest_static
+  PRIVATE ${googletest_SOURCE_DIR}/googletest
+          ${googletest_SOURCE_DIR}/googletest/include
+          ${googletest_SOURCE_DIR}/googlemock
+          ${googletest_SOURCE_DIR}/googlemock/include)
 
 # Build the uint256_t library
 add_library(uint256_t STATIC ${uint256_t_SOURCE_DIR}/uint256_t.cpp

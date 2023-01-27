@@ -15,7 +15,6 @@ add_library(
   power.cpp
   powers_of_tau.cpp
   receipt.cpp
-  secret_generator.cpp
   sequencer_client.cpp)
 
 add_dependencies(product_static libblst)
@@ -60,7 +59,8 @@ add_executable(
   contribution_error_test.cpp
   contribution_receipt_test.cpp
   hex_util_test.cpp
-  receipt_test.cpp)
+  receipt_test.cpp
+  secret_generator_test.cpp)
 
 target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product_static
                                                            gtest_static)
