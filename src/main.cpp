@@ -3,8 +3,7 @@
 #include "include/auth_browser.hpp"
 #include "include/auth_info.hpp"
 #include "include/auth_request_link.hpp"
-#include "include/bls_signer.hpp"
-#include "include/hex_util.hpp"
+#include "include/bls_signature.hpp"
 #include "include/identity_fetcher.hpp"
 #include "include/port_picker.hpp"
 #include "include/secret_generator.hpp"
@@ -139,12 +138,8 @@ int main(int argc, char** argv) {
         auto pot_pubkey = G2Power::generate_pot_pubkey(secret);
         pot_pubkeys.push_back(pot_pubkey.encode());
 
-        auto bls_signature = bls_signer::sign(secret, identity);
-
-        static constexpr size_t compressed_size_in_bytes = 48;
-        std::vector<uint8_t> bls_signature_bytes(compressed_size_in_bytes);
-        bls_signature.compress(bls_signature_bytes.data());
-        bls_signatures.push_back(hex_util::encode(bls_signature_bytes));
+        BlsSignature bls_signature(secret, identity);
+        bls_signatures.push_back(bls_signature.encode());
       }
 
       try {
@@ -156,7 +151,7 @@ int main(int argc, char** argv) {
         batch_contribution.validate_powers();
 
         // Update the powers of Tau with the secrets generated earlier
-        std::cout << "Updating the contributions... ";
+        std::cout << "Updating the contributions" << std::endl;
         auto& contributions = batch_contribution.get_contributions();
         const auto& secrets = secret_generator.get_secrets();
         auto secret_iter = secrets.begin();
@@ -182,17 +177,8 @@ int main(int argc, char** argv) {
                      "your contribution info:"
                   << std::endl;
 
-        const auto& receipt = contribution_receipt.get_receipt();
-        const auto& id_token = receipt.get_id_token();
-
-        std::cout << "Signature: " << contribution_receipt.get_signature()
-                  << std::endl;
-        std::cout << "G2: " << contribution_receipt.get_receipt().get_g2()
-                  << std::endl;
-        std::cout << "Nickname: " << id_token.get_nickname() << std::endl;
-        std::cout << "Provider: " << id_token.get_provider() << std::endl;
-        std::cout << "Exp: " << id_token.get_exp() << std::endl;
-        std::cout << "Sub: " << id_token.get_sub() << std::endl;
+        static constexpr int json_indent = 4;
+        std::cout << contribution_receipt.dump(json_indent) << std::endl;
 
         contribution_successful = true;
       } catch (const UnknownSessionIdError& ex) {

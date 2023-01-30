@@ -33,6 +33,11 @@ void Power<TBlstPoint, size_in_bytes>::multiply(uint256_t power) {
 }
 
 template <typename TBlstPoint, size_t size_in_bytes>
+void Power<TBlstPoint, size_in_bytes>::multiply(blst::Scalar scalar) {
+  blst_point_.mult(scalar);
+}
+
+template <typename TBlstPoint, size_t size_in_bytes>
 std::string Power<TBlstPoint, size_in_bytes>::encode() const {
   // TODO (PatriceVignola): Use an std::array instead when hex_util supports
   // spans

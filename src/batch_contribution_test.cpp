@@ -1,8 +1,18 @@
 #include "include/batch_contribution.hpp"
+#include "include/bls_signature.hpp"
 #include "include/contribution_schema.hpp"
+#include <fstream>
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
+
+#ifdef _DLL
+#undef _DLL
+#include <uint256_t.h>
+#define _DLL
+#else
+#include <uint256_t.h>
+#endif
 
 using nlohmann::json;
 
@@ -122,6 +132,32 @@ static nlohmann::json generate_initial_contribution() {
   return initial_contribution;
 }
 
+static std::string read_test_file(const std::string& file_name) {
+  // Try opening the file as if we are running the test from the executable
+  // directory
+  std::ifstream file_stream(file_name);
+
+  if (file_stream.fail()) {
+    // Try opening the file as if we are running the test from the root of the
+    // repo
+    file_stream = std::ifstream("build/bin/" + file_name);
+  }
+
+  if (file_stream.fail()) {
+    // Try opening the file as if we are running the test from the root of the
+    // repo on Windows
+    file_stream = std::ifstream("build/bin/Release/" + file_name);
+  }
+
+  if (file_stream.fail()) {
+    throw std::runtime_error("Unable to open " + file_name);
+  }
+
+  std::stringstream string_stream;
+  string_stream << file_stream.rdbuf();
+  return string_stream.str();
+}
+
 // NOLINTNEXTLINE
 TEST(TestBatchContribution, ParsesJsonCorrectly) {
   auto batch_contribution_json = generate_initial_contribution();
@@ -166,10 +202,6 @@ TEST(TestBatchContribution, ParsesJsonCorrectly) {
     EXPECT_EQ(g1_powers_json.size(), g1_powers.size());
     EXPECT_EQ(g2_powers_json.size(), g2_powers.size());
   }
-
-  auto serialized_batch_contribution =
-      nlohmann::json(batch_contribution).dump();
-  auto serialized_batch_contribution_json = batch_contribution_json.dump();
 
   auto diff = nlohmann::json::diff(nlohmann::json(batch_contribution),
                                    batch_contribution_json);
@@ -293,6 +325,46 @@ TEST(TestBatchContribution, ThrowsErrorIfLessThan4Contributions) {
         }
       },
       std::runtime_error);
+}
+
+// NOLINTNEXTLINE
+TEST(TestBatchContribution, CorrectlyUpdatesContributions) {
+  const auto initial_contribution_string =
+      read_test_file("initialContribution.json");
+
+  const auto updated_contribution_string =
+      read_test_file("updatedContribution.json");
+
+  const auto initial_contribution_json =
+      json::parse(initial_contribution_string);
+
+  const auto expected_contribution_json =
+      json::parse(updated_contribution_string);
+
+  BatchContribution batch_contribution(initial_contribution_json,
+                                       json::parse(contribution_schema));
+
+  static const uint256_t secret1 = 0x111100;
+  static const uint256_t secret2 = 0x221100;
+  static const uint256_t secret3 = 0x331100;
+  static const uint256_t secret4 = 0x441100;
+  std::vector<uint256_t> secrets = {secret1, secret2, secret3, secret4};
+
+  auto& contributions = batch_contribution.get_contributions();
+  for (size_t i = 0; i < contributions.size(); ++i) {
+    auto& contribution = contributions[i];
+    const auto& secret = secrets[i];
+    contribution.update_powers_of_tau(secret);
+
+    auto pot_pubkey = G2Power::generate_pot_pubkey(secret);
+
+    BlsSignature bls_signature(secret, "eth|0x12345");
+    contribution.set_pot_pubkey(pot_pubkey.encode());
+    contribution.set_bls_signature(bls_signature.encode());
+  }
+
+  auto diff = json::diff(json(batch_contribution), expected_contribution_json);
+  EXPECT_TRUE(diff.empty());
 }
 
 // NOLINTNEXTLINE

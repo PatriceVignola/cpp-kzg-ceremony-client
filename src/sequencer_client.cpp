@@ -3,7 +3,6 @@
 #include "include/batch_contribution.hpp"
 #include "include/batch_transcript.hpp"
 #include "include/contribution_error.hpp"
-#include "include/contribution_receipt.hpp"
 #include "include/contribution_schema.hpp"
 #include "include/transcript_schema.hpp"
 #include <cpr/cpr.h>
@@ -78,6 +77,7 @@ SequencerClient::SequencerClient(std::string sequencer_url, uint16_t port)
     : sequencer_url_(std::move(sequencer_url)), port_(port),
       auth_request_link_url_(build_auth_request_link_url()),
       try_contribute_url_(build_try_contribute_url()),
+      contribute_url_(build_contribute_url()),
       ceremony_status_url_(build_ceremony_status_url()),
       current_state_url_(build_current_state_url()) {}
 
@@ -191,13 +191,15 @@ BatchTranscript SequencerClient::get_batch_transcript() const {
   return {json_response, json::parse(transcript_schema)};
 }
 
-ContributionReceipt SequencerClient::contribute(
+nlohmann::json SequencerClient::contribute(
     const std::string& session_id,
     const BatchContribution& batch_contribution) const {
   const cpr::Url url{contribute_url_};
   cpr::Session contribute_session;
-  contribute_session.SetHeader(
-      cpr::Header{{"Authorization", "Bearer " + session_id}});
+  contribute_session.SetHeader(cpr::Header{
+      {"Authorization", "Bearer " + session_id},
+      {"Content-Type", "application/json"},
+  });
   contribute_session.SetUrl(url);
 
   nlohmann::json json_batch_contribution(batch_contribution);
@@ -224,8 +226,7 @@ ContributionReceipt SequencerClient::contribute(
                              contribute_url_ + ": " + error_message);
   }
 
-  const auto json_response = json::parse(response.text);
-  return json_response.get<ContributionReceipt>();
+  return json::parse(response.text);
 }
 
 std::string SequencerClient::build_auth_request_link_url() const {

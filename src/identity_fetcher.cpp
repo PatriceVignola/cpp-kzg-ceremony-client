@@ -63,6 +63,7 @@ std::string get_github_identity(const std::string& github_nickname) {
 
   const auto json_response = nlohmann::json::parse(response.text);
   const auto github_user = json_response.get<GithubUser>();
-  return "git|" + github_user.get_id() + "|" + github_user.get_login();
+  return "git|" + std::to_string(github_user.get_id()) + "|" +
+         github_user.get_login();
 }
 } // namespace identity_fetcher

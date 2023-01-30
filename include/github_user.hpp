@@ -7,11 +7,11 @@
 class GithubUser {
 public:
   const std::string& get_login() const { return login_; }
-  const std::string& get_id() const { return id_; }
+  const int get_id() const { return id_; }
 
 private:
   std::string login_;
-  std::string id_;
+  int id_;
 
   friend void from_json(const nlohmann::json& json_github_user,
                         GithubUser& github_user);
