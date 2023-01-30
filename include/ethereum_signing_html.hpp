@@ -55,7 +55,7 @@ static constexpr auto ethereum_signing_html = R"(
                     try {
                         const callbackUrl = callbackPath + "?signature=" + result.result;
                         const response = await fetch(callbackUrl)
-                        setInfoMessage(response.text);
+                        setInfoMessage("The message was successfully signed! You can close this tab and return to the application.");
                     } catch (error) {
                         setErrorMessage(error);
                     }
