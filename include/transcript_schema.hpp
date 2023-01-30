@@ -1,25 +1,40 @@
-#ifndef CONTRIBUTION_SCHEMA_HPP
-#define CONTRIBUTION_SCHEMA_HPP
+#ifndef TRANSCRIPT_SCHEMA_HPP
+#define TRANSCRIPT_SCHEMA_HPP
 
-static constexpr auto contribution_schema = R"(
+static constexpr auto transcript_schema = R"(
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "properties": {
-        "contributions": {
+        "transcripts": {
             "type": "array",
             "items": [
-                {"$ref": "#/$defs/2^12SubContribution"},
-                {"$ref": "#/$defs/2^13SubContribution"},
-                {"$ref": "#/$defs/2^14SubContribution"},
-                {"$ref": "#/$defs/2^15SubContribution"}
+                {"$ref": "#/$defs/2^12SubTranscript"},
+                {"$ref": "#/$defs/2^13SubTranscript"},
+                {"$ref": "#/$defs/2^14SubTranscript"},
+                {"$ref": "#/$defs/2^15SubTranscript"}
             ],
             "minItems": 4,
             "maxItems": 4
         },
-        "ecdsaSignature": {
-            "type": "string",
-            "pattern": "^0x[a-f\\d]{130}$|^$"
+        "participantIds": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {"$ref": "#/$defs/ethereumId"},
+                    {"$ref": "#/$defs/githubId"},
+                    {"$ref": "#/$defs/emptyString"}
+                ]
+            }
+        },
+        "participantEcdsaSignatures": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {"$ref": "#/$defs/ecdsaSignature"},
+                    {"$ref": "#/$defs/emptyString"}
+                ]
+            }
         }
     },
     "$defs": {
@@ -35,7 +50,19 @@ static constexpr auto contribution_schema = R"(
             "type": "string",
             "pattern": "^0x[a-f0-9]{192}$"
         },
-        "2^12SubContribution": {
+        "ethereumId": {
+            "type": "string",
+            "pattern": "^eth\\|0x[a-f\\d]{40}$"
+        },
+        "githubId": {
+            "type": "string",
+            "pattern": "^git\\|\\d{1,16}\\|[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}$"
+        },
+        "ecdsaSignature": {
+            "type": "string",
+            "pattern": "^0x[a-f\\d]{130}$"
+        },
+        "2^12SubTranscript": {
             "type": "object",
             "properties": {
                 "numG1Powers": {
@@ -73,23 +100,46 @@ static constexpr auto contribution_schema = R"(
                         "G2Powers"
                     ]
                 },
-                "potPubkey": {
-                    "type": "string"
-                },
-                "bls_signature": {
-                    "anyOf": [
-                        {"$ref": "#/$defs/G1Point"},
-                        {"$ref": "#/$defs/emptyString"}
+                "witness": {
+                    "type": "object",
+                    "properties": {
+                        "runningProducts": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/G1Point"
+                            }
+                        },
+                        "potPubkeys": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/G2Point"
+                            }
+                        },
+                        "blsSignatures": {
+                            "type": "array",
+                            "items": {
+                                "oneOf": [
+                                    {"$ref": "#/$defs/G1Point"},
+                                    {"$ref": "#/$defs/emptyString"}
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "runningProducts",
+                        "potPubkeys",
+                        "blsSignatures"
                     ]
                 }
             },
             "required": [
                 "numG1Powers",
                 "numG2Powers",
-                "powersOfTau"
+                "powersOfTau",
+                "witness"
             ]
         },
-        "2^13SubContribution": {
+        "2^13SubTranscript": {
             "type": "object",
             "properties": {
                 "numG1Powers": {
@@ -127,23 +177,46 @@ static constexpr auto contribution_schema = R"(
                         "G2Powers"
                     ]
                 },
-                "potPubkey": {
-                    "type": "string"
-                },
-                "bls_signature": {
-                    "anyOf": [
-                        {"$ref": "#/$defs/G1Point"},
-                        {"$ref": "#/$defs/emptyString"}
+                "witness": {
+                    "type": "object",
+                    "properties": {
+                        "runningProducts": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/G1Point"
+                            }
+                        },
+                        "potPubkeys": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/G2Point"
+                            }
+                        },
+                        "blsSignatures": {
+                            "type": "array",
+                            "items": {
+                                "oneOf": [
+                                    {"$ref": "#/$defs/G1Point"},
+                                    {"$ref": "#/$defs/emptyString"}
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "runningProducts",
+                        "potPubkeys",
+                        "blsSignatures"
                     ]
                 }
             },
             "required": [
                 "numG1Powers",
                 "numG2Powers",
-                "powersOfTau"
+                "powersOfTau",
+                "witness"
             ]
         },
-        "2^14SubContribution": {
+        "2^14SubTranscript": {
             "type": "object",
             "properties": {
                 "numG1Powers": {
@@ -180,25 +253,47 @@ static constexpr auto contribution_schema = R"(
                         "G1Powers",
                         "G2Powers"
                     ]
-                }
-                ,
-                "potPubkey": {
-                    "type": "string"
                 },
-                "bls_signature": {
-                    "anyOf": [
-                        {"$ref": "#/$defs/G1Point"},
-                        {"$ref": "#/$defs/emptyString"}
+                "witness": {
+                    "type": "object",
+                    "properties": {
+                        "runningProducts": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/G1Point"
+                            }
+                        },
+                        "potPubkeys": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/G2Point"
+                            }
+                        },
+                        "blsSignatures": {
+                            "type": "array",
+                            "items": {
+                                "oneOf": [
+                                    {"$ref": "#/$defs/G1Point"},
+                                    {"$ref": "#/$defs/emptyString"}
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "runningProducts",
+                        "potPubkeys",
+                        "blsSignatures"
                     ]
                 }
             },
             "required": [
                 "numG1Powers",
                 "numG2Powers",
-                "powersOfTau"
+                "powersOfTau",
+                "witness"
             ]
         },
-        "2^15SubContribution": {
+        "2^15SubTranscript": {
             "type": "object",
             "properties": {
                 "numG1Powers": {
@@ -235,26 +330,48 @@ static constexpr auto contribution_schema = R"(
                         "G1Powers",
                         "G2Powers"
                     ]
-                }
-                ,
-                "potPubkey": {
-                    "type": "string"
                 },
-                "bls_signature": {
-                    "anyOf": [
-                        {"$ref": "#/$defs/G1Point"},
-                        {"$ref": "#/$defs/emptyString"}
+                "witness": {
+                    "type": "object",
+                    "properties": {
+                        "runningProducts": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/G1Point"
+                            }
+                        },
+                        "potPubkeys": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/G2Point"
+                            }
+                        },
+                        "blsSignatures": {
+                            "type": "array",
+                            "items": {
+                                "oneOf": [
+                                    {"$ref": "#/$defs/G1Point"},
+                                    {"$ref": "#/$defs/emptyString"}
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "runningProducts",
+                        "potPubkeys",
+                        "blsSignatures"
                     ]
                 }
             },
             "required": [
                 "numG1Powers",
                 "numG2Powers",
-                "powersOfTau"
+                "powersOfTau",
+                "witness"
             ]
         }
     }
 }
 )";
 
-#endif // CONTRIBUTION_SCHEMA_HPP
+#endif // TRANSCRIPT_SCHEMA_HPP

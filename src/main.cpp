@@ -1,23 +1,18 @@
 #include "include/arg_parser.hpp"
 #include "include/ascii_title.hpp"
 #include "include/auth_browser.hpp"
-#include "include/auth_callback_server.hpp"
 #include "include/auth_info.hpp"
 #include "include/auth_request_link.hpp"
+#include "include/bls_signer.hpp"
+#include "include/hex_util.hpp"
+#include "include/identity_fetcher.hpp"
 #include "include/port_picker.hpp"
 #include "include/secret_generator.hpp"
 #include "include/sequencer_client.hpp"
-#include <blst.hpp>
+#include "include/server.hpp"
+#include "include/signing_browser.hpp"
 #include <cpr/cpr.h>
 #include <iostream>
-
-#ifdef _DLL
-#undef _DLL
-#include <uint256_t.h>
-#define _DLL
-#else
-#include <uint256_t.h>
-#endif
 
 int main(int argc, char** argv) {
   try {
@@ -28,24 +23,63 @@ int main(int argc, char** argv) {
     }
 
     // Generate one secret for each contribution
-    std::cout << "Generating secrets... ";
+    std::cout << "Generating secrets" << std::endl;
     static constexpr size_t num_secrets = 4;
     SecretGenerator<> secret_generator(arg_parser.get_entropy(), num_secrets);
-    std::cout << "Done!" << std::endl;
 
     const auto& auth_provider = arg_parser.get_auth_provider();
     const auto port = port_picker::pick_unused_port();
 
     std::promise<AuthInfo> auth_info_promise;
-    AuthCallbackServer auth_callback_server(
-        port, [&auth_info_promise](AuthInfo&& auth_info) {
-          auth_info_promise.set_value(std::move(auth_info));
-        });
+    auto auth_callback = [&auth_info_promise](AuthInfo&& auth_info) {
+      auth_info_promise.set_value(std::move(auth_info));
+    };
 
     const SequencerClient sequencer_client(arg_parser.get_sequencer_url(),
                                            port);
 
+    // Retrieve the batch transcript
+    std::cout << "Retrieving the transcript" << std::endl;
+    const auto batch_transcript = sequencer_client.get_batch_transcript();
+
+    // Validate the running products
+    batch_transcript.validate_running_products();
+
+    // Generate the pot pubkeys
+    std::vector<std::string> pot_pubkeys;
+    pot_pubkeys.reserve(secret_generator.get_secrets().size());
+
+    std::cout << "Generating the pot pubkeys" << std::endl;
+    // Sign the identity with the secrets
+    for (const auto& secret : secret_generator.get_secrets()) {
+      auto pot_pubkey = G2Power::generate_pot_pubkey(secret);
+      pot_pubkeys.push_back(pot_pubkey.encode());
+    }
+
+    std::promise<std::string> ecdsa_signature_promise;
+    auto ecdsa_signature_callback =
+        [&ecdsa_signature_promise](std::string&& signature) {
+          ecdsa_signature_promise.set_value(std::move(signature));
+        };
+
+    std::vector<PotPubkeyMessage> pot_pubkey_messages;
+    pot_pubkey_messages.reserve(pot_pubkeys.size());
+
+    const auto& transcripts = batch_transcript.get_transcripts();
+    for (size_t i = 0; i < pot_pubkeys.size(); ++i) {
+      const auto& pot_pubkey = pot_pubkeys[i];
+      const auto& transcript = transcripts[i];
+      int num_g1_powers = transcript.get_num_g1_powers();
+      int num_g2_powers = transcript.get_num_g2_powers();
+      pot_pubkey_messages.emplace_back(num_g1_powers, num_g2_powers,
+                                       pot_pubkey);
+    }
+
+    Server server(port, std::move(auth_callback), ecdsa_signature_callback,
+                  pot_pubkey_messages);
+
     bool contribution_successful = false;
+
     while (!contribution_successful) {
       const auto auth_request_link = sequencer_client.get_auth_request_link();
 
@@ -69,6 +103,50 @@ int main(int argc, char** argv) {
         throw std::runtime_error(auth_info.get_error_message());
       }
 
+      // Retrieve the identity (e.g. eth|12345|0xa7fb...)
+      std::cout << "Retrieving your identity" << std::endl;
+      const auto identity = [&auth_provider, &auth_info]() {
+        switch (auth_provider) {
+        case AuthProvider::Ethereum:
+          return identity_fetcher::get_ethereum_identity(
+              auth_info.get_nickname());
+        case AuthProvider::GitHub:
+          return identity_fetcher::get_github_identity(
+              auth_info.get_nickname());
+        default:
+          throw std::runtime_error(
+              "Error: unsupported authentication provider");
+        }
+      }();
+
+      std::string ecdsa_signature;
+      if (auth_provider == AuthProvider::Ethereum &&
+          !arg_parser.signing_disabled() && ecdsa_signature.empty()) {
+        const auto signing_url =
+            "http://localhost:" + std::to_string(port) +
+            "/sign?eth_address=" + auth_info.get_nickname();
+
+        SigningBrowser signing_browser(signing_url);
+        auto ecdsa_signature_future = ecdsa_signature_promise.get_future();
+        ecdsa_signature = ecdsa_signature_future.get();
+      }
+
+      std::vector<std::string> bls_signatures;
+      bls_signatures.reserve(secret_generator.get_secrets().size());
+
+      // Sign the identity with the secrets
+      for (const auto& secret : secret_generator.get_secrets()) {
+        auto pot_pubkey = G2Power::generate_pot_pubkey(secret);
+        pot_pubkeys.push_back(pot_pubkey.encode());
+
+        auto bls_signature = bls_signer::sign(secret, identity);
+
+        static constexpr size_t compressed_size_in_bytes = 48;
+        std::vector<uint8_t> bls_signature_bytes(compressed_size_in_bytes);
+        bls_signature.compress(bls_signature_bytes.data());
+        bls_signatures.push_back(hex_util::encode(bls_signature_bytes));
+      }
+
       try {
         // Wait until a contribution slot is available
         auto batch_contribution =
@@ -78,20 +156,27 @@ int main(int argc, char** argv) {
         batch_contribution.validate_powers();
 
         // Update the powers of Tau with the secrets generated earlier
-        std::cout << "Updating powers of Tau... ";
+        std::cout << "Updating the contributions... ";
         auto& contributions = batch_contribution.get_contributions();
         const auto& secrets = secret_generator.get_secrets();
         auto secret_iter = secrets.begin();
-        for (auto& contribution : contributions) {
+
+        for (size_t i = 0; i < contributions.size(); ++i) {
+          auto& contribution = contributions[i];
           contribution.update_powers_of_tau(*secret_iter);
+          contribution.set_pot_pubkey(pot_pubkeys[i]);
+          contribution.set_bls_signature(bls_signatures[i]);
           ++secret_iter;
         }
-        std::cout << "Done!" << std::endl;
 
-        std::cout << "Submitting the updated contributions... ";
+        if (!ecdsa_signature.empty()) {
+          std::cout << "Setting the ecdsa signature" << std::endl;
+          batch_contribution.set_ecdsa_signature(std::move(ecdsa_signature));
+        }
+
+        std::cout << "Submitting the updated contributions" << std::endl;
         const auto contribution_receipt = sequencer_client.contribute(
             auth_info.get_session_id(), batch_contribution);
-        std::cout << "Done!" << std::endl;
 
         std::cout << "Your contribution was successfully submitted! Here is "
                      "your contribution info:"
@@ -100,10 +185,14 @@ int main(int argc, char** argv) {
         const auto& receipt = contribution_receipt.get_receipt();
         const auto& id_token = receipt.get_id_token();
 
-        std::cout << "Nickname: " << id_token.get_nickname() << std::endl;
-        std::cout << "Provider: " << id_token.get_provider() << std::endl;
         std::cout << "Signature: " << contribution_receipt.get_signature()
                   << std::endl;
+        std::cout << "G2: " << contribution_receipt.get_receipt().get_g2()
+                  << std::endl;
+        std::cout << "Nickname: " << id_token.get_nickname() << std::endl;
+        std::cout << "Provider: " << id_token.get_provider() << std::endl;
+        std::cout << "Exp: " << id_token.get_exp() << std::endl;
+        std::cout << "Sub: " << id_token.get_sub() << std::endl;
 
         contribution_successful = true;
       } catch (const UnknownSessionIdError& ex) {

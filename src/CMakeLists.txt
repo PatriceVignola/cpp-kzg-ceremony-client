@@ -3,19 +3,27 @@ add_library(
   product_static STATIC
   arg_parser.cpp
   auth_browser.cpp
-  auth_callback_server.cpp
   auth_request_link.cpp
   batch_contribution.cpp
+  batch_transcript.cpp
+  bls_signer.cpp
   contribution.cpp
   contribution_error.cpp
   contribution_receipt.cpp
+  github_user.cpp
   hex_util.cpp
   id_token.cpp
+  identity_fetcher.cpp
   port_picker.cpp
+  pot_pubkey_message.cpp
   power.cpp
   powers_of_tau.cpp
   receipt.cpp
-  sequencer_client.cpp)
+  sequencer_client.cpp
+  server.cpp
+  signing_browser.cpp
+  transcript.cpp
+  witness.cpp)
 
 add_dependencies(product_static libblst)
 
@@ -53,14 +61,14 @@ target_link_libraries(cpp-kzg-ceremony-client PRIVATE product_static)
 add_executable(
   cpp-kzg-ceremony-client-test
   arg_parser_test.cpp
-  auth_callback_server_test.cpp
   auth_request_link_test.cpp
   batch_contribution_test.cpp
   contribution_error_test.cpp
   contribution_receipt_test.cpp
   hex_util_test.cpp
   receipt_test.cpp
-  secret_generator_test.cpp)
+  secret_generator_test.cpp
+  server_test.cpp)
 
 target_link_libraries(cpp-kzg-ceremony-client-test PRIVATE product_static
                                                            gtest_static)

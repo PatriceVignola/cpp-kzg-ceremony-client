@@ -1,4 +1,5 @@
 #include "include/contribution.hpp"
+
 #ifdef _DLL
 #undef _DLL
 #include <uint256_t.h>
@@ -14,9 +15,8 @@ void from_json(const nlohmann::json& json_contribution,
   json_contribution.at("powersOfTau").get_to(contribution.powers_of_tau_);
   json_contribution.at("potPubkey").get_to(contribution.pot_pubkey_);
 
-  // blsSignature is optional (i.e. it's absent from the initial contribution)
-  if (json_contribution.find("blsSignature") != json_contribution.end()) {
-    json_contribution.at("blsSignature").get_to(contribution.bls_signature_);
+  if (json_contribution.find("bls_signature") != json_contribution.end()) {
+    json_contribution.at("bls_signature").get_to(contribution.bls_signature_);
   }
 }
 
@@ -26,7 +26,7 @@ void to_json(nlohmann::json& json_contribution,
   json_contribution["numG2Powers"] = contribution.num_g2_powers_;
   json_contribution["powersOfTau"] = contribution.powers_of_tau_;
   json_contribution["potPubkey"] = contribution.pot_pubkey_;
-  json_contribution["blsSignature"] = contribution.bls_signature_;
+  json_contribution["bls_signature"] = contribution.bls_signature_;
 }
 
 void Contribution::update_powers_of_tau(uint256_t secret) {

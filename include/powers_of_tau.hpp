@@ -4,6 +4,7 @@
 #include "power.hpp"
 #include <nlohmann/json.hpp>
 #include <vector>
+
 #ifdef _DLL
 #undef _DLL
 #include <uint256_t.h>
