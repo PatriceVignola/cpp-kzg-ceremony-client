@@ -115,7 +115,7 @@ static constexpr auto transcript_schema = R"(
                                 "$ref": "#/$defs/G2Point"
                             }
                         },
-                        "bls_signature": {
+                        "blsSignature": {
                             "type": "array",
                             "items": {
                                 "oneOf": [
@@ -128,7 +128,7 @@ static constexpr auto transcript_schema = R"(
                     "required": [
                         "runningProducts",
                         "potPubkeys",
-                        "bls_signature"
+                        "blsSignature"
                     ]
                 }
             },
@@ -192,7 +192,7 @@ static constexpr auto transcript_schema = R"(
                                 "$ref": "#/$defs/G2Point"
                             }
                         },
-                        "bls_signature": {
+                        "blsSignature": {
                             "type": "array",
                             "items": {
                                 "oneOf": [
@@ -205,7 +205,7 @@ static constexpr auto transcript_schema = R"(
                     "required": [
                         "runningProducts",
                         "potPubkeys",
-                        "bls_signature"
+                        "blsSignature"
                     ]
                 }
             },
@@ -269,7 +269,7 @@ static constexpr auto transcript_schema = R"(
                                 "$ref": "#/$defs/G2Point"
                             }
                         },
-                        "bls_signature": {
+                        "blsSignature": {
                             "type": "array",
                             "items": {
                                 "oneOf": [
@@ -282,7 +282,7 @@ static constexpr auto transcript_schema = R"(
                     "required": [
                         "runningProducts",
                         "potPubkeys",
-                        "bls_signature"
+                        "blsSignature"
                     ]
                 }
             },
@@ -346,7 +346,7 @@ static constexpr auto transcript_schema = R"(
                                 "$ref": "#/$defs/G2Point"
                             }
                         },
-                        "bls_signature": {
+                        "blsSignature": {
                             "type": "array",
                             "items": {
                                 "oneOf": [
@@ -359,7 +359,7 @@ static constexpr auto transcript_schema = R"(
                     "required": [
                         "runningProducts",
                         "potPubkeys",
-                        "bls_signature"
+                        "blsSignature"
                     ]
                 }
             },

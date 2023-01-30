@@ -76,7 +76,7 @@ static constexpr auto contribution_schema = R"(
                 "potPubkey": {
                     "type": "string"
                 },
-                "bls_signature": {
+                "blsSignature": {
                     "anyOf": [
                         {"$ref": "#/$defs/G1Point"},
                         {"$ref": "#/$defs/emptyString"}
@@ -130,7 +130,7 @@ static constexpr auto contribution_schema = R"(
                 "potPubkey": {
                     "type": "string"
                 },
-                "bls_signature": {
+                "blsSignature": {
                     "anyOf": [
                         {"$ref": "#/$defs/G1Point"},
                         {"$ref": "#/$defs/emptyString"}
@@ -185,7 +185,7 @@ static constexpr auto contribution_schema = R"(
                 "potPubkey": {
                     "type": "string"
                 },
-                "bls_signature": {
+                "blsSignature": {
                     "anyOf": [
                         {"$ref": "#/$defs/G1Point"},
                         {"$ref": "#/$defs/emptyString"}
@@ -240,7 +240,7 @@ static constexpr auto contribution_schema = R"(
                 "potPubkey": {
                     "type": "string"
                 },
-                "bls_signature": {
+                "blsSignature": {
                     "anyOf": [
                         {"$ref": "#/$defs/G1Point"},
                         {"$ref": "#/$defs/emptyString"}
