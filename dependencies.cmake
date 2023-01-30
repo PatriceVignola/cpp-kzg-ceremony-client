@@ -29,12 +29,6 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/Corvusoft/restbed
   GIT_TAG 4.8)
 
-# cpp-httplib Library
-FetchContent_Declare(
-  httplib
-  GIT_REPOSITORY https://github.com/yhirose/cpp-httplib
-  GIT_TAG v0.11.4)
-
 # CPR Library
 FetchContent_Declare(
   cpr
