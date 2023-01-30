@@ -172,7 +172,7 @@ TEST(TestBatchContribution, ParsesJsonCorrectly) {
   bls_signature.resize(bls_signature_length, 'b');
 
   for (auto& contribution_json : batch_contribution_json["contributions"]) {
-    contribution_json["bls_signature"] = bls_signature;
+    contribution_json["blsSignature"] = bls_signature;
   }
 
   BatchContribution batch_contribution(batch_contribution_json,
@@ -881,7 +881,7 @@ TEST_P(TestContribution, ThrowsErrorIfBlsSignatureTooShort) {
 
   std::string bls_signature = "0x";
   bls_signature.resize(bls_signature_length - 1, 'a');
-  first_contribution["bls_signature"] = bls_signature;
+  first_contribution["blsSignature"] = bls_signature;
 
   // NOLINTNEXTLINE
   EXPECT_THROW(
@@ -909,7 +909,7 @@ TEST_P(TestContribution, ThrowsErrorIfBlsSignatureTooLong) {
 
   std::string bls_signature = "0x";
   bls_signature.resize(bls_signature_length + 1, 'a');
-  first_contribution["bls_signature"] = bls_signature;
+  first_contribution["blsSignature"] = bls_signature;
 
   // NOLINTNEXTLINE
   EXPECT_THROW(
@@ -937,7 +937,7 @@ TEST_P(TestContribution, ThrowsErrorIfBlsSignatureInvalidCharacter) {
 
   std::string bls_signature = "0x";
   bls_signature.resize(bls_signature_length, 'z');
-  first_contribution["bls_signature"] = bls_signature;
+  first_contribution["blsSignature"] = bls_signature;
 
   // NOLINTNEXTLINE
   EXPECT_THROW(
