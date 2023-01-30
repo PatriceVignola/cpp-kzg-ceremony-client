@@ -20,6 +20,14 @@ public:
   const PowersOfTau& get_powers_of_tau() const { return powers_of_tau_; }
   void update_powers_of_tau(uint256_t secret);
 
+  void set_pot_pubkey(std::string pot_pubkey) {
+    pot_pubkey_ = std::move(pot_pubkey);
+  }
+
+  void set_bls_signature(std::string bls_signature) {
+    bls_signature_ = std::move(bls_signature);
+  }
+
 private:
   int num_g1_powers_;
   int num_g2_powers_;

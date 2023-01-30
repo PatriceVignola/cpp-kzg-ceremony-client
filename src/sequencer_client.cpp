@@ -1,9 +1,11 @@
 #include "include/sequencer_client.hpp"
 #include "include/auth_request_link.hpp"
 #include "include/batch_contribution.hpp"
+#include "include/batch_transcript.hpp"
 #include "include/contribution_error.hpp"
 #include "include/contribution_receipt.hpp"
 #include "include/contribution_schema.hpp"
+#include "include/transcript_schema.hpp"
 #include <cpr/cpr.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -76,7 +78,8 @@ SequencerClient::SequencerClient(std::string sequencer_url, uint16_t port)
     : sequencer_url_(std::move(sequencer_url)), port_(port),
       auth_request_link_url_(build_auth_request_link_url()),
       try_contribute_url_(build_try_contribute_url()),
-      ceremony_status_url_(build_ceremony_status_url()) {}
+      ceremony_status_url_(build_ceremony_status_url()),
+      current_state_url_(build_current_state_url()) {}
 
 AuthRequestLink SequencerClient::get_auth_request_link() const {
   uint64_t status_code = 0;
@@ -170,6 +173,24 @@ BatchContribution SequencerClient::try_contribute(
   return {json_response, json::parse(contribution_schema)};
 }
 
+BatchTranscript SequencerClient::get_batch_transcript() const {
+  // Retrieve the batch transcript
+  const auto response = cpr::Get(cpr::Url{current_state_url_});
+
+  if (!is_ok_status(response.status_code)) {
+    auto error_message = response.error.code != cpr::ErrorCode::OK
+                             ? response.error.message
+                             : response.text;
+
+    throw std::runtime_error(
+        "Error while retrieving the batch transcript via " +
+        current_state_url_ + ": " + error_message);
+  }
+
+  const auto json_response = json::parse(response.text);
+  return {json_response, json::parse(transcript_schema)};
+}
+
 ContributionReceipt SequencerClient::contribute(
     const std::string& session_id,
     const BatchContribution& batch_contribution) const {
@@ -226,4 +247,8 @@ std::string SequencerClient::build_ceremony_status_url() const {
 
 std::string SequencerClient::build_contribute_url() const {
   return sequencer_url_ + "/contribute";
+}
+
+std::string SequencerClient::build_current_state_url() const {
+  return sequencer_url_ + "/info/current_state";
 }

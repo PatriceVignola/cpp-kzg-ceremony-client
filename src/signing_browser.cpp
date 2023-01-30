@@ -1,4 +1,4 @@
-#include "include/auth_browser.hpp"
+#include "include/signing_browser.hpp"
 #include <cpr/cpr.h>
 #include <iostream>
 
@@ -10,22 +10,21 @@
 #endif
 
 static constexpr auto info_message =
-    "The authentication window should now open in your browser. If you close "
-    "it by mistake or an error occurred during the authentication, you can "
-    "manually access the following URL: \n\n";
+    "The signing window should now open in your browser. If you close it by "
+    "mistake or an error occurred during signing, you can manually access the "
+    "following URL: \n\n";
 
 #ifdef _WIN32
-AuthBrowser::AuthBrowser(const std::string& auth_url) {
+SigningBrowser::SigningBrowser(const std::string& auth_url) {
   std::cout << std::string(info_message) << auth_url << std::endl << std::endl;
   ShellExecuteA(0, 0, auth_url.c_str(), 0, 0, SW_SHOW);
 }
 
-AuthBrowser::~AuthBrowser() {}
+SigningBrowser::~SigningBrowser() {}
 #else
-AuthBrowser::AuthBrowser(const std::string& auth_url) : pid_(fork()) {
+SigningBrowser::SigningBrowser(const std::string& auth_url) : pid_(fork()) {
   if (pid_ < 0) {
-    throw std::runtime_error(
-        "Failed to open the authentication page in the browser");
+    throw std::runtime_error("Failed to open the signing page in the browser");
   }
 
   if (pid_ > 0) {
@@ -37,7 +36,7 @@ AuthBrowser::AuthBrowser(const std::string& auth_url) : pid_(fork()) {
   }
 }
 
-AuthBrowser::~AuthBrowser() {
+SigningBrowser::~SigningBrowser() {
   if (pid_ > 0) {
     kill(pid_, SIGTERM);
   }

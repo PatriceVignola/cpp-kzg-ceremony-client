@@ -21,11 +21,7 @@ void from_json(const nlohmann::json& json_power_of_tau,
 template <typename TBlstPoint, size_t size_in_bytes>
 void to_json(nlohmann::json& json_power_of_tau,
              const Power<TBlstPoint, size_in_bytes>& power_of_tau) {
-  // TODO (PatriceVignola): Use an std::array instead when hex_util supports
-  // spans
-  std::vector<uint8_t> serialized_power(size_in_bytes);
-  power_of_tau.blst_point_.compress(serialized_power.data());
-  json_power_of_tau = hex_util::encode(serialized_power);
+  json_power_of_tau = power_of_tau.encode();
 }
 
 template <typename TBlstPoint, size_t size_in_bytes>
@@ -34,6 +30,15 @@ void Power<TBlstPoint, size_in_bytes>::multiply(uint256_t power) {
   const auto* power_bytes =
       static_cast<const uint8_t*>(static_cast<void*>(&power));
   blst_point_.mult(power_bytes, num_bits);
+}
+
+template <typename TBlstPoint, size_t size_in_bytes>
+std::string Power<TBlstPoint, size_in_bytes>::encode() const {
+  // TODO (PatriceVignola): Use an std::array instead when hex_util supports
+  // spans
+  std::vector<uint8_t> serialized_power(size_in_bytes);
+  blst_point_.compress(serialized_power.data());
+  return hex_util::encode(serialized_power);
 }
 
 template <typename TBlstPoint, size_t size_in_bytes>

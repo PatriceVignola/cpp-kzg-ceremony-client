@@ -1,18 +1,19 @@
 #include "include/ascii_title.hpp"
-#include "include/auth_callback_server.hpp"
 #include "include/port_picker.hpp"
+#include "include/server.hpp"
 #include <cpr/cpr.h>
 #include <gtest/gtest.h>
 
 // NOLINTNEXTLINE
-TEST(TestAuthCallbackServer, NotifiesWithErrorIfAlreadyContributed) {
+TEST(TestServer, NotifiesWithErrorIfAlreadyContributed) {
   const auto port = port_picker::pick_unused_port();
 
   std::promise<AuthInfo> auth_info_promise;
-  AuthCallbackServer auth_callback_server(
-      port, [&auth_info_promise](AuthInfo&& auth_info) {
-        auth_info_promise.set_value(std::move(auth_info));
-      });
+  Server server(port,
+                [&auth_info_promise](AuthInfo&& auth_info) {
+                  auth_info_promise.set_value(std::move(auth_info));
+                },
+                nullptr, {});
 
   const auto url =
       "http://localhost:" + std::to_string(port) +
@@ -34,14 +35,15 @@ TEST(TestAuthCallbackServer, NotifiesWithErrorIfAlreadyContributed) {
 }
 
 // NOLINTNEXTLINE
-TEST(TestAuthCallbackServer, NotifiesWithErrorIfSessionIdNotFound) {
+TEST(TestServer, NotifiesWithErrorIfSessionIdNotFound) {
   const auto port = port_picker::pick_unused_port();
 
   std::promise<AuthInfo> auth_info_promise;
-  AuthCallbackServer auth_callback_server(
-      port, [&auth_info_promise](AuthInfo&& auth_info) {
-        auth_info_promise.set_value(std::move(auth_info));
-      });
+  Server server(port,
+                [&auth_info_promise](AuthInfo&& auth_info) {
+                  auth_info_promise.set_value(std::move(auth_info));
+                },
+                nullptr, {});
 
   const auto url =
       "http://localhost:" + std::to_string(port) + "/auth_callback";
@@ -61,14 +63,15 @@ TEST(TestAuthCallbackServer, NotifiesWithErrorIfSessionIdNotFound) {
 }
 
 // NOLINTNEXTLINE
-TEST(TestAuthCallbackServer, NotifiesWithSessionInfoWhenSuccessful) {
+TEST(TestServer, NotifiesWithSessionInfoWhenSuccessful) {
   const auto port = port_picker::pick_unused_port();
 
   std::promise<AuthInfo> auth_info_promise;
-  AuthCallbackServer auth_callback_server(
-      port, [&auth_info_promise](AuthInfo&& auth_info) {
-        auth_info_promise.set_value(std::move(auth_info));
-      });
+  Server server(port,
+                [&auth_info_promise](AuthInfo&& auth_info) {
+                  auth_info_promise.set_value(std::move(auth_info));
+                },
+                nullptr, {});
 
   const auto url = "http://localhost:" + std::to_string(port) +
                    "/auth_callback?session_id=my_session_id&nickname=my_"

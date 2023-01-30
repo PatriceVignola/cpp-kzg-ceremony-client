@@ -13,6 +13,10 @@ public:
   std::vector<Contribution>& get_contributions() { return contributions_; }
   void validate_powers() const;
 
+  void set_ecdsa_signature(std::string ecdsa_signature) {
+    ecdsa_signature_ = std::move(ecdsa_signature);
+  }
+
 private:
   std::vector<Contribution> contributions_;
   std::string ecdsa_signature_;
