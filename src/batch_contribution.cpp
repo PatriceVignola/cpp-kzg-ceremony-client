@@ -9,11 +9,8 @@
 void to_json(nlohmann::json& json_batch_contribution,
              const BatchContribution& batch_contribution) {
   json_batch_contribution["contributions"] = batch_contribution.contributions_;
-
-  if (!batch_contribution.ecdsa_signature_.empty()) {
-    json_batch_contribution["ecdsaSignature"] =
-        batch_contribution.ecdsa_signature_;
-  }
+  json_batch_contribution["ecdsaSignature"] =
+      batch_contribution.ecdsa_signature_;
 }
 
 BatchContribution::BatchContribution(

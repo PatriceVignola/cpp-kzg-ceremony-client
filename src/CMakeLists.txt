@@ -6,6 +6,7 @@ add_library(
   auth_request_link.cpp
   batch_contribution.cpp
   batch_transcript.cpp
+  bls_signature.cpp
   bls_signer.cpp
   contribution.cpp
   contribution_error.cpp
@@ -82,3 +83,10 @@ set_target_properties(
   PROPERTIES SKIP_BUILD_RPATH FALSE
              BUILD_WITH_INSTALL_RPATH TRUE
              INSTALL_RPATH "$\{ORIGIN\}")
+
+# Copy the test vectors to the binary folder
+configure_file(${CMAKE_SOURCE_DIR}/test_data/initialContribution.json
+               ${CMAKE_BINARY_DIR}/bin/initialContribution.json)
+
+configure_file(${CMAKE_SOURCE_DIR}/test_data/updatedContribution.json
+               ${CMAKE_BINARY_DIR}/bin/updatedContribution.json)

@@ -17,6 +17,7 @@ class Power {
 public:
   bool in_group() const;
   void multiply(uint256_t power);
+  void multiply(blst::Scalar scalar);
   std::string encode() const;
 
   static Power<TBlstPoint, size_in_bytes> generate_pot_pubkey(

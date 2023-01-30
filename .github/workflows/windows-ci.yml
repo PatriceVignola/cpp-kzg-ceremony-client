@@ -13,15 +13,19 @@ jobs:
     name: Build Windows
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: ./build.bat
-    - name: Upload binaries
-      uses: actions/upload-artifact@v3
-      with:
-        name: windows-binaries
-        path: |
-          build/bin/Release/cpp-kzg-ceremony-client.exe
-          build/bin/Release/cpp-kzg-ceremony-client-test.exe
+      - uses: actions/checkout@v2
+      - run: ./build.bat
+      - run: cp build/bin/initialContribution.json build/bin/Release/initialContribution.json
+      - run: cp build/bin/updatedContribution.json build/bin/Release/updatedContribution.json
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-binaries
+          path: |
+            build/bin/Release/cpp-kzg-ceremony-client.exe
+            build/bin/Release/cpp-kzg-ceremony-client-test.exe
+            build/bin/Release/initialContribution.json
+            build/bin/Release/updatedContribution.json
 
   test-windows:
     name: Test
@@ -31,11 +35,11 @@ jobs:
         version: [2019, 2022]
     runs-on: windows-${{ matrix.version }}
     steps:
-    - name: Download binaries
-      uses: actions/download-artifact@v3
-      with:
-        name: windows-binaries
-    - run: .\cpp-kzg-ceremony-client-test.exe
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-binaries
+      - run: .\cpp-kzg-ceremony-client-test.exe
 
   sanity-check-windows:
     name: Sanity Check
@@ -45,8 +49,8 @@ jobs:
         version: [2019, 2022]
     runs-on: windows-${{ matrix.version }}
     steps:
-    - name: Download binaries
-      uses: actions/download-artifact@v3
-      with:
-        name: windows-binaries
-    - run: .\cpp-kzg-ceremony-client.exe --help
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-binaries
+      - run: .\cpp-kzg-ceremony-client.exe --help
