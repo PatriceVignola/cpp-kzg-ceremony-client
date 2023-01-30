@@ -7,7 +7,7 @@
 class GithubUser {
 public:
   const std::string& get_login() const { return login_; }
-  const int get_id() const { return id_; }
+  int get_id() const { return id_; }
 
 private:
   std::string login_;
