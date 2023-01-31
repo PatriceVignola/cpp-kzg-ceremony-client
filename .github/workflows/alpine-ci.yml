@@ -5,6 +5,8 @@ on:
     branches: [master]
   push:
     branches: [master]
+    tags:
+      - "v*"
 concurrency:
   group: alpine-ci-${{ github.ref }}
   cancel-in-progress: true
@@ -112,3 +114,33 @@ jobs:
       - run: apk --update add libstdc++
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: ./cpp-kzg-ceremony-client --help
+
+  publish-alpine:
+    needs: [test-alpine, sanity-check-alpine]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version:
+          [
+            "3.9.6",
+            "3.10.9",
+            "3.11.13",
+            "3.12.10",
+            "3.13.12",
+            "3.14.8",
+            "3.15.6",
+            "3.16.3",
+            "3.17.1",
+          ]
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: alpine-${{ matrix.version }}-binaries
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref }}-alpine-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: cpp-kzg-ceremony-client-${{ github.ref }}-alpine-${{ matrix.version }}-amd64.tar.gz

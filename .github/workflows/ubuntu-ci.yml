@@ -5,6 +5,8 @@ on:
     branches: [master]
   push:
     branches: [master]
+    tags:
+      - "v*"
 concurrency:
   group: ubuntu-ci-${{ github.ref }}
   cancel-in-progress: true
@@ -72,3 +74,22 @@ jobs:
       - run: apt --yes install openssl
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: ./cpp-kzg-ceremony-client --help
+
+  publish-ubuntu:
+    needs: [test-ubuntu, sanity-check-ubuntu]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-${{ matrix.version }}-binaries
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref }}-ubuntu-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: cpp-kzg-ceremony-client-${{ github.ref }}-ubuntu-${{ matrix.version }}-amd64.tar.gz

@@ -5,6 +5,8 @@ on:
     branches: [master]
   push:
     branches: [master]
+    tags:
+      - "v*"
 concurrency:
   group: darwin-ci-${{ github.ref }}
   cancel-in-progress: true
@@ -54,3 +56,19 @@ jobs:
           name: darwin-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: ./cpp-kzg-ceremony-client --help
+
+  publish-darwin:
+    needs: [test-darwin, sanity-check-darwin]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: darwin-binaries
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref }}-darwin-amd64.tar.gz cpp-kzg-ceremony-client
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: cpp-kzg-ceremony-client-${{ github.ref }}-darwin-amd64.tar.gz
