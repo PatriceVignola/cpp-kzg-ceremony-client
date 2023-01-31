@@ -6,14 +6,6 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
-#ifdef _DLL
-#undef _DLL
-#include <uint256_t.h>
-#define _DLL
-#else
-#include <uint256_t.h>
-#endif
-
 using nlohmann::json;
 
 class TestContribution : public ::testing::TestWithParam<int> {};
@@ -344,11 +336,32 @@ TEST(TestBatchContribution, CorrectlyUpdatesContributions) {
   BatchContribution batch_contribution(initial_contribution_json,
                                        json::parse(contribution_schema));
 
-  static const uint256_t secret1 = 0x111100;
-  static const uint256_t secret2 = 0x221100;
-  static const uint256_t secret3 = 0x331100;
-  static const uint256_t secret4 = 0x441100;
-  std::vector<uint256_t> secrets = {secret1, secret2, secret3, secret4};
+  static const uint64_t secret1_data = 0x111100;
+  static const uint64_t secret2_data = 0x221100;
+  static const uint64_t secret3_data = 0x331100;
+  static const uint64_t secret4_data = 0x441100;
+
+  blst::Scalar secret1;
+  secret1.from_lendian(
+      static_cast<const uint8_t*>(static_cast<const void*>(&secret1_data)),
+      sizeof(secret1_data));
+
+  blst::Scalar secret2;
+  secret2.from_lendian(
+      static_cast<const uint8_t*>(static_cast<const void*>(&secret2_data)),
+      sizeof(secret2_data));
+
+  blst::Scalar secret3;
+  secret3.from_lendian(
+      static_cast<const uint8_t*>(static_cast<const void*>(&secret3_data)),
+      sizeof(secret3_data));
+
+  blst::Scalar secret4;
+  secret4.from_lendian(
+      static_cast<const uint8_t*>(static_cast<const void*>(&secret4_data)),
+      sizeof(secret4_data));
+
+  std::vector<blst::Scalar> secrets = {secret1, secret2, secret3, secret4};
 
   auto& contributions = batch_contribution.get_contributions();
   for (size_t i = 0; i < contributions.size(); ++i) {
@@ -363,8 +376,13 @@ TEST(TestBatchContribution, CorrectlyUpdatesContributions) {
     contribution.set_bls_signature(bls_signature.encode());
   }
 
-  auto diff = json::diff(json(batch_contribution), expected_contribution_json);
+  auto diff = json::diff(expected_contribution_json, json(batch_contribution));
   EXPECT_TRUE(diff.empty());
+
+  if (!diff.empty()) {
+    std::cout << "Diff:" << std::endl;
+    std::cout << diff.dump() << std::endl;
+  }
 }
 
 // NOLINTNEXTLINE

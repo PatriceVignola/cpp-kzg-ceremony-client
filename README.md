@@ -85,5 +85,4 @@ Usage:
 - [nlohmann/json](https://github.com/nlohmann/json) for JSON serialization and deserialization
 - [tristanpenman/valijson](https://github.com/tristanpenman/valijson) for JSON schema validation
 - [supranational/blst](https://github.com/supranational/blst) for BLS signing and powers of tau functionality
-- [calccrypto/uint256_t](https://github.com/calccrypto/uint256_t) for uint256 support
 - [Duthomhas/CSPRNG](https://github.com/Duthomhas/CSPRNG) for easy cross-platform CSPRNG
