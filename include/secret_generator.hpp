@@ -8,14 +8,6 @@
 #include <set>
 #include <string>
 
-#ifdef _DLL
-#undef _DLL
-#include <uint256_t.h>
-#define _DLL
-#else
-#include <uint256_t.h>
-#endif
-
 template <typename csprng = duthomhas::csprng,
           typename BlstSecretKey = blst::SecretKey>
 class SecretGenerator {
@@ -49,19 +41,31 @@ public:
       // Finally, feed the bytes into the BLS keygen
       blst_secret_key.keygen_v3(entropy_bytes.data(), entropy_bytes.size());
 
-      uint256_t secret = 0;
-      blst_secret_key.to_bendian(
-          static_cast<uint8_t*>(static_cast<void*>(&secret)));
-      secrets_.insert(secret);
+      std::array<uint8_t, sizeof(blst::Scalar)> secret_key_bytes{};
+      blst_secret_key.to_bendian(secret_key_bytes.data());
+
+      for (const auto& other_secret : secrets_) {
+        std::array<uint8_t, sizeof(blst::Scalar)> other_bytes{};
+        other_secret.to_bendian(other_bytes.data());
+
+        if (std::equal(secret_key_bytes.begin(), secret_key_bytes.end(),
+                       other_bytes.begin())) {
+          continue;
+        }
+      }
+
+      blst::Scalar secret;
+      secret.from_bendian(secret_key_bytes.data(), secret_key_bytes.size());
+      secrets_.push_back(secret);
     }
   }
 
-  const std::set<uint256_t>& get_secrets() const { return secrets_; }
+  const std::vector<blst::Scalar>& get_secrets() const { return secrets_; }
 
 private:
-  // Since the number of secrets is expected to be low, use std::set instead of
-  // std::unordered_set
-  std::set<uint256_t> secrets_;
+  // Since we only need to generate 4 secrets and and collisions are expected to
+  // be rare, using a vector instead of a set makes more sense here
+  std::vector<blst::Scalar> secrets_;
 };
 
 #endif // SECRET_GENERATOR_HPP

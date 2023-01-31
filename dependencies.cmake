@@ -59,12 +59,6 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/google/googletest
   GIT_TAG release-1.12.1)
 
-# uint256_t Library
-FetchContent_Declare(
-  uint256_t
-  GIT_REPOSITORY https://github.com/calccrypto/uint256_t
-  GIT_TAG 092e4c82e2b607da19ea4bae94f857756ce07d81)
-
 # csprng Library
 FetchContent_Declare(
   csprng
@@ -79,8 +73,7 @@ FetchContent_MakeAvailable(
   json
   valijson
   blst
-  googletest
-  uint256_t)
+  googletest)
 
 # csprng has a broken CMakeLists.txt file, so manaually download it instead
 FetchContent_Populate(csprng)
@@ -118,12 +111,6 @@ target_include_directories(
           ${googletest_SOURCE_DIR}/googlemock
           ${googletest_SOURCE_DIR}/googlemock/include)
 
-# Build the uint256_t library
-add_library(uint256_t STATIC ${uint256_t_SOURCE_DIR}/uint256_t.cpp
-                             ${uint256_t_SOURCE_DIR}/uint128_t/uint128_t.cpp)
-target_include_directories(uint256_t PRIVATE ${uint256_t_SOURCE_DIR}
-                                             ${uint256_t_SOURCE_DIR}/uint128_t)
-
-# Build the cspring library
+# Build the csprng library
 add_library(csprng STATIC ${csprng_SOURCE_DIR}/source/csprng.cpp)
 target_include_directories(csprng PRIVATE ${csprng_SOURCE_DIR}/source)

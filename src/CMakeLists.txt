@@ -51,7 +51,6 @@ target_link_libraries(
          cpr::cpr
          valijson
          ${LIB_BLST_PATH}
-         uint256_t
          csprng)
 
 # Product executable

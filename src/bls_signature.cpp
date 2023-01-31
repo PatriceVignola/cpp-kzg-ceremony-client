@@ -1,17 +1,10 @@
 #include "include/bls_signature.hpp"
 #include "include/bls_signer.hpp"
 #include "include/hex_util.hpp"
+#include <blst.hpp>
 #include <string>
 
-#ifdef _DLL
-#undef _DLL
-#include <uint256_t.h>
-#define _DLL
-#else
-#include <uint256_t.h>
-#endif
-
-BlsSignature::BlsSignature(uint256_t secret, const std::string& identity)
+BlsSignature::BlsSignature(blst::Scalar secret, const std::string& identity)
     : bls_signature_(bls_signer::sign(secret, identity)) {}
 
 std::string BlsSignature::encode() const {
