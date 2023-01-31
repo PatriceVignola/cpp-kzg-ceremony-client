@@ -71,6 +71,21 @@ Usage:
   -h, --help           Print usage
 ```
 
+## Dependencies
+
+### Ubuntu
+
+```
+apt update && apt --yes upgrade
+apt --yes install openssl
+```
+
+### Alpine Linux
+
+```
+apk --update add libstdc++
+```
+
 ## Build from source
 
 1. Clone the repo

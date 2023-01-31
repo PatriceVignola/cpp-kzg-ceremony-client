@@ -144,3 +144,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: cpp-kzg-ceremony-client-${{ github.ref_name }}-alpine-${{ matrix.version }}-amd64.tar.gz
+          token: ${{ secrets.PAT }}
