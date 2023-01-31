@@ -71,3 +71,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: cpp-kzg-ceremony-client-${{ github.ref_name }}-windows-amd64.zip
+          token: ${{ secrets.PAT }}
