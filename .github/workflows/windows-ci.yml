@@ -59,15 +59,15 @@ jobs:
 
   publish-windows:
     needs: [test-windows, sanity-check-windows]
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref_name, 'v')
     runs-on: ubuntu-latest
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
           name: windows-binaries
-      - run: zip cpp-kzg-ceremony-client-${{ github.ref }}-windows-amd64.zip cpp-kzg-ceremony-client.exe
+      - run: zip cpp-kzg-ceremony-client-${{ github.ref_name }}-windows-amd64.zip cpp-kzg-ceremony-client.exe
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: cpp-kzg-ceremony-client-${{ github.ref }}-windows-amd64.zip
+          files: cpp-kzg-ceremony-client-${{ github.ref_name }}-windows-amd64.zip
