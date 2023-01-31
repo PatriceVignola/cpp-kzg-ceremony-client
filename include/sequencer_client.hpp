@@ -4,6 +4,7 @@
 #include "auth_request_link.hpp"
 #include "batch_contribution.hpp"
 #include "batch_transcript.hpp"
+#include "include/contribution_receipt.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -15,8 +16,9 @@ public:
   AuthRequestLink get_auth_request_link() const;
   BatchContribution try_contribute(const std::string& session_id) const;
   BatchTranscript get_batch_transcript() const;
-  nlohmann::json contribute(const std::string& session_id,
-                            const BatchContribution& batch_contribution) const;
+  ContributionReceipt contribute(
+      const std::string& session_id,
+      const BatchContribution& batch_contribution) const;
 
 private:
   const std::string sequencer_url_;

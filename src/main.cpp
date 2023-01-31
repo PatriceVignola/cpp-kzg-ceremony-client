@@ -174,11 +174,12 @@ int main(int argc, char** argv) {
             auth_info.get_session_id(), batch_contribution);
 
         std::cout << "Your contribution was successfully submitted! Here is "
-                     "your contribution info:"
+                     "your contribution receipt:"
                   << std::endl;
 
         static constexpr int json_indent = 4;
-        std::cout << contribution_receipt.dump(json_indent) << std::endl;
+        std::cout << nlohmann::json(contribution_receipt).dump(json_indent)
+                  << std::endl;
 
         contribution_successful = true;
       } catch (const UnknownSessionIdError& ex) {
