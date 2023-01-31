@@ -37,9 +37,46 @@ jobs:
             build/bin/initialContribution.json
             build/bin/updatedContribution.json
 
-  publish-ubuntu:
+  test-ubuntu:
+    name: Test
     needs: build-ubuntu
-    # needs: [test-ubuntu, sanity-check-ubuntu]
+    strategy:
+      matrix:
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-${{ matrix.version }}-binaries
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install openssl
+      - run: chmod +x ./cpp-kzg-ceremony-client-test
+      - run: ./cpp-kzg-ceremony-client-test
+
+  sanity-check-ubuntu:
+    name: Sanity Check
+    needs: build-ubuntu
+    strategy:
+      matrix:
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-${{ matrix.version }}-binaries
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install openssl
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: ./cpp-kzg-ceremony-client --help
+
+  publish-ubuntu:
+    needs: [test-ubuntu, sanity-check-ubuntu]
     # if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     strategy:

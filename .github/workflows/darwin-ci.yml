@@ -1,0 +1,58 @@
+name: Darwin CI
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+    branches: [master]
+  push:
+    branches: [master]
+    tags:
+      - "v*"
+concurrency:
+  group: darwin-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-darwin:
+    name: Build
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./build.sh
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: darwin-binaries
+          path: |
+            build/bin/cpp-kzg-ceremony-client
+            build/bin/cpp-kzg-ceremony-client-test
+            build/bin/initialContribution.json
+            build/bin/updatedContribution.json
+
+  test-darwin:
+    name: Test
+    needs: build-darwin
+    strategy:
+      matrix:
+        version: [10.15, 11, 12]
+    runs-on: macos-${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: darwin-binaries
+      - run: chmod +x ./cpp-kzg-ceremony-client-test
+      - run: ./cpp-kzg-ceremony-client-test
+
+  sanity-check-darwin:
+    name: Sanity Check
+    needs: build-darwin
+    strategy:
+      matrix:
+        version: [10.15, 11, 12]
+    runs-on: macos-${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: darwin-binaries
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: ./cpp-kzg-ceremony-client --help

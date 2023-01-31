@@ -1,0 +1,116 @@
+name: Alpine CI
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+    branches: [master]
+  push:
+    branches: [master]
+    tags:
+      - "v*"
+concurrency:
+  group: alpine-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-alpine:
+    name: Build
+    strategy:
+      matrix:
+        version:
+          [
+            "3.9.6",
+            "3.10.9",
+            "3.11.13",
+            "3.12.10",
+            "3.13.12",
+            "3.14.8",
+            "3.15.6",
+            "3.16.3",
+            "3.17.1",
+          ]
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:${{ matrix.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: apk --update add alpine-sdk openssl-dev linux-headers wget
+      - name: Cache CMake
+        id: cache-cmake
+        uses: actions/cache@v3
+        with:
+          path: cmake-3.25.1
+          key: alpine-${{ matrix.version }}-cmake
+      - name: Build CMake
+        if: steps.cache-cmake.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1.tar.gz && \
+          tar -xzf cmake-3.25.1.tar.gz && \
+          cd cmake-3.25.1 && ./bootstrap && make && cd ..
+      - name: Build cpp-kzg-ceremony-client
+        run: PATH=$PWD/cmake-3.25.1/bin:$PATH ./build.sh
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: alpine-${{ matrix.version }}-binaries
+          path: |
+            build/bin/cpp-kzg-ceremony-client
+            build/bin/cpp-kzg-ceremony-client-test
+            build/bin/initialContribution.json
+            build/bin/updatedContribution.json
+
+  test-alpine:
+    name: Test
+    needs: build-alpine
+    strategy:
+      matrix:
+        version:
+          [
+            "3.9.6",
+            "3.10.9",
+            "3.11.13",
+            "3.12.10",
+            "3.13.12",
+            "3.14.8",
+            "3.15.6",
+            "3.16.3",
+            "3.17.1",
+          ]
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: alpine-${{ matrix.version }}-binaries
+      - run: apk --update add libstdc++
+      - run: chmod +x ./cpp-kzg-ceremony-client-test
+      - run: ./cpp-kzg-ceremony-client-test
+
+  sanity-check-alpine:
+    name: Sanity Check
+    needs: build-alpine
+    strategy:
+      matrix:
+        version:
+          [
+            "3.9.6",
+            "3.10.9",
+            "3.11.13",
+            "3.12.10",
+            "3.13.12",
+            "3.14.8",
+            "3.15.6",
+            "3.16.3",
+            "3.17.1",
+          ]
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: alpine-${{ matrix.version }}-binaries
+      - run: apk --update add libstdc++
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: ./cpp-kzg-ceremony-client --help
