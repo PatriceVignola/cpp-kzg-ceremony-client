@@ -71,6 +71,27 @@ Usage:
   -h, --help           Print usage
 ```
 
+## Latest Releases
+
+| Platform          | Link                                                                                                                                                      |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Windows           | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-windows-amd64.zip)           |
+| MacOS             | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-darwin-amd64.tar.gz)         |
+| Ubuntu 23.04      | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-ubuntu-23.04-amd64.tar.gz)   |
+| Ubuntu 22.10      | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-ubuntu-22.10-amd64.tar.gz)   |
+| Ubuntu 22.04      | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-ubuntu-22.04-amd64.tar.gz)   |
+| Ubuntu 20.04      | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-ubuntu-20.04-amd64.tar.gz)   |
+| Ubuntu 18.04      | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-ubuntu-18.04-amd64.tar.gz)   |
+| Alpine Linux 3.17 | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-alpine-3.17.1-amd64.tar.gz)  |
+| Alpine Linux 3.16 | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-alpine-3.16.3-amd64.tar.gz)  |
+| Alpine Linux 3.15 | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-alpine-3.15.6-amd64.tar.gz)  |
+| Alpine Linux 3.14 | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-alpine-3.14.8-amd64.tar.gz)  |
+| Alpine Linux 3.13 | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-alpine-3.13.12-amd64.tar.gz) |
+| Alpine Linux 3.12 | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-alpine-3.12.10-amd64.tar.gz) |
+| Alpine Linux 3.11 | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-alpine-3.11.13-amd64.tar.gz) |
+| Alpine Linux 3.10 | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-alpine-3.10.9-amd64.tar.gz)  |
+| Alpine Linux 3.9  | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.0.0/cpp-kzg-ceremony-client-v1.0.0-alpine-3.9.6-amd64.tar.gz)   |
+
 ## Dependencies
 
 ### Ubuntu
