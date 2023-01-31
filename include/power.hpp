@@ -4,30 +4,19 @@
 #include <blst.hpp>
 #include <nlohmann/json.hpp>
 
-#ifdef _DLL
-#undef _DLL
-#include <uint256_t.h>
-#define _DLL
-#else
-#include <uint256_t.h>
-#endif
-
 template <typename TBlstPoint, size_t size_in_bytes>
 class Power {
 public:
   bool in_group() const;
-  void multiply(uint256_t power);
   void multiply(blst::Scalar scalar);
   std::string encode() const;
 
   static Power<TBlstPoint, size_in_bytes> generate_pot_pubkey(
-      uint256_t secret) {
+      blst::Scalar secret) {
     static constexpr size_t num_secret_bits = 256;
     Power<TBlstPoint, size_in_bytes> power;
     power.blst_point_ = TBlstPoint::generator();
-    power.blst_point_.mult(
-        static_cast<const uint8_t*>(static_cast<const void*>(&secret)),
-        num_secret_bits);
+    power.blst_point_.mult(secret);
     return power;
   }
 

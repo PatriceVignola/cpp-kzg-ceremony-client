@@ -3,7 +3,10 @@
 void from_json(const nlohmann::json& json_witness, Witness& witness) {
   json_witness.at("runningProducts").get_to(witness.running_products_);
   json_witness.at("potPubkeys").get_to(witness.pot_pubkeys_);
-  json_witness.at("blsSignature").get_to(witness.bls_signatures_);
+
+  if (json_witness.find("blsSignature") != json_witness.end()) {
+    json_witness.at("blsSignature").get_to(witness.bls_signatures_);
+  }
 }
 
 void to_json(nlohmann::json& json_witness, const Witness& witness) {

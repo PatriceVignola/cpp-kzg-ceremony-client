@@ -56,14 +56,23 @@ TEST(TestSecretGenerator, Generates256RandomBytesWhenEmptyEntropy) {
       .WillOnce(::testing::SetArrayArgument<0>(expected_secret_bytes.begin(),
                                                expected_secret_bytes.end()));
 
-  uint256_t secret_key = 0;
-  std::memcpy(static_cast<void*>(&secret_key), expected_secret_bytes.data(),
-              num_secret_bytes);
+  blst::Scalar secret_key;
+  secret_key.from_bendian(expected_secret_bytes.data(),
+                          expected_secret_bytes.size());
 
   SecretGenerator<MockCsprng, MockBlstSecretKey> secret_generator(
       "", 1, std::move(csprng), std::move(blst_secret_key));
 
   const auto& secrets = secret_generator.get_secrets();
   EXPECT_EQ(1, secret_generator.get_secrets().size());
-  EXPECT_NE(secrets.find(secret_key), secrets.end());
+
+  EXPECT_TRUE(
+      std::any_of(secrets.begin(), secrets.end(),
+                  [&expected_secret_bytes](const blst::Scalar& secret) {
+                    std::array<uint8_t, sizeof(secret_key)> secret_bytes{};
+                    secret.to_bendian(secret_bytes.data());
+
+                    return std::equal(secret_bytes.begin(), secret_bytes.end(),
+                                      expected_secret_bytes.begin());
+                  }));
 }

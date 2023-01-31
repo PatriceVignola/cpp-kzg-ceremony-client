@@ -127,8 +127,7 @@ static constexpr auto transcript_schema = R"(
                     },
                     "required": [
                         "runningProducts",
-                        "potPubkeys",
-                        "blsSignature"
+                        "potPubkeys"
                     ]
                 }
             },
@@ -204,8 +203,7 @@ static constexpr auto transcript_schema = R"(
                     },
                     "required": [
                         "runningProducts",
-                        "potPubkeys",
-                        "blsSignature"
+                        "potPubkeys"
                     ]
                 }
             },
@@ -281,8 +279,7 @@ static constexpr auto transcript_schema = R"(
                     },
                     "required": [
                         "runningProducts",
-                        "potPubkeys",
-                        "blsSignature"
+                        "potPubkeys"
                     ]
                 }
             },
@@ -358,8 +355,7 @@ static constexpr auto transcript_schema = R"(
                     },
                     "required": [
                         "runningProducts",
-                        "potPubkeys",
-                        "blsSignature"
+                        "potPubkeys"
                     ]
                 }
             },

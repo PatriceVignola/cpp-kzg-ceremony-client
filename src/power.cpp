@@ -2,14 +2,6 @@
 #include "include/hex_util.hpp"
 #include <iostream>
 
-#ifdef _DLL
-#undef _DLL
-#include <uint256_t.h>
-#define _DLL
-#else
-#include <uint256_t.h>
-#endif
-
 template <typename TBlstPoint, size_t size_in_bytes>
 void from_json(const nlohmann::json& json_power_of_tau,
                Power<TBlstPoint, size_in_bytes>& power_of_tau) {
@@ -22,14 +14,6 @@ template <typename TBlstPoint, size_t size_in_bytes>
 void to_json(nlohmann::json& json_power_of_tau,
              const Power<TBlstPoint, size_in_bytes>& power_of_tau) {
   json_power_of_tau = power_of_tau.encode();
-}
-
-template <typename TBlstPoint, size_t size_in_bytes>
-void Power<TBlstPoint, size_in_bytes>::multiply(uint256_t power) {
-  static constexpr size_t num_bits = 256;
-  const auto* power_bytes =
-      static_cast<const uint8_t*>(static_cast<void*>(&power));
-  blst_point_.mult(power_bytes, num_bits);
 }
 
 template <typename TBlstPoint, size_t size_in_bytes>
