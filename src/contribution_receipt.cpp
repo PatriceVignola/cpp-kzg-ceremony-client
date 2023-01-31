@@ -11,3 +11,9 @@ void from_json(const nlohmann::json& json_contribution_receipt,
   json_contribution_receipt.at("signature")
       .get_to(contribution_receipt.signature_);
 }
+
+void to_json(nlohmann::json& json_contribution_receipt,
+             const ContributionReceipt& contribution_receipt) {
+  json_contribution_receipt["receipt"] = contribution_receipt.receipt_;
+  json_contribution_receipt["signature"] = contribution_receipt.signature_;
+}

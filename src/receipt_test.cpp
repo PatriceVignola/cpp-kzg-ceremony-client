@@ -3,10 +3,10 @@
 #include <nlohmann/json.hpp>
 
 // NOLINTNEXTLINE
-TEST(TestReceipt, ThrowsErrorIfIdTokenNotFound) {
+TEST(TestReceipt, ThrowsErrorIfWitnessNotFound) {
   static const auto receipt_json = R"(
     {
-      "g2": "foo"
+      "identity": "git|12345|foo"
     }
   )"_json;
 
@@ -18,7 +18,7 @@ TEST(TestReceipt, ThrowsErrorIfIdTokenNotFound) {
         } catch (
             const nlohmann::json_abi_v3_11_2::detail::out_of_range& error) {
           EXPECT_STREQ(
-              "[json.exception.out_of_range.403] key 'id_token' not found",
+              "[json.exception.out_of_range.403] key 'witness' not found",
               error.what());
           throw;
         }
@@ -27,15 +27,13 @@ TEST(TestReceipt, ThrowsErrorIfIdTokenNotFound) {
 }
 
 // NOLINTNEXTLINE
-TEST(TestReceipt, ThrowsErrorIfG2NotFound) {
+TEST(TestReceipt, ThrowsErrorIfIdentityNotFound) {
   static const auto receipt_json = R"(
     {
-      "id_token": {
-        "sub": "dummy_sub",
-        "nickname": "dummy_nickname",
-        "provider": "dummy_provider",
-        "exp": 1234
-      }
+      "witness": [
+        "0x123",
+        "0x456"
+      ]
     }
   )"_json;
 
@@ -46,8 +44,9 @@ TEST(TestReceipt, ThrowsErrorIfG2NotFound) {
           receipt_json.get<Receipt>();
         } catch (
             const nlohmann::json_abi_v3_11_2::detail::out_of_range& error) {
-          EXPECT_STREQ("[json.exception.out_of_range.403] key 'g2' not found",
-                       error.what());
+          EXPECT_STREQ(
+              "[json.exception.out_of_range.403] key 'identity' not found",
+              error.what());
           throw;
         }
       },
@@ -58,22 +57,18 @@ TEST(TestReceipt, ThrowsErrorIfG2NotFound) {
 TEST(TestReceipt, ParsesJsonCorrectly) {
   static const auto receipt_json = R"(
     {
-      "g2": "dummy_g2",
-      "id_token": {
-        "sub": "dummy_sub",
-        "nickname": "dummy_nickname",
-        "provider": "dummy_provider",
-        "exp": 1234
-      }
+      "identity": "git|12345|foo",
+      "witness": [
+        "0x123",
+        "0x456"
+      ]
     }
   )"_json;
 
   const auto receipt = receipt_json.get<Receipt>();
-  const auto& id_token = receipt.get_id_token();
+  const auto& identity = receipt.get_identity();
+  const auto& witness = receipt.get_witness();
 
-  EXPECT_EQ("dummy_g2", receipt.get_g2());
-  EXPECT_EQ("dummy_sub", id_token.get_sub());
-  EXPECT_EQ("dummy_nickname", id_token.get_nickname());
-  EXPECT_EQ("dummy_provider", id_token.get_provider());
-  EXPECT_EQ(1234, id_token.get_exp());
+  EXPECT_EQ("git|12345|foo", identity);
+  EXPECT_EQ(std::vector<std::string>({"0x123", "0x456"}), witness);
 }

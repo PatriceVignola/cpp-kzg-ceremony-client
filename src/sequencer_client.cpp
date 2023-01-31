@@ -3,6 +3,7 @@
 #include "include/batch_contribution.hpp"
 #include "include/batch_transcript.hpp"
 #include "include/contribution_error.hpp"
+#include "include/contribution_receipt.hpp"
 #include "include/contribution_schema.hpp"
 #include "include/transcript_schema.hpp"
 #include <cpr/cpr.h>
@@ -191,7 +192,7 @@ BatchTranscript SequencerClient::get_batch_transcript() const {
   return {json_response, json::parse(transcript_schema)};
 }
 
-nlohmann::json SequencerClient::contribute(
+ContributionReceipt SequencerClient::contribute(
     const std::string& session_id,
     const BatchContribution& batch_contribution) const {
   const cpr::Url url{contribute_url_};

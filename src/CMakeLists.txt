@@ -13,7 +13,6 @@ add_library(
   contribution_receipt.cpp
   github_user.cpp
   hex_util.cpp
-  id_token.cpp
   identity_fetcher.cpp
   port_picker.cpp
   pot_pubkey_message.cpp

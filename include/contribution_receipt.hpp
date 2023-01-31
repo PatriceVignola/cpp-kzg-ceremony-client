@@ -7,8 +7,8 @@
 
 class ContributionReceipt {
 public:
-  const std::string& get_signature() const { return signature_; }
   const Receipt& get_receipt() const { return receipt_; }
+  const std::string& get_signature() const { return signature_; }
 
 private:
   Receipt receipt_;
@@ -16,6 +16,9 @@ private:
 
   friend void from_json(const nlohmann::json& json_contribution_receipt,
                         ContributionReceipt& contribution_receipt);
+
+  friend void to_json(nlohmann::json& json_contribution_receipt,
+                      const ContributionReceipt& contribution_receipt);
 };
 
 #endif // CONTRIBUTION_RECEIPT_HPP

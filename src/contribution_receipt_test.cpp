@@ -30,7 +30,7 @@ TEST(TestContributionReceipt, ThrowsErrorIfReceiptNotFound) {
 TEST(TestContributionReceipt, ThrowsErrorIfSignatureNotFound) {
   static const auto contribution_receipt_json = R"(
     {
-      "receipt": "{\"id_token\": {\"sub\": \"dummy_sub\",\"nickname\": \"dummy_nickname\",\"provider\": \"dummy_provider\",\"exp\": 1234},\"g2\": \"dummy_g2\"}"
+      "receipt": "{\"identity\": \"git|12345|foo\", \"witness\": [\"0x123\", \"0x456\"]}"
     }
   )"_json;
 
@@ -55,7 +55,7 @@ TEST(TestContributionReceipt, ParsesJsonCorrectly) {
   static const auto contribution_receipt_json = R"(
     {
       "signature": "dummy_signature",
-      "receipt": "{\"id_token\": {\"sub\": \"dummy_sub\",\"nickname\": \"dummy_nickname\",\"provider\": \"dummy_provider\",\"exp\": 1234},\"g2\": \"dummy_g2\"}"
+      "receipt": "{\"identity\": \"git|12345|foo\", \"witness\": [\"0x123\", \"0x456\"]}"
     }
   )"_json;
 
@@ -63,12 +63,7 @@ TEST(TestContributionReceipt, ParsesJsonCorrectly) {
       contribution_receipt_json.get<ContributionReceipt>();
 
   EXPECT_EQ("dummy_signature", contribution_receipt.get_signature());
-  EXPECT_EQ("dummy_sub",
-            contribution_receipt.get_receipt().get_id_token().get_sub());
-  EXPECT_EQ("dummy_nickname",
-            contribution_receipt.get_receipt().get_id_token().get_nickname());
-  EXPECT_EQ("dummy_provider",
-            contribution_receipt.get_receipt().get_id_token().get_provider());
-  EXPECT_EQ(1234, contribution_receipt.get_receipt().get_id_token().get_exp());
-  EXPECT_EQ("dummy_g2", contribution_receipt.get_receipt().get_g2());
+  EXPECT_EQ("git|12345|foo", contribution_receipt.get_receipt().get_identity());
+  EXPECT_EQ(std::vector<std::string>({"0x123", "0x456"}),
+            contribution_receipt.get_receipt().get_witness());
 }
