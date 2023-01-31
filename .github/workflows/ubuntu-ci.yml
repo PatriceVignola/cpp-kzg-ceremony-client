@@ -77,7 +77,7 @@ jobs:
 
   publish-ubuntu:
     needs: [test-ubuntu, sanity-check-ubuntu]
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref_name, 'v')
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -88,8 +88,8 @@ jobs:
         with:
           name: ubuntu-${{ matrix.version }}-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
-      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref }}-ubuntu-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
+      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: cpp-kzg-ceremony-client-${{ github.ref }}-ubuntu-${{ matrix.version }}-amd64.tar.gz
+          files: cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-amd64.tar.gz

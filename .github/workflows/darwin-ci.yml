@@ -59,7 +59,7 @@ jobs:
 
   publish-darwin:
     needs: [test-darwin, sanity-check-darwin]
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref_name, 'v')
     runs-on: ubuntu-latest
     steps:
       - name: Download binaries
@@ -67,8 +67,8 @@ jobs:
         with:
           name: darwin-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
-      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref }}-darwin-amd64.tar.gz cpp-kzg-ceremony-client
+      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref_name }}-darwin-amd64.tar.gz cpp-kzg-ceremony-client
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: cpp-kzg-ceremony-client-${{ github.ref }}-darwin-amd64.tar.gz
+          files: cpp-kzg-ceremony-client-${{ github.ref_name }}-darwin-amd64.tar.gz
