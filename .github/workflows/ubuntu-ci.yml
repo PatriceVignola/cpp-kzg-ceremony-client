@@ -5,6 +5,8 @@ on:
     branches: [master]
   push:
     branches: [master]
+    tags:
+      - "v*"
 concurrency:
   group: ubuntu-ci-${{ github.ref }}
   cancel-in-progress: true
@@ -72,3 +74,36 @@ jobs:
       - run: apt --yes install openssl
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: ./cpp-kzg-ceremony-client --help
+
+  publish-ubuntu:
+    needs: [test-ubuntu, sanity-check-ubuntu]
+    # if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
+    steps:
+      - name: Download binaries
+          uses: actions/download-artifact@v3
+          with:
+            name: ubuntu-${{ matrix.version }}-binaries
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref }}-ubuntu-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: cpp-kzg-ceremony-client-${{ github.ref }}-ubuntu-${{ matrix.version }}-amd64.tar.gz
+          asset_name: cpp-kzg-ceremony-client-${{ github.ref }}-ubuntu-${{ matrix.version }}-amd64
