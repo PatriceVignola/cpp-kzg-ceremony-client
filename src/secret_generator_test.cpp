@@ -26,7 +26,7 @@ TEST(TestSecretGenerator, GeneratesNothingWhenZeroSecrets) {
   MockCsprng csprng;
   EXPECT_CALL(csprng, parentheses_op(::testing::_, ::testing::_)).Times(0);
 
-  SecretGenerator<MockCsprng> secret_generator("", 0, std::move(csprng));
+  SecretGenerator<MockCsprng> secret_generator({}, 0, std::move(csprng));
   EXPECT_EQ(0, secret_generator.get_secrets().size());
 }
 
@@ -61,7 +61,7 @@ TEST(TestSecretGenerator, Generates256RandomBytesWhenEmptyEntropy) {
                           expected_secret_bytes.size());
 
   SecretGenerator<MockCsprng, MockBlstSecretKey> secret_generator(
-      "", 1, std::move(csprng), std::move(blst_secret_key));
+      {}, 1, std::move(csprng), std::move(blst_secret_key));
 
   const auto& secrets = secret_generator.get_secrets();
   EXPECT_EQ(1, secret_generator.get_secrets().size());

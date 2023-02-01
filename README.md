@@ -34,7 +34,8 @@ Multiple clients for the Go, Rust and Java languages already exist, but I haven'
 ## Usage
 
 1. Download the executable from the [releases page](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases)
-2. Run the exeutable: `./cpp-kzg-ceremony-client --entropy=<sentence_of_your_choosing>`
+2. Run the exeutable: `./cpp-kzg-ceremony-client`
+3. Write your entropy sentence and press enter
 
 More command-line options are also available:
 
@@ -58,11 +59,6 @@ Usage:
                        https://seq.ceremony.ethereum.org)
   -a, --auth arg       Authentication provider to use. Choices: [ethereum,
                        github] (default: ethereum)
-  -e, --entropy arg    A phrase to initialize the entropy. Can be any
-                       length, but will be truncated or padded to 256
-                       characters depending on the length. This phrase will
-                       be fed more randomness before a secret is generated,
-                       so it does not already need to random.
   -n, --no-signing     Disable the signing of the contribution. Although
                        signing contributions is not mandatory, it is
                        recommended to verify that the contributions listed
