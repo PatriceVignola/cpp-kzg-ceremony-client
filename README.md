@@ -59,6 +59,9 @@ Usage:
                        https://seq.ceremony.ethereum.org)
   -a, --auth arg       Authentication provider to use. Choices: [ethereum,
                        github] (default: ethereum)
+  -e, --entropy arg    Type of entropy to use for the first layer.
+                       Additional CSPRNG entropy will be applied on top of
+                       it. Choices: [stdin] (default: stdin)
   -n, --no-signing     Disable the signing of the contribution. Although
                        signing contributions is not mandatory, it is
                        recommended to verify that the contributions listed
