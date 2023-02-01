@@ -67,8 +67,6 @@ static std::shared_ptr<restbed::Resource> make_signing_resource(
   resource->set_method_handler(
       "GET", [port, &pot_pubkey_messages](
                  const std::shared_ptr<restbed::Session>& session) {
-        // TODO (PatriceVignola): Fill the potPubkeys fields
-        // https://github.com/ethereum/kzg-ceremony-specs/blob/af0f7f39dc4096c8446dab1f6e7d2d5657663997/docs/cryptography/contributionSigning.md
         auto signing_objects_json = R"(
           {
             "types": {
