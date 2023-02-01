@@ -12,13 +12,12 @@ template <typename csprng = duthomhas::csprng,
           typename BlstSecretKey = blst::SecretKey>
 class SecretGenerator {
 public:
-  SecretGenerator(const std::string& entropy_string, size_t num_secrets,
+  SecretGenerator(const std::vector<uint8_t>& entropy, size_t num_secrets,
                   csprng&& generator = duthomhas::csprng(),
                   BlstSecretKey&& blst_secret_key = BlstSecretKey()) {
     while (secrets_.size() < num_secrets) {
       static constexpr size_t min_entropy_bytes = 256;
-      std::vector<uint8_t> entropy_bytes(entropy_string.begin(),
-                                         entropy_string.end());
+      std::vector<uint8_t> entropy_bytes = entropy;
 
       // Replace at least half the initial+padded bytes with random ones
       const size_t num_random_bytes = std::max(

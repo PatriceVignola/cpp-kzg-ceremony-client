@@ -22,11 +22,9 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
 
     options.add_option(
         "", "e", "entropy",
-        "A phrase to initialize the entropy. Can be any length, but will "
-        "be truncated or padded to 256 characters depending on the length. "
-        "This phrase will be fed more randomness before a secret is "
-        "generated, so it does not already need to random.",
-        cxxopts::value<std::string>(), "");
+        "Type of entropy to use for the first layer. Additional CSPRNG entropy "
+        "will be applied on top of it. Choices: [stdin]",
+        cxxopts::value<std::string>()->default_value("stdin"), "");
 
     options.add_option(
         "", "n", "no-signing",
@@ -45,7 +43,6 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
     help_wanted_ = parse_result.count("help") > 0;
     if (!help_wanted_) {
       sequencer_url_ = parse_result["sequencer"].as<std::string>();
-      entropy_ = parse_result["entropy"].as<std::string>();
       signing_disabled_ = parse_result["no-signing"].as<bool>();
     }
 
@@ -60,10 +57,35 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
                    << "`";
       throw std::runtime_error(error_stream.str());
     }
+
+    const auto entropy_type = parse_result["entropy"].as<std::string>();
+    if (entropy_type == "stdin") {
+      entropy_type_ = EntropyType::Stdin;
+    } else {
+      std::stringstream error_stream;
+      error_stream << "invalid entropy type `" << entropy_type << "`";
+      throw std::runtime_error(error_stream.str());
+    }
   } catch (const cxxopts::option_not_exists_exception& ex) {
     std::stringstream error_stream;
     error_stream << "error when parsing arguments: " << ex.what() << std::endl
                  << help_message_;
     throw std::runtime_error(error_stream.str());
+  }
+}
+
+static std::vector<uint8_t> get_stdin_entropy() {
+  std::cout << "Write a sentence to generate entropy: " << std::endl;
+  std::string entropy;
+  std::cin >> entropy;
+  return {entropy.begin(), entropy.end()};
+}
+
+std::vector<uint8_t> ArgParser::get_entropy() const {
+  switch (entropy_type_) {
+  case EntropyType::Stdin:
+    return get_stdin_entropy();
+  default:
+    throw std::runtime_error("Invalid entropy type");
   }
 }

@@ -13,11 +13,9 @@ Usage:
                        https://seq.ceremony.ethereum.org)
   -a, --auth arg       Authentication provider to use. Choices: [ethereum, 
                        github] (default: ethereum)
-  -e, --entropy arg    A phrase to initialize the entropy. Can be any 
-                       length, but will be truncated or padded to 256 
-                       characters depending on the length. This phrase will 
-                       be fed more randomness before a secret is generated, 
-                       so it does not already need to random.
+  -e, --entropy arg    Type of entropy to use for the first layer. 
+                       Additional CSPRNG entropy will be applied on top of 
+                       it. Choices: [stdin] (default: stdin)
   -n, --no-signing     Disable the signing of the contribution. Although 
                        signing contributions is not mandatory, it is 
                        recommended to verify that the contributions listed 
@@ -28,10 +26,9 @@ Usage:
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, ThrowsErrorUnknownOption) {
-  const std::array<const char*, 3> args = {
+  const std::array<const char*, 2> args = {
       "foo",
       "--bar",
-      "--entropy=foo",
   };
 
   std::stringstream expected_error;
@@ -57,10 +54,9 @@ TEST(TestArgParser, ThrowsErrorUnknownOption) {
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, ThrowsErrorInvalidAuthenticationProvider) {
-  const std::array<const char*, 3> args = {
+  const std::array<const char*, 2> args = {
       "foo",
       "--auth=bar",
-      "--entropy=foo",
   };
 
   // NOLINTNEXTLINE
@@ -77,11 +73,30 @@ TEST(TestArgParser, ThrowsErrorInvalidAuthenticationProvider) {
 }
 
 // NOLINTNEXTLINE
+TEST(TestArgParser, ThrowsErrorInvalidEntropyType) {
+  const std::array<const char*, 2> args = {
+      "foo",
+      "--entropy=bar",
+  };
+
+  // NOLINTNEXTLINE
+  EXPECT_THROW(
+      {
+        try {
+          ArgParser arg_parser(args.size(), args.data());
+        } catch (const std::runtime_error& error) {
+          EXPECT_STREQ("invalid entropy type `bar`", error.what());
+          throw;
+        }
+      },
+      std::runtime_error);
+}
+
+// NOLINTNEXTLINE
 TEST(TestArgParser, ThrowsExceptionShortArgsEqualDelimiter) {
-  const std::array<const char*, 3> args = {
+  const std::array<const char*, 2> args = {
       "foo",
       "-s=bar_sequencer",
-      "--entropy=foo",
   };
 
 #ifdef _WIN32
@@ -108,29 +123,6 @@ TEST(TestArgParser, ThrowsExceptionShortArgsEqualDelimiter) {
 }
 
 // NOLINTNEXTLINE
-TEST(TestArgParser, ThrowsExceptionMissingEntropy) {
-  const std::array<const char*, 1> args = {"foo"};
-
-#ifdef _WIN32
-  const auto* expected_error = "Option 'entropy' has no value";
-#else
-  const auto* expected_error = "Option ‘entropy’ has no value";
-#endif
-
-  // NOLINTNEXTLINE
-  EXPECT_THROW(
-      {
-        try {
-          ArgParser arg_parser(args.size(), args.data());
-        } catch (const cxxopts::option_has_no_value_exception& error) {
-          EXPECT_STREQ(expected_error, error.what());
-          throw;
-        }
-      },
-      cxxopts::option_has_no_value_exception);
-}
-
-// NOLINTNEXTLINE
 TEST(TestArgParser, HelpRequested) {
   const std::array<const char*, 2> args = {"foo", "--help"};
   ArgParser arg_parser(args.size(), args.data());
@@ -144,10 +136,9 @@ TEST(TestArgParser, HelpRequested) {
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, ValidDefaultArgs) {
-  const std::array<const char*, 2> args = {"foo", "--entropy=bar"};
+  const std::array<const char*, 1> args = {"foo"};
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::Ethereum, arg_parser.get_auth_provider());
-  EXPECT_EQ("bar", arg_parser.get_entropy());
   EXPECT_EQ("https://seq.ceremony.ethereum.org",
             arg_parser.get_sequencer_url());
   EXPECT_FALSE(arg_parser.get_help_wanted());
@@ -155,54 +146,49 @@ TEST(TestArgParser, ValidDefaultArgs) {
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, ValidArgsEqualDelimiter) {
-  const std::array<const char*, 4> args = {
+  const std::array<const char*, 3> args = {
       "foo",
       "--sequencer=foo_sequencer",
       "--auth=github",
-      "--entropy=bar",
   };
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::GitHub, arg_parser.get_auth_provider());
   EXPECT_EQ("foo_sequencer", arg_parser.get_sequencer_url());
-  EXPECT_EQ("bar", arg_parser.get_entropy());
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, ValidArgsSpaceDelimiter) {
-  const std::array<const char*, 7> args = {
-      "foo",    "--sequencer", "foo_sequencer", "--auth",
-      "github", "--entropy",   "bar",
+  const std::array<const char*, 5> args = {
+      "foo", "--sequencer", "foo_sequencer", "--auth", "github",
   };
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::GitHub, arg_parser.get_auth_provider());
   EXPECT_EQ("foo_sequencer", arg_parser.get_sequencer_url());
-  EXPECT_EQ("bar", arg_parser.get_entropy());
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, ValidShortArgsSpaceDelimiter) {
-  const std::array<const char*, 7> args = {
-      "foo", "-s", "foo_sequencer", "-a", "github", "-e", "bar",
+  const std::array<const char*, 5> args = {
+      "foo", "-s", "foo_sequencer", "-a", "github",
   };
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::GitHub, arg_parser.get_auth_provider());
   EXPECT_EQ("foo_sequencer", arg_parser.get_sequencer_url());
-  EXPECT_EQ("bar", arg_parser.get_entropy());
   EXPECT_FALSE(arg_parser.get_help_wanted());
 }
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, GithubAuthenticationProvider) {
-  const std::array<const char*, 2> args = {"foo", "--entropy=bar"};
+  const std::array<const char*, 1> args = {"foo"};
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::Ethereum, arg_parser.get_auth_provider());
 }
 
 // NOLINTNEXTLINE
 TEST(TestArgParser, EthereumAuthenticationProvider) {
-  const std::array<const char*, 2> args = {"foo", "--entropy=bar"};
+  const std::array<const char*, 1> args = {"foo"};
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_EQ(AuthProvider::Ethereum, arg_parser.get_auth_provider());
 }
