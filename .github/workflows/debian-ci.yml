@@ -1,0 +1,96 @@
+name: Debian CI
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+    branches: [master]
+  push:
+    branches: [master]
+    tags:
+      - "v*"
+concurrency:
+  group: debian-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-debian:
+    name: Build
+    strategy:
+      matrix:
+        version: ["6.0.10", "7.11", "8.11", "9.13", "10.13", "11.6"]
+    runs-on: debian-latest
+    container:
+      image: debian:${{ matrix.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install build-essential libssl-dev git wget
+      - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
+      - run: chmod +x cmake-3.25.1-linux-x86_64.sh
+      - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
+      - run: PATH=$PWD/bin:$PATH ./build.sh
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: debian-${{ matrix.version }}-binaries
+          path: |
+            build/bin/cpp-kzg-ceremony-client
+            build/bin/cpp-kzg-ceremony-client-test
+            build/bin/initialContribution.json
+            build/bin/updatedContribution.json
+
+  test-debian:
+    name: Test
+    needs: build-debian
+    strategy:
+      matrix:
+        version: ["6.0.10", "7.11", "8.11", "9.13", "10.13", "11.6"]
+    runs-on: debian-latest
+    container:
+      image: debian:${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: debian-${{ matrix.version }}-binaries
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install openssl
+      - run: chmod +x ./cpp-kzg-ceremony-client-test
+      - run: ./cpp-kzg-ceremony-client-test
+
+  sanity-check-debian:
+    name: Sanity Check
+    needs: build-debian
+    strategy:
+      matrix:
+        version: ["6.0.10", "7.11", "8.11", "9.13", "10.13", "11.6"]
+    runs-on: debian-latest
+    container:
+      image: debian:${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: debian-${{ matrix.version }}-binaries
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install openssl
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: ./cpp-kzg-ceremony-client --help
+
+  publish-ubuntu:
+    needs: [test-debian, sanity-check-debian]
+    if: startsWith(github.ref_name, 'v')
+    runs-on: debian-latest
+    strategy:
+      matrix:
+        version: ["6.0.10", "7.11", "8.11", "9.13", "10.13", "11.6"]
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: debian-${{ matrix.version }}-binaries
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref_name }}-debian-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: cpp-kzg-ceremony-client-${{ github.ref_name }}-debian-${{ matrix.version }}-amd64.tar.gz
+          token: ${{ secrets.PAT }}
