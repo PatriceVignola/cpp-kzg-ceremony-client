@@ -75,7 +75,7 @@ jobs:
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: ./cpp-kzg-ceremony-client --help
 
-  publish-ubuntu:
+  publish-debian:
     needs: [test-debian, sanity-check-debian]
     if: startsWith(github.ref_name, 'v')
     runs-on: debian-latest
