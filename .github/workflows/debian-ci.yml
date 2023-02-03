@@ -15,17 +15,17 @@ jobs:
     name: Build
     strategy:
       matrix:
-        version: ["7.11", "8.11", "9.13", "10.13", "11.6"]
+        version: ["8.11", "9.13", "10.13", "11.6"]
     runs-on: ubuntu-latest
     container:
       image: debian:${{ matrix.version }}
     steps:
-      - run: apt-get update && apt-get --yes upgrade
-      - run: apt-get --yes install build-essential libssl-dev git wget
+      - uses: actions/checkout@v2
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install build-essential libssl-dev git wget
       - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
       - run: chmod +x cmake-3.25.1-linux-x86_64.sh
       - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
-      - uses: actions/checkout@v2
       - run: PATH=$PWD/bin:$PATH ./build.sh
       - name: Upload binaries
         uses: actions/upload-artifact@v3
@@ -42,7 +42,7 @@ jobs:
     needs: build-debian
     strategy:
       matrix:
-        version: ["7.11", "8.11", "9.13", "10.13", "11.6"]
+        version: ["8.11", "9.13", "10.13", "11.6"]
     runs-on: ubuntu-latest
     container:
       image: debian:${{ matrix.version }}
@@ -51,8 +51,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: debian-${{ matrix.version }}-binaries
-      - run: apt-get update && apt-get --yes upgrade
-      - run: apt-get --yes install openssl
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install openssl
       - run: chmod +x ./cpp-kzg-ceremony-client-test
       - run: ./cpp-kzg-ceremony-client-test
 
@@ -61,7 +61,7 @@ jobs:
     needs: build-debian
     strategy:
       matrix:
-        version: ["7.11", "8.11", "9.13", "10.13", "11.6"]
+        version: ["8.11", "9.13", "10.13", "11.6"]
     runs-on: ubuntu-latest
     container:
       image: debian:${{ matrix.version }}
@@ -70,8 +70,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: debian-${{ matrix.version }}-binaries
-      - run: apt-get update && apt-get --yes upgrade
-      - run: apt-get --yes install openssl
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install openssl
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: ./cpp-kzg-ceremony-client --help
 
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ["7.11", "8.11", "9.13", "10.13", "11.6"]
+        version: ["8.11", "9.13", "10.13", "11.6"]
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
