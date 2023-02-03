@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: apt update && apt --yes upgrade
-      - run: apt --yes --force-yes install build-essential libssl-dev git
+      - run: apt --yes --force-yes install build-essential libssl-dev git curl
       - run: curl -O https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
       - run: chmod +x cmake-3.25.1-linux-x86_64.sh
       - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
