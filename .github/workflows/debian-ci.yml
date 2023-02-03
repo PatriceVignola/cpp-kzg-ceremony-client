@@ -21,7 +21,7 @@ jobs:
       image: debian:${{ matrix.version }}
     steps:
       - uses: actions/checkout@v2
-      - run: apt update && apt --yes upgrade
+      - run: apt update && apt --yes --force-yes upgrade
       - run: apt --yes install build-essential libssl-dev git wget
       - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
       - run: chmod +x cmake-3.25.1-linux-x86_64.sh
@@ -51,7 +51,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: debian-${{ matrix.version }}-binaries
-      - run: apt update && apt --yes upgrade
+      - run: apt update && apt --yes --force-yes upgrade
       - run: apt --yes install openssl
       - run: chmod +x ./cpp-kzg-ceremony-client-test
       - run: ./cpp-kzg-ceremony-client-test
@@ -70,7 +70,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: debian-${{ matrix.version }}-binaries
-      - run: apt update && apt --yes upgrade
+      - run: apt update && apt --yes --force-yes upgrade
       - run: apt --yes install openssl
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: ./cpp-kzg-ceremony-client --help
