@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: apt update && apt --yes upgrade
-      - run: apt --yes --force-yes install build-essential libssl-dev git curl
+      - run: apt --yes --force-yes install build-essential libssl-dev git wget
       - name: Cache CMake
         id: cache-cmake
         uses: actions/cache@v3
@@ -32,7 +32,7 @@ jobs:
       - name: Build CMake
         if: steps.cache-cmake.outputs.cache-hit != 'true'
         run: |
-          curl -O https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1.tar.gz && \
+          wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1.tar.gz && \
           tar -xzf cmake-3.25.1.tar.gz && \
           cd cmake-3.25.1 && ./bootstrap && make && cd ..
       - name: Build cpp-kzg-ceremony-client
