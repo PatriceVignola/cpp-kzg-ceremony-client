@@ -5,6 +5,7 @@
 ![Darwin CI](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/actions/workflows/darwin-ci.yml/badge.svg)
 ![Ubuntu CI](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/actions/workflows/ubuntu-ci.yml/badge.svg)
 ![Alpine CI](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/actions/workflows/alpine-ci.yml/badge.svg)
+![Debian CI](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/actions/workflows/debian-ci.yml/badge.svg)
 
 The C++ KZG Ceremony Client (or CKCC) is a fully-featured client for Ethereum's KZG Ceremony.
 
