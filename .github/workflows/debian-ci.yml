@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         version: ["6.0.10", "7.11", "8.11", "9.13", "10.13", "11.6"]
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
     container:
       image: debian:${{ matrix.version }}
     steps:
@@ -43,7 +43,7 @@ jobs:
     strategy:
       matrix:
         version: ["6.0.10", "7.11", "8.11", "9.13", "10.13", "11.6"]
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
     container:
       image: debian:${{ matrix.version }}
     steps:
@@ -62,7 +62,7 @@ jobs:
     strategy:
       matrix:
         version: ["6.0.10", "7.11", "8.11", "9.13", "10.13", "11.6"]
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
     container:
       image: debian:${{ matrix.version }}
     steps:
@@ -78,7 +78,7 @@ jobs:
   publish-debian:
     needs: [test-debian, sanity-check-debian]
     if: startsWith(github.ref_name, 'v')
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         version: ["6.0.10", "7.11", "8.11", "9.13", "10.13", "11.6"]
