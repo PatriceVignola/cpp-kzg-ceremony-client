@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
         }
       }();
 
-      AuthBrowser auth_browser(std::string(auth_url));
+      AuthBrowser auth_browser((std::string(auth_url)));
       auto auth_future = auth_info_promise.get_future();
       AuthInfo auth_info = auth_future.get();
 
@@ -155,7 +155,7 @@ int main(int argc, char** argv) {
         std::cout << "Updating the contributions" << std::endl;
         auto contributions = batch_contribution.get_contributions();
         const auto& secrets = secret_generator.get_secrets();
-        auto secret_iter = secrets.begin();
+        const auto* secret_iter = secrets.begin();
 
         for (size_t i = 0; i < contributions.size(); ++i) {
           auto& contribution = contributions[i];

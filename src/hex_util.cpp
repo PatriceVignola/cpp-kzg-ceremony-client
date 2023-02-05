@@ -1,5 +1,6 @@
 #include "include/hex_util.hpp"
 #include <absl/strings/numbers.h>
+#include <absl/strings/str_cat.h>
 #include <absl/strings/string_view.h>
 #include <absl/types/span.h>
 #include <iomanip>
@@ -27,7 +28,10 @@ std::vector<uint8_t> decode(absl::string_view hex) {
 
   for (size_t i = 2; i < hex.length(); i += 2) {
     int byte = 0;
-    absl::SimpleHexAtoi(hex.substr(i, 2), &byte);
+    if (!absl::SimpleHexAtoi(hex.substr(i, 2), &byte)) {
+      throw std::runtime_error(
+          absl::StrCat("Failed to convert `", hex.substr(i, 2), "` to bytes"));
+    }
     bytes.push_back(static_cast<uint8_t>(byte));
   }
 
