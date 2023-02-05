@@ -365,7 +365,7 @@ TEST(TestBatchContribution, CorrectlyUpdatesContributions) {
 
   std::vector<blst::Scalar> secrets = {secret1, secret2, secret3, secret4};
 
-  auto& contributions = batch_contribution.get_contributions();
+  auto contributions = batch_contribution.get_contributions();
   for (size_t i = 0; i < contributions.size(); ++i) {
     auto& contribution = contributions[i];
     const auto& secret = secrets[i];

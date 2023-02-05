@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
 
         // Update the powers of Tau with the secrets generated earlier
         std::cout << "Updating the contributions" << std::endl;
-        auto& contributions = batch_contribution.get_contributions();
+        auto contributions = batch_contribution.get_contributions();
         const auto& secrets = secret_generator.get_secrets();
         auto secret_iter = secrets.begin();
 
