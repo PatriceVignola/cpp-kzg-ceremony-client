@@ -186,8 +186,8 @@ TEST(TestBatchContribution, ParsesJsonCorrectly) {
               contribution.get_num_g2_powers());
 
     const auto& powers_of_tau = contribution.get_powers_of_tau();
-    const auto& g1_powers = powers_of_tau.get_g1_powers();
-    const auto& g2_powers = powers_of_tau.get_g2_powers();
+    const auto g1_powers = powers_of_tau.get_g1_powers();
+    const auto g2_powers = powers_of_tau.get_g2_powers();
 
     const auto& powers_of_tau_json = contribution_json.at("powersOfTau");
     const auto& g1_powers_json = powers_of_tau_json.at("G1Powers");

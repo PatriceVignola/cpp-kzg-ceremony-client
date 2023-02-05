@@ -23,8 +23,8 @@ void to_json(nlohmann::json& json_contribution,
 }
 
 void Contribution::update_powers_of_tau(blst::Scalar secret) {
-  auto& g1_powers = powers_of_tau_.get_g1_powers();
-  auto& g2_powers = powers_of_tau_.get_g2_powers();
+  auto g1_powers = powers_of_tau_.get_g1_powers();
+  auto g2_powers = powers_of_tau_.get_g2_powers();
 
   static constexpr size_t num_scalar_bytes = 32;
   static constexpr size_t scalar_bits = 256;
