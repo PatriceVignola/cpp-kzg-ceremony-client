@@ -10,6 +10,7 @@
 #include "include/sequencer_client.hpp"
 #include "include/server.hpp"
 #include "include/signing_browser.hpp"
+#include <absl/strings/str_cat.h>
 #include <cpr/cpr.h>
 #include <iostream>
 
@@ -94,7 +95,7 @@ int main(int argc, char** argv) {
         }
       }();
 
-      AuthBrowser auth_browser(auth_url);
+      AuthBrowser auth_browser(std::string(auth_url));
       auto auth_future = auth_info_promise.get_future();
       AuthInfo auth_info = auth_future.get();
 
@@ -122,8 +123,8 @@ int main(int argc, char** argv) {
       if (auth_provider == AuthProvider::Ethereum &&
           !arg_parser.signing_disabled() && ecdsa_signature.empty()) {
         const auto signing_url =
-            "http://localhost:" + std::to_string(port) +
-            "/sign?eth_address=" + auth_info.get_nickname();
+            absl::StrCat("http://localhost:", port,
+                         "/sign?eth_address=", auth_info.get_nickname());
 
         SigningBrowser signing_browser(signing_url);
         auto ecdsa_signature_future = ecdsa_signature_promise.get_future();
@@ -159,8 +160,8 @@ int main(int argc, char** argv) {
         for (size_t i = 0; i < contributions.size(); ++i) {
           auto& contribution = contributions[i];
           contribution.update_powers_of_tau(*secret_iter);
-          contribution.set_pot_pubkey(pot_pubkeys[i]);
-          contribution.set_bls_signature(bls_signatures[i]);
+          contribution.set_pot_pubkey(std::move(pot_pubkeys[i]));
+          contribution.set_bls_signature(std::move(bls_signatures[i]));
           ++secret_iter;
         }
 

@@ -2,6 +2,7 @@
 #define BATCH_CONTRIBUTION_HPP
 
 #include "include/contribution.hpp"
+#include <absl/types/span.h>
 #include <nlohmann/json.hpp>
 #include <vector>
 
@@ -10,10 +11,13 @@ public:
   BatchContribution(const nlohmann::json& json_batch_contribution,
                     const nlohmann::json& json_schema);
 
-  std::vector<Contribution>& get_contributions() { return contributions_; }
+  absl::Span<Contribution> get_contributions() {
+    return absl::Span<Contribution>(contributions_);
+  }
+
   void validate_powers() const;
 
-  void set_ecdsa_signature(std::string ecdsa_signature) {
+  void set_ecdsa_signature(std::string&& ecdsa_signature) {
     ecdsa_signature_ = std::move(ecdsa_signature);
   }
 

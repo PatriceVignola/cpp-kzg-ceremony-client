@@ -1,4 +1,5 @@
 #include "include/batch_transcript.hpp"
+#include <absl/strings/str_cat.h>
 #include <iostream>
 #include <valijson/adapters/nlohmann_json_adapter.hpp>
 #include <valijson/schema.hpp>
@@ -34,20 +35,19 @@ BatchTranscript::BatchTranscript(const nlohmann::json& json_batch_transcript,
     valijson::ValidationResults::Error error;
 
     int error_num = 1;
-    std::stringstream error_stream;
+    std::string error_message;
 
     while (results.popError(error)) {
-      std::string context;
+      absl::StrAppend(&error_message, "Error #", error_num, "\n  context: ");
+
       for (const auto& error_string : error.context) {
-        context += error_string;
+        absl::StrAppend(&error_message, error_string);
       }
 
-      error_stream << "Error #" << error_num << std::endl
-                   << "  context: " << context << std::endl
-                   << "  desc:    " << error.description << std::endl;
+      absl::StrAppend(&error_message, "\n  desc:    ", error.description, "\n");
       ++error_num;
     }
-    throw std::runtime_error(error_stream.str());
+    throw std::runtime_error(error_message);
   }
 
   // If we reached this point, it means the JSON was correctly validated against

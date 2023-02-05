@@ -12,12 +12,12 @@ class UnknownSessionIdError : std::exception {};
 
 class SequencerClient {
 public:
-  SequencerClient(std::string sequencer_url, uint16_t port);
+  SequencerClient(absl::string_view sequencer_url, uint16_t port);
   AuthRequestLink get_auth_request_link() const;
-  BatchContribution try_contribute(const std::string& session_id) const;
+  BatchContribution try_contribute(absl::string_view session_id) const;
   BatchTranscript get_batch_transcript() const;
   ContributionReceipt contribute(
-      const std::string& session_id,
+      absl::string_view session_id,
       const BatchContribution& batch_contribution) const;
 
 private:

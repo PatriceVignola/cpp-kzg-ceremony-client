@@ -2,17 +2,18 @@
 #define POWERS_OF_TAU_HPP
 
 #include "power.hpp"
+#include <absl/types/span.h>
 #include <nlohmann/json.hpp>
 #include <vector>
 
 class PowersOfTau {
 public:
-  std::vector<G1Power>& get_g1_powers();
-  std::vector<G2Power>& get_g2_powers();
-  const std::vector<G1Power>& get_g1_powers() const;
-  const std::vector<G2Power>& get_g2_powers() const;
-  void multiply_g1_power(int power_index, const std::vector<uint8_t>& power);
-  void multiply_g2_power(int power_index, const std::vector<uint8_t>& power);
+  absl::Span<G1Power> get_g1_powers();
+  absl::Span<G2Power> get_g2_powers();
+  absl::Span<const G1Power> get_g1_powers() const;
+  absl::Span<const G2Power> get_g2_powers() const;
+  void multiply_g1_power(int power_index, absl::Span<const uint8_t> power);
+  void multiply_g2_power(int power_index, absl::Span<const uint8_t> power);
   bool valid() const;
 
 private:

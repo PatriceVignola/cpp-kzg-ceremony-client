@@ -6,10 +6,11 @@
 #include "include/contribution_receipt.hpp"
 #include "include/contribution_schema.hpp"
 #include "include/transcript_schema.hpp"
+#include <absl/strings/str_cat.h>
+#include <absl/strings/string_view.h>
 #include <cpr/cpr.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <sstream>
 
 using nlohmann::json;
 
@@ -74,8 +75,8 @@ static bool is_another_contribution_in_progress_response(
   return *code_iter == "TryContributeError::AnotherContributionInProgress";
 }
 
-SequencerClient::SequencerClient(std::string sequencer_url, uint16_t port)
-    : sequencer_url_(std::move(sequencer_url)), port_(port),
+SequencerClient::SequencerClient(absl::string_view sequencer_url, uint16_t port)
+    : sequencer_url_(sequencer_url), port_(port),
       auth_request_link_url_(build_auth_request_link_url()),
       try_contribute_url_(build_try_contribute_url()),
       contribute_url_(build_contribute_url()),
@@ -126,7 +127,7 @@ void SequencerClient::print_lobby_size() const {
 }
 
 BatchContribution SequencerClient::try_contribute(
-    const std::string& session_id) const {
+    absl::string_view session_id) const {
   bool slot_reserved = false;
   json json_response;
 
@@ -135,7 +136,7 @@ BatchContribution SequencerClient::try_contribute(
     const cpr::Url url{try_contribute_url_};
     cpr::Session contribution_session;
     contribution_session.SetHeader(
-        cpr::Header{{"Authorization", "Bearer " + session_id}});
+        cpr::Header{{"Authorization", absl::StrCat("Bearer ", session_id)}});
     contribution_session.SetUrl(url);
 
     const auto response = contribution_session.Post();
@@ -184,8 +185,8 @@ BatchTranscript SequencerClient::get_batch_transcript() const {
                              : response.text;
 
     throw std::runtime_error(
-        "Error while retrieving the batch transcript via " +
-        current_state_url_ + ": " + error_message);
+        absl::StrCat("Error while retrieving the batch transcript via ",
+                     current_state_url_, ": ", error_message));
   }
 
   const auto json_response = json::parse(response.text);
@@ -193,12 +194,12 @@ BatchTranscript SequencerClient::get_batch_transcript() const {
 }
 
 ContributionReceipt SequencerClient::contribute(
-    const std::string& session_id,
+    absl::string_view session_id,
     const BatchContribution& batch_contribution) const {
   const cpr::Url url{contribute_url_};
   cpr::Session contribute_session;
   contribute_session.SetHeader(cpr::Header{
-      {"Authorization", "Bearer " + session_id},
+      {"Authorization", absl::StrCat("Bearer ", session_id)},
       {"Content-Type", "application/json"},
   });
   contribute_session.SetUrl(url);
@@ -212,10 +213,10 @@ ContributionReceipt SequencerClient::contribute(
     const auto json_response = json::parse(response.text);
     const auto contribution_error = json_response.get<ContributionError>();
 
-    throw std::invalid_argument("Error `" + contribution_error.get_code() +
-                                "` while sending a contribution via " +
-                                contribute_url_ + ": " +
-                                contribution_error.get_error());
+    throw std::invalid_argument(
+        absl::StrCat("Error `", contribution_error.get_code(),
+                     "` while sending a contribution via ", contribute_url_,
+                     ": ", contribution_error.get_error()));
   }
 
   if (!is_ok_status(response.status_code)) {
@@ -223,34 +224,32 @@ ContributionReceipt SequencerClient::contribute(
                              ? response.error.message
                              : response.text;
 
-    throw std::runtime_error("Error while sending a contribution via " +
-                             contribute_url_ + ": " + error_message);
+    throw std::runtime_error(
+        absl::StrCat("Error while sending a contribution via ", contribute_url_,
+                     ": ", error_message));
   }
 
   return json::parse(response.text);
 }
 
 std::string SequencerClient::build_auth_request_link_url() const {
-  std::stringstream url_stream;
-  url_stream << sequencer_url_
-             << "/auth/request_link?redirect_to=http://localhost:" << port_
-             << "/auth_callback";
-
-  return url_stream.str();
+  return absl::StrCat(sequencer_url_,
+                      "/auth/request_link?redirect_to=http://localhost:", port_,
+                      "/auth_callback");
 }
 
 std::string SequencerClient::build_try_contribute_url() const {
-  return sequencer_url_ + "/lobby/try_contribute";
+  return absl::StrCat(sequencer_url_, "/lobby/try_contribute");
 }
 
 std::string SequencerClient::build_ceremony_status_url() const {
-  return sequencer_url_ + "/info/status";
+  return absl::StrCat(sequencer_url_, "/info/status");
 }
 
 std::string SequencerClient::build_contribute_url() const {
-  return sequencer_url_ + "/contribute";
+  return absl::StrCat(sequencer_url_, "/contribute");
 }
 
 std::string SequencerClient::build_current_state_url() const {
-  return sequencer_url_ + "/info/current_state";
+  return absl::StrCat(sequencer_url_, "/info/current_state");
 }

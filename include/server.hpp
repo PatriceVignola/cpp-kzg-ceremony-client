@@ -3,6 +3,7 @@
 
 #include "auth_info.hpp"
 #include "include/pot_pubkey_message.hpp"
+#include <absl/types/span.h>
 #include <cstdint>
 
 #define WIN_DLL_EXPORT
@@ -16,7 +17,7 @@ public:
   explicit Server(uint16_t port,
                   const std::function<void(AuthInfo)>& on_auth_received,
                   const std::function<void(std::string)>& on_signature_received,
-                  const std::vector<PotPubkeyMessage>& pot_pubkey_message);
+                  absl::Span<const PotPubkeyMessage> pot_pubkey_message);
   Server(const Server&) = delete;
   Server(Server&&) = delete;
   Server& operator=(const Server&) = delete;

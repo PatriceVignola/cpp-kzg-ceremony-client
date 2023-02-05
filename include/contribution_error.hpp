@@ -1,13 +1,14 @@
 #ifndef CONTRIBUTION_ERROR_HPP
 #define CONTRIBUTION_ERROR_HPP
 
+#include <absl/strings/string_view.h>
 #include <nlohmann/json.hpp>
 #include <string>
 
 class ContributionError {
 public:
-  const std::string& get_code() const { return code_; }
-  const std::string& get_error() const { return error_; }
+  absl::string_view get_code() const { return code_; }
+  absl::string_view get_error() const { return error_; }
 
 private:
   std::string code_;

@@ -1,6 +1,7 @@
 #include "include/ascii_title.hpp"
 #include "include/port_picker.hpp"
 #include "include/server.hpp"
+#include <absl/strings/str_cat.h>
 #include <cpr/cpr.h>
 #include <gtest/gtest.h>
 
@@ -15,9 +16,9 @@ TEST(TestServer, NotifiesWithErrorIfAlreadyContributed) {
                 },
                 nullptr, {});
 
-  const auto url =
-      "http://localhost:" + std::to_string(port) +
-      "/auth_callback?code=AuthErrorPayload::UserAlreadyContributed";
+  const auto url = absl::StrCat(
+      "http://localhost:", port,
+      "/auth_callback?code=AuthErrorPayload::UserAlreadyContributed");
 
   static constexpr int expected_status_code = 200;
   static constexpr auto expected_error =
@@ -26,7 +27,7 @@ TEST(TestServer, NotifiesWithErrorIfAlreadyContributed) {
 
   auto response = cpr::Get(cpr::Url{url});
   EXPECT_EQ(expected_status_code, response.status_code);
-  EXPECT_EQ(std::string(ascii_title) + "\n" + expected_error + "\n",
+  EXPECT_EQ(absl::StrCat(ascii_title, "\n", expected_error, "\n"),
             response.text);
 
   auto auth_future = auth_info_promise.get_future();
@@ -45,8 +46,7 @@ TEST(TestServer, NotifiesWithErrorIfSessionIdNotFound) {
                 },
                 nullptr, {});
 
-  const auto url =
-      "http://localhost:" + std::to_string(port) + "/auth_callback";
+  const auto url = absl::StrCat("http://localhost:", port, "/auth_callback");
 
   static constexpr int expected_status_code = 200;
   static constexpr auto expected_error =
@@ -54,7 +54,7 @@ TEST(TestServer, NotifiesWithErrorIfSessionIdNotFound) {
 
   auto response = cpr::Get(cpr::Url{url});
   EXPECT_EQ(expected_status_code, response.status_code);
-  EXPECT_EQ(std::string(ascii_title) + "\n" + expected_error + "\n",
+  EXPECT_EQ(absl::StrCat(ascii_title, "\n", expected_error, "\n"),
             response.text);
 
   auto auth_future = auth_info_promise.get_future();
@@ -73,16 +73,17 @@ TEST(TestServer, NotifiesWithSessionInfoWhenSuccessful) {
                 },
                 nullptr, {});
 
-  const auto url = "http://localhost:" + std::to_string(port) +
+  const auto url =
+      absl::StrCat("http://localhost:", port,
                    "/auth_callback?session_id=my_session_id&nickname=my_"
-                   "nickname&provider=my_provider";
+                   "nickname&provider=my_provider");
 
   static constexpr int expected_status_code = 200;
-  static const auto expected_message =
-      std::string(ascii_title) +
+  static const auto expected_message = absl::StrCat(
+      ascii_title,
       "\nYou successfully authenticated with ID `my_nickname` and provider "
       "`my_provider`! You can now close this tab and go back to the "
-      "application.\n";
+      "application.\n");
 
   auto response = cpr::Get(cpr::Url{url});
   EXPECT_EQ(expected_status_code, response.status_code);

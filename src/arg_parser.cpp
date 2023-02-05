@@ -1,8 +1,9 @@
 #include "include/arg_parser.hpp"
 #include "include/ascii_title.hpp"
+#include <absl/strings/str_cat.h>
+#include <absl/types/span.h>
 #include <cassert>
 #include <cxxopts.hpp>
-#include <sstream>
 
 ArgParser::ArgParser(int argc, const char* const* argv) {
   assert(argc > 0);
@@ -52,25 +53,20 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
     } else if (auth_provider == "github") {
       auth_provider_ = AuthProvider::GitHub;
     } else {
-      std::stringstream error_stream;
-      error_stream << "invalid authentication provider `" << auth_provider
-                   << "`";
-      throw std::runtime_error(error_stream.str());
+      throw std::runtime_error(absl::StrCat("invalid authentication provider `",
+                                            auth_provider, "`"));
     }
 
     const auto entropy_type = parse_result["entropy"].as<std::string>();
     if (entropy_type == "stdin") {
       entropy_type_ = EntropyType::Stdin;
     } else {
-      std::stringstream error_stream;
-      error_stream << "invalid entropy type `" << entropy_type << "`";
-      throw std::runtime_error(error_stream.str());
+      throw std::runtime_error(
+          absl::StrCat("invalid entropy type `", entropy_type, "`"));
     }
   } catch (const cxxopts::option_not_exists_exception& ex) {
-    std::stringstream error_stream;
-    error_stream << "error when parsing arguments: " << ex.what() << std::endl
-                 << help_message_;
-    throw std::runtime_error(error_stream.str());
+    throw std::runtime_error(absl::StrCat(
+        "error when parsing arguments: ", ex.what(), "\n", help_message_));
   }
 }
 

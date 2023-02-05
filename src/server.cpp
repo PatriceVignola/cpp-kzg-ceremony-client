@@ -4,9 +4,9 @@
 #include "include/ethereum_signing_html.hpp"
 #include "include/port_picker.hpp"
 #include "include/pot_pubkey_message.hpp"
+#include <absl/strings/str_cat.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <sstream>
 
 static constexpr int success_status_code = 200;
 
@@ -27,28 +27,28 @@ static std::shared_ptr<restbed::Resource> make_auth_resource(
                                        const restbed::Bytes& /*body*/) {
       auto code = request->get_query_parameter("code");
 
-      std::string html_message = std::string(ascii_title) + "\n";
+      std::string html_message = absl::StrCat(ascii_title, "\n");
 
       if (code == "AuthErrorPayload::UserAlreadyContributed") {
         std::string error_message =
             "You already tried contributing with this account. You can try "
             "contributing with another GitHub account or Ethereum address.";
-        html_message += error_message + "\n";
+        absl::StrAppend(&html_message, error_message, "\n");
         on_auth_received(AuthInfo(std::move(error_message)));
       } else if (!request->has_query_parameter("session_id")) {
         std::string error_message =
             "Failed to find `session_id` in the query arguments";
-        html_message += error_message + "\n";
+        absl::StrAppend(&html_message, error_message, "\n");
         on_auth_received(AuthInfo(std::move(error_message)));
       } else {
         auto session_id = request->get_query_parameter("session_id");
         auto nickname = request->get_query_parameter("nickname");
         auto provider = request->get_query_parameter("provider");
 
-        html_message +=
-            +"You successfully authenticated with ID `" + nickname +
-            "` and provider `" + provider +
-            "`! You can now close this tab and go back to the application.\n";
+        absl::StrAppend(
+            &html_message, +"You successfully authenticated with ID `",
+            nickname, "` and provider `", provider,
+            "`! You can now close this tab and go back to the application.\n");
         on_auth_received(AuthInfo(std::move(provider), std::move(session_id),
                                   std::move(nickname)));
       }
@@ -61,7 +61,7 @@ static std::shared_ptr<restbed::Resource> make_auth_resource(
 }
 
 static std::shared_ptr<restbed::Resource> make_signing_resource(
-    uint16_t port, const std::vector<PotPubkeyMessage>& pot_pubkey_messages) {
+    uint16_t port, absl::Span<const PotPubkeyMessage> pot_pubkey_messages) {
   auto resource = std::make_shared<restbed::Resource>();
   resource->set_path("/sign");
   resource->set_method_handler(
@@ -142,8 +142,7 @@ static std::shared_ptr<restbed::Resource> make_signing_resource(
 
               // Inject the callback path
               const auto signing_callback =
-                  "http://localhost:" + std::to_string(port) +
-                  "/signing_callback";
+                  absl::StrCat("http://localhost:", port, "/signing_callback");
 
               html_message.replace(html_message.find("${callbackPath}"),
                                    sizeof("${callbackPath}") - 1,
@@ -178,9 +177,9 @@ static std::shared_ptr<restbed::Resource> make_signing_callback_resource(
               on_signature_received(signature);
 
               std::string html_message =
-                  "The contribution was successfully signed with "
-                  "the following signature: " +
-                  signature;
+                  absl::StrCat("The contribution was successfully signed with "
+                               "the following signature: ",
+                               signature);
 
               session->close(success_status_code, html_message);
             };
@@ -195,7 +194,7 @@ static std::shared_ptr<restbed::Resource> make_signing_callback_resource(
 Server::Server(uint16_t port,
                const std::function<void(AuthInfo)>& on_auth_received,
                const std::function<void(std::string)>& on_signature_received,
-               const std::vector<PotPubkeyMessage>& pot_pubkey_messages) {
+               absl::Span<const PotPubkeyMessage> pot_pubkey_messages) {
 
   std::promise<bool> server_started_promise;
 

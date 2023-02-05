@@ -1,10 +1,11 @@
 #include "include/bls_signer.hpp"
+#include <absl/strings/string_view.h>
 #include <array>
 #include <string>
 #include <vector>
 
 namespace bls_signer {
-blst::P1_Affine sign(blst::Scalar secret, const std::string& identity) {
+blst::P1_Affine sign(blst::Scalar secret, absl::string_view identity) {
   blst::P1 point;
   std::vector<uint8_t> identity_bytes(identity.begin(), identity.end());
 

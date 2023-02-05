@@ -1,6 +1,8 @@
 #include "include/batch_contribution.hpp"
 #include "include/bls_signature.hpp"
 #include "include/contribution_schema.hpp"
+#include <absl/strings/str_cat.h>
+#include <absl/strings/string_view.h>
 #include <fstream>
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
@@ -132,17 +134,17 @@ static std::string read_test_file(const std::string& file_name) {
   if (file_stream.fail()) {
     // Try opening the file as if we are running the test from the root of the
     // repo
-    file_stream = std::ifstream("build/bin/" + file_name);
+    file_stream = std::ifstream(absl::StrCat("build/bin/", file_name));
   }
 
   if (file_stream.fail()) {
     // Try opening the file as if we are running the test from the root of the
     // repo on Windows
-    file_stream = std::ifstream("build/bin/Release/" + file_name);
+    file_stream = std::ifstream(absl::StrCat("build/bin/Release/", file_name));
   }
 
   if (file_stream.fail()) {
-    throw std::runtime_error("Unable to open " + file_name);
+    throw std::runtime_error(absl::StrCat("Unable to open ", file_name));
   }
 
   std::stringstream string_stream;
@@ -403,8 +405,8 @@ TEST_P(TestContribution, ThrowsErrorIfNumG1PowersTooHigh) {
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
-              ::testing::HasSubstr("Expected number less than or equal to " +
-                                   std::to_string(num_g1_powers)));
+              ::testing::HasSubstr(absl::StrCat(
+                  "Expected number less than or equal to ", num_g1_powers)));
           throw;
         }
       },
@@ -429,8 +431,8 @@ TEST_P(TestContribution, ThrowsErrorIfNumG1PowersTooLow) {
         } catch (const std::runtime_error& error) {
           EXPECT_THAT(
               error.what(),
-              ::testing::HasSubstr("Expected number greater than or equal to " +
-                                   std::to_string(num_g1_powers)));
+              ::testing::HasSubstr(absl::StrCat(
+                  "Expected number greater than or equal to ", num_g1_powers)));
           throw;
         }
       },
@@ -577,10 +579,9 @@ TEST_P(TestContribution, ThrowsErrorIfNotEnoughG1Powers) {
           BatchContribution(batch_contribution_json,
                             json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
-          EXPECT_THAT(error.what(), ::testing::HasSubstr(
-                                        "Array should contain no fewer than " +
-                                        std::to_string(expected_num_elements) +
-                                        " elements."));
+          EXPECT_THAT(error.what(), ::testing::HasSubstr(absl::StrCat(
+                                        "Array should contain no fewer than ",
+                                        expected_num_elements, " elements.")));
           throw;
         }
       },
@@ -605,10 +606,9 @@ TEST_P(TestContribution, ThrowsErrorIfTooManyG1Powers) {
           BatchContribution(batch_contribution_json,
                             json::parse(contribution_schema));
         } catch (const std::runtime_error& error) {
-          EXPECT_THAT(error.what(), ::testing::HasSubstr(
-                                        "Array should contain no more than " +
-                                        std::to_string(expected_num_elements) +
-                                        " elements."));
+          EXPECT_THAT(error.what(), ::testing::HasSubstr(absl::StrCat(
+                                        "Array should contain no more than ",
+                                        expected_num_elements, " elements.")));
           throw;
         }
       },

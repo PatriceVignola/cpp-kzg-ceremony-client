@@ -39,7 +39,8 @@ target_include_directories(
          ${blst_SOURCE_DIR}/bindings
          ${uint256_t_SOURCE_DIR}
          ${uint256_t_SOURCE_DIR}/uint128_t
-         ${csprng_SOURCE_DIR}/source)
+         ${csprng_SOURCE_DIR}/source
+         ${abseil_SOURCE_DIR})
 
 target_link_libraries(
   product_static
@@ -50,7 +51,9 @@ target_link_libraries(
          cpr::cpr
          valijson
          ${LIB_BLST_PATH}
-         csprng)
+         csprng
+         absl::span
+         absl::strings)
 
 # Product executable
 add_executable(cpp-kzg-ceremony-client main.cpp)
