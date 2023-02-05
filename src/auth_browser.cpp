@@ -23,7 +23,7 @@ AuthBrowser::AuthBrowser(const std::string& auth_url) {
 
 AuthBrowser::~AuthBrowser() {}
 #else
-AuthBrowser::AuthBrowser(absl::string_view auth_url) : pid_(fork()) {
+AuthBrowser::AuthBrowser(const std::string& auth_url) : pid_(fork()) {
   if (pid_ < 0) {
     throw std::runtime_error(
         "Failed to open the authentication page in the browser");
