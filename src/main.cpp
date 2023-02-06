@@ -154,15 +154,13 @@ int main(int argc, char** argv) {
         // Update the powers of Tau with the secrets generated earlier
         std::cout << "Updating the contributions" << std::endl;
         auto contributions = batch_contribution.get_contributions();
-        const auto& secrets = secret_generator.get_secrets();
-        const auto* secret_iter = secrets.begin();
+        const auto secrets = secret_generator.get_secrets();
 
         for (size_t i = 0; i < contributions.size(); ++i) {
           auto& contribution = contributions[i];
-          contribution.update_powers_of_tau(*secret_iter);
+          contribution.update_powers_of_tau(secrets[i]);
           contribution.set_pot_pubkey(std::move(pot_pubkeys[i]));
           contribution.set_bls_signature(std::move(bls_signatures[i]));
-          ++secret_iter;
         }
 
         if (!ecdsa_signature.empty()) {
