@@ -65,6 +65,12 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/Duthomhas/CSPRNG
   GIT_TAG 8768a94b4b04213c0798b80824a04ae4990e9847)
 
+# Abseil libraru
+FetchContent_Declare(
+  abseil
+  GIT_REPOSITORY https://github.com/abseil/abseil-cpp
+  GIT_TAG 20230125.0)
+
 # Download and extract dependencies.
 FetchContent_MakeAvailable(
   cxxopts
@@ -73,7 +79,8 @@ FetchContent_MakeAvailable(
   json
   valijson
   blst
-  googletest)
+  googletest
+  abseil)
 
 # csprng has a broken CMakeLists.txt file, so manaually download it instead
 FetchContent_Populate(csprng)

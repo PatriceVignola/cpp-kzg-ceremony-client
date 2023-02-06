@@ -12,11 +12,11 @@ public:
   const PowersOfTau& get_powers_of_tau() const { return powers_of_tau_; }
   void update_powers_of_tau(blst::Scalar secret);
 
-  void set_pot_pubkey(std::string pot_pubkey) {
+  void set_pot_pubkey(std::string&& pot_pubkey) {
     pot_pubkey_ = std::move(pot_pubkey);
   }
 
-  void set_bls_signature(std::string bls_signature) {
+  void set_bls_signature(std::string&& bls_signature) {
     bls_signature_ = std::move(bls_signature);
   }
 

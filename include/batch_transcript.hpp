@@ -2,6 +2,7 @@
 #define BATCH_TRANSCRIPT_HPP
 
 #include "include/transcript.hpp"
+#include <absl/types/span.h>
 #include <nlohmann/json.hpp>
 #include <vector>
 
@@ -11,10 +12,7 @@ public:
                   const nlohmann::json& json_schema);
 
   void validate_running_products() const;
-
-  const std::vector<Transcript>& get_transcripts() const {
-    return transcripts_;
-  }
+  absl::Span<const Transcript> get_transcripts() const { return transcripts_; }
 
 private:
   std::vector<Transcript> transcripts_;

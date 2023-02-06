@@ -1,6 +1,7 @@
 #ifndef SECRET_GENERATOR_HPP
 #define SECRET_GENERATOR_HPP
 
+#include <absl/types/span.h>
 #include <array>
 #include <blst.hpp>
 #include <cstdint>
@@ -12,12 +13,12 @@ template <typename csprng = duthomhas::csprng,
           typename BlstSecretKey = blst::SecretKey>
 class SecretGenerator {
 public:
-  SecretGenerator(const std::vector<uint8_t>& entropy, size_t num_secrets,
+  SecretGenerator(absl::Span<const uint8_t> entropy, size_t num_secrets,
                   csprng&& generator = duthomhas::csprng(),
                   BlstSecretKey&& blst_secret_key = BlstSecretKey()) {
     while (secrets_.size() < num_secrets) {
       static constexpr size_t min_entropy_bytes = 256;
-      std::vector<uint8_t> entropy_bytes = entropy;
+      std::vector<uint8_t> entropy_bytes(entropy.begin(), entropy.end());
 
       // Replace at least half the initial+padded bytes with random ones
       const size_t num_random_bytes = std::max(
@@ -59,7 +60,7 @@ public:
     }
   }
 
-  const std::vector<blst::Scalar>& get_secrets() const { return secrets_; }
+  absl::Span<const blst::Scalar> get_secrets() const { return secrets_; }
 
 private:
   // Since we only need to generate 4 secrets and and collisions are expected to

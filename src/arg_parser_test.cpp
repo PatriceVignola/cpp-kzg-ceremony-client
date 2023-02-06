@@ -1,9 +1,9 @@
 #include "include/arg_parser.hpp"
 #include "include/ascii_title.hpp"
+#include <absl/strings/str_cat.h>
 #include <array>
 #include <cxxopts.hpp>
 #include <gtest/gtest.h>
-#include <sstream>
 
 static constexpr const char* usage_message = R"(
 Usage:
@@ -31,13 +31,15 @@ TEST(TestArgParser, ThrowsErrorUnknownOption) {
       "--bar",
   };
 
-  std::stringstream expected_error;
+  std::string expected_error;
 #ifdef _WIN32
-  expected_error << "error when parsing arguments: Option 'bar' does not exist";
+  absl::StrAppend(&expected_error,
+                  "error when parsing arguments: Option 'bar' does not exist");
 #else
-  expected_error << "error when parsing arguments: Option ‘bar’ does not exist";
+  absl::StrAppend(&expected_error,
+                  "error when parsing arguments: Option ‘bar’ does not exist");
 #endif
-  expected_error << std::endl << ascii_title << usage_message;
+  absl::StrAppend(&expected_error, "\n", ascii_title, usage_message);
 
   // NOLINTNEXTLINE
   EXPECT_THROW(
@@ -45,7 +47,7 @@ TEST(TestArgParser, ThrowsErrorUnknownOption) {
         try {
           ArgParser arg_parser(args.size(), args.data());
         } catch (const std::runtime_error& error) {
-          EXPECT_EQ(expected_error.str(), error.what());
+          EXPECT_EQ(expected_error, error.what());
           throw;
         }
       },
@@ -128,10 +130,8 @@ TEST(TestArgParser, HelpRequested) {
   ArgParser arg_parser(args.size(), args.data());
   EXPECT_TRUE(arg_parser.get_help_wanted());
 
-  std::stringstream expected_help_message;
-  expected_help_message << ascii_title << usage_message;
-
-  EXPECT_EQ(expected_help_message.str(), arg_parser.get_help_message());
+  auto expected_help_message = absl::StrCat(ascii_title, usage_message);
+  EXPECT_EQ(expected_help_message, arg_parser.get_help_message());
 }
 
 // NOLINTNEXTLINE

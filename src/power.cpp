@@ -23,9 +23,7 @@ void Power<TBlstPoint, size_in_bytes>::multiply(blst::Scalar scalar) {
 
 template <typename TBlstPoint, size_t size_in_bytes>
 std::string Power<TBlstPoint, size_in_bytes>::encode() const {
-  // TODO (PatriceVignola): Use an std::array instead when hex_util supports
-  // spans
-  std::vector<uint8_t> serialized_power(size_in_bytes);
+  std::array<uint8_t, size_in_bytes> serialized_power{};
   blst_point_.compress(serialized_power.data());
   return hex_util::encode(serialized_power);
 }

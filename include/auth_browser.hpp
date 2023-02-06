@@ -1,6 +1,7 @@
 #ifndef AUTH_BROWSER_HPP
 #define AUTH_BROWSER_HPP
 
+#include <absl/strings/string_view.h>
 #include <string>
 
 class AuthBrowser {

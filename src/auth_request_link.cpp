@@ -1,4 +1,5 @@
 #include "include/auth_request_link.hpp"
+#include <absl/strings/string_view.h>
 #include <nlohmann/json.hpp>
 
 void from_json(const nlohmann::json& json_auth_request_link,
@@ -9,9 +10,9 @@ void from_json(const nlohmann::json& json_auth_request_link,
       .get_to(auth_request_link.github_auth_url_);
 }
 
-const std::string& AuthRequestLink::get_eth_auth_url() const {
+absl::string_view AuthRequestLink::get_eth_auth_url() const {
   return eth_auth_url_;
 }
-const std::string& AuthRequestLink::get_github_auth_url() const {
+absl::string_view AuthRequestLink::get_github_auth_url() const {
   return github_auth_url_;
 }

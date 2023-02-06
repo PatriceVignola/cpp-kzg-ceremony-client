@@ -1,12 +1,13 @@
 #ifndef GITHUB_USER_HPP
 #define GITHUB_USER_HPP
 
+#include <absl/strings/string_view.h>
 #include <nlohmann/json.hpp>
 #include <string>
 
 class GithubUser {
 public:
-  const std::string& get_login() const { return login_; }
+  absl::string_view get_login() const { return login_; }
   int get_id() const { return id_; }
 
 private:

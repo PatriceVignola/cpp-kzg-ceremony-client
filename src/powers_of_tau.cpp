@@ -1,4 +1,5 @@
 #include "include/powers_of_tau.hpp"
+#include <absl/types/span.h>
 #include <algorithm>
 
 void from_json(const nlohmann::json& json_powers_of_tau,
@@ -13,14 +14,19 @@ void to_json(nlohmann::json& json_powers_of_tau,
   json_powers_of_tau["G2Powers"] = powers_of_tau.g2_powers_;
 }
 
-std::vector<G1Power>& PowersOfTau::get_g1_powers() { return g1_powers_; }
-std::vector<G2Power>& PowersOfTau::get_g2_powers() { return g2_powers_; }
+absl::Span<G1Power> PowersOfTau::get_g1_powers() {
+  return absl::Span<G1Power>(g1_powers_);
+}
 
-const std::vector<G1Power>& PowersOfTau::get_g1_powers() const {
+absl::Span<G2Power> PowersOfTau::get_g2_powers() {
+  return absl::Span<G2Power>(g2_powers_);
+}
+
+absl::Span<const G1Power> PowersOfTau::get_g1_powers() const {
   return g1_powers_;
 }
 
-const std::vector<G2Power>& PowersOfTau::get_g2_powers() const {
+absl::Span<const G2Power> PowersOfTau::get_g2_powers() const {
   return g2_powers_;
 }
 

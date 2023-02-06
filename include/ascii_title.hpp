@@ -1,7 +1,7 @@
 #ifndef ASCII_TITLE_HPP
 #define ASCII_TITLE_HPP
 
-static constexpr const char* ascii_title = R"(
+static constexpr auto* ascii_title = R"(
   ______   __    __   ______    ______  
  /      \ |  \  /  \ /      \  /      \ 
 |  $$$$$$\| $$ /  $$|  $$$$$$\|  $$$$$$\

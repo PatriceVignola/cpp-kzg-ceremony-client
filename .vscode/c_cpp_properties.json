@@ -12,7 +12,8 @@
         "${workspaceFolder}/build/_deps/curl-src/include",
         "${workspaceFolder}/build/_deps/jsonvalidator-src/src",
         "${workspaceFolder}/build/_deps/valijson-src/include",
-        "${workspaceFolder}/build/_deps/blst-src/bindings"
+        "${workspaceFolder}/build/_deps/blst-src/bindings",
+        "${workspaceFolder}/build/_deps/abseil-src"
       ],
       "defines": [],
       "cStandard": "c17",
@@ -31,7 +32,8 @@
         "${workspaceFolder}/build/_deps/curl-src/include",
         "${workspaceFolder}/build/_deps/jsonvalidator-src/src",
         "${workspaceFolder}/build/_deps/valijson-src/include",
-        "${workspaceFolder}/build/_deps/blst-src/bindings"
+        "${workspaceFolder}/build/_deps/blst-src/bindings",
+        "${workspaceFolder}/build/_deps/abseil-src"
       ],
       "compileCommands": "${workspaceFolder}/build/compile_commands.json",
       "defines": [],
