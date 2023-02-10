@@ -65,7 +65,7 @@ static std::shared_ptr<restbed::Resource> make_signing_resource(
   auto resource = std::make_shared<restbed::Resource>();
   resource->set_path("/sign");
   resource->set_method_handler(
-      "GET", [port, &pot_pubkey_messages](
+      "GET", [port, pot_pubkey_messages](
                  const std::shared_ptr<restbed::Session>& session) {
         auto signing_objects_json = R"(
           {
