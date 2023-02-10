@@ -24,7 +24,7 @@ static bool is_not_found_status(uint64_t status_code) {
 
 namespace identity_fetcher {
 std::string get_ethereum_identity(absl::string_view ethereum_address) {
-  if (absl::StartsWith(ethereum_address, "0x")) {
+  if (!absl::StartsWith(ethereum_address, "0x")) {
     throw std::runtime_error(absl::StrCat(
         "Ethereum address `", ethereum_address, "` doesn't start with `0x`"));
   }
@@ -42,7 +42,7 @@ std::string get_ethereum_identity(absl::string_view ethereum_address) {
   std::transform(ethereum_address.begin(), ethereum_address.end(),
                  std::back_inserter(lower_case_ethereum_address), ::tolower);
 
-  return absl::StrCat("eth|", ethereum_address);
+  return absl::StrCat("eth|", lower_case_ethereum_address);
 }
 
 std::string get_github_identity(absl::string_view github_nickname) {
