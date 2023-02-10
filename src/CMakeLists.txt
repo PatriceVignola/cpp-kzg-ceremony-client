@@ -68,6 +68,7 @@ add_executable(
   contribution_error_test.cpp
   contribution_receipt_test.cpp
   hex_util_test.cpp
+  identity_fetcher_test.cpp
   receipt_test.cpp
   secret_generator_test.cpp
   server_test.cpp)
