@@ -117,7 +117,6 @@ static std::shared_ptr<restbed::Resource> make_signing_resource(
           }
         )"_json;
 
-        std::cout << pot_pubkey_messages.size() << std::endl;
         signing_objects_json["message"]["potPubkeys"] = pot_pubkey_messages;
 
         const auto serialized_json = signing_objects_json.dump();
@@ -206,7 +205,6 @@ Server::Server(uint16_t port,
         service_.publish(auth_resource);
 
         if (on_signature_received) {
-          std::cout << pot_pubkey_messages.size() << std::endl;
           auto signing_resource =
               make_signing_resource(port, pot_pubkey_messages);
           service_.publish(signing_resource);
