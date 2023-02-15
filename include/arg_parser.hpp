@@ -2,6 +2,7 @@
 #define ARG_PARSER_HPP
 
 #include <absl/strings/string_view.h>
+#include <absl/types/optional.h>
 #include <string>
 #include <vector>
 
@@ -25,6 +26,7 @@ public:
   absl::string_view get_help_message() const { return help_message_; };
   bool signing_disabled() const { return signing_disabled_; }
   std::vector<uint8_t> get_entropy() const;
+  const absl::optional<uint16_t>& get_port() const { return port_; }
 
 private:
   AuthProvider auth_provider_;
@@ -33,6 +35,7 @@ private:
   bool signing_disabled_;
   bool help_wanted_;
   EntropyType entropy_type_;
+  absl::optional<uint16_t> port_;
 };
 
 #endif // ARG_PARSER_HPP

@@ -35,6 +35,11 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
         "addresses listed.",
         cxxopts::value<bool>()->default_value("false"), "");
 
+    options.add_option("", "p", "port",
+                       "Port to run the authentication server on. If not "
+                       "provided, a random port will be chosen.",
+                       cxxopts::value<uint16_t>(), "");
+
     options.add_option("", "h", "help", "Print usage", cxxopts::value<bool>(),
                        "");
 
@@ -63,6 +68,10 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
     } else {
       throw std::runtime_error(
           absl::StrCat("invalid entropy type `", entropy_type, "`"));
+    }
+
+    if (parse_result.count("port") > 0) {
+      port_ = parse_result["port"].as<uint16_t>();
     }
   } catch (const cxxopts::option_not_exists_exception& ex) {
     throw std::runtime_error(absl::StrCat(
