@@ -14,6 +14,7 @@
 #include <cpr/cpr.h>
 #include <iostream>
 
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 int main(int argc, char** argv) {
   try {
     const ArgParser arg_parser(argc, argv);
@@ -28,7 +29,13 @@ int main(int argc, char** argv) {
     SecretGenerator<> secret_generator(arg_parser.get_entropy(), num_secrets);
 
     const auto& auth_provider = arg_parser.get_auth_provider();
-    const auto port = port_picker::pick_unused_port();
+
+    uint16_t port = 0;
+    if (arg_parser.get_port().has_value()) {
+      port = *arg_parser.get_port();
+    } else {
+      port = port_picker::pick_unused_port();
+    }
 
     std::promise<AuthInfo> auth_info_promise;
     auto auth_callback = [&auth_info_promise](AuthInfo&& auth_info) {
