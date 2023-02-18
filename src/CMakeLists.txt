@@ -1,6 +1,7 @@
 # Product static lib
 add_library(
   product_static STATIC
+  airgapped_flow.cpp
   arg_parser.cpp
   auth_browser.cpp
   auth_request_link.cpp
@@ -14,6 +15,7 @@ add_library(
   github_user.cpp
   hex_util.cpp
   identity_fetcher.cpp
+  internet_flow.cpp
   port_picker.cpp
   pot_pubkey_message.cpp
   power.cpp
@@ -23,6 +25,7 @@ add_library(
   server.cpp
   signing_browser.cpp
   transcript.cpp
+  turnkey_flow.cpp
   witness.cpp)
 
 add_dependencies(product_static libblst)
