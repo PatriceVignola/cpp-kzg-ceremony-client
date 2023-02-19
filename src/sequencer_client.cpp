@@ -168,7 +168,7 @@ BatchContribution SequencerClient::try_contribute(
     print_lobby_size();
 
     // We send a request approximately every second
-    static constexpr uint64_t seconds_between_requests = 1;
+    static constexpr uint64_t seconds_between_requests = 5;
     std::this_thread::sleep_for(std::chrono::seconds(seconds_between_requests));
   }
 
