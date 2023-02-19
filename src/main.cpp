@@ -1,20 +1,9 @@
+#include "include/airgapped_flow.hpp"
 #include "include/arg_parser.hpp"
-#include "include/ascii_title.hpp"
-#include "include/auth_browser.hpp"
-#include "include/auth_info.hpp"
-#include "include/auth_request_link.hpp"
-#include "include/bls_signature.hpp"
-#include "include/identity_fetcher.hpp"
-#include "include/port_picker.hpp"
-#include "include/secret_generator.hpp"
-#include "include/sequencer_client.hpp"
-#include "include/server.hpp"
-#include "include/signing_browser.hpp"
-#include <absl/strings/str_cat.h>
-#include <cpr/cpr.h>
+#include "include/complete_flow.hpp"
+#include "include/internet_flow.hpp"
 #include <iostream>
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 int main(int argc, char** argv) {
   try {
     const ArgParser arg_parser(argc, argv);
@@ -22,7 +11,20 @@ int main(int argc, char** argv) {
       std::cout << arg_parser.get_help_message() << std::endl;
       return 0;
     }
-    // TODO: Launch the flows
+
+    switch (arg_parser.get_client_mode()) {
+    case ClientMode::Complete:
+      complete_flow::launch(arg_parser);
+      break;
+    case ClientMode::Airgapped:
+      airgapped_flow::launch(arg_parser);
+      break;
+    case ClientMode::Internet:
+      internet_flow::launch(arg_parser);
+      break;
+    default:
+      throw std::runtime_error("unsupported client mode");
+    }
   } catch (const std::exception& ex) {
     std::cout << ex.what() << std::endl;
     return 1;

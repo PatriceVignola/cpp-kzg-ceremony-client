@@ -4,6 +4,7 @@
 #include "include/auth_info.hpp"
 #include "include/auth_request_link.hpp"
 #include "include/bls_signature.hpp"
+#include "include/contribution_schema.hpp"
 #include "include/identity_fetcher.hpp"
 #include "include/port_picker.hpp"
 #include "include/sequencer_client.hpp"
@@ -12,6 +13,8 @@
 #include <absl/strings/str_cat.h>
 #include <cpr/cpr.h>
 #include <iostream>
+
+using nlohmann::json;
 
 namespace internet_flow {
 void launch(const ArgParser& arg_parser) {
@@ -38,6 +41,8 @@ void launch(const ArgParser& arg_parser) {
   // Validate the running products
   batch_transcript.validate_running_products();
 
+  Server server(port, std::move(auth_callback), nullptr, {});
+
   bool contribution_successful = false;
 
   while (!contribution_successful) {
@@ -62,7 +67,7 @@ void launch(const ArgParser& arg_parser) {
       throw std::runtime_error(auth_info.get_error_message());
     }
 
-    // Retrieve the identity (e.g. eth|12345|0xa7fb...)
+    // Retrieve the identity (e.g. eth|0xa7fb...)
     std::cout << "Retrieving your identity" << std::endl;
     const auto identity = [&auth_provider, &auth_info]() {
       switch (auth_provider) {
@@ -84,7 +89,50 @@ void launch(const ArgParser& arg_parser) {
       // Validate the powers
       batch_contribution.validate_powers();
 
-      // TODO: Read contribution.json from hard drive
+      std::cout << "Saving the contribution file to `"
+                << arg_parser.get_contribution_file_path() << "`" << std::endl;
+
+      {
+        std::ofstream batch_contribution_stream(
+            arg_parser.get_contribution_file_path());
+        if (batch_contribution_stream.fail()) {
+          throw std::runtime_error(
+              absl::StrCat("failed to save the contribution file to `",
+                           arg_parser.get_contribution_file_path(), "`"));
+        }
+
+        auto batch_contribution_json = json(batch_contribution);
+        batch_contribution_json["identity"] = identity;
+        batch_contribution_stream << batch_contribution_json;
+      }
+
+      std::cout
+          << "The contribution file has been saved to `"
+          << arg_parser.get_contribution_file_path()
+          << "`. You can now move this file over to an airgapped machine. Once "
+             "you are done updating the contribution, overwrite this file with "
+             "the updated version and press the `enter` key."
+          << std::endl;
+      getchar();
+
+      std::cout << "Reading the updated contribution file from `"
+                << arg_parser.get_contribution_file_path() << "`" << std::endl;
+
+      {
+        std::ifstream json_file_stream(arg_parser.get_contribution_file_path());
+
+        if (json_file_stream.fail()) {
+          throw std::runtime_error(absl::StrCat(
+              "failed to open the updated contribution file located at `",
+              arg_parser.get_contribution_file_path(), "`"));
+        }
+
+        batch_contribution = BatchContribution(
+            json::parse(json_file_stream), json::parse(contribution_schema));
+      }
+
+      // Validate the powers
+      batch_contribution.validate_powers();
 
       std::cout << "Submitting the updated contributions" << std::endl;
       const auto contribution_receipt = sequencer_client.contribute(

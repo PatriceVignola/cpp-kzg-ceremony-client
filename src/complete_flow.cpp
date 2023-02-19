@@ -14,7 +14,7 @@
 #include <cpr/cpr.h>
 #include <iostream>
 
-namespace turnkey_flow {
+namespace complete_flow {
 void launch(const ArgParser& arg_parser) {
   // Generate one secret for each contribution
   std::cout << "Generating secrets" << std::endl;
@@ -100,7 +100,7 @@ void launch(const ArgParser& arg_parser) {
       throw std::runtime_error(auth_info.get_error_message());
     }
 
-    // Retrieve the identity (e.g. eth|12345|0xa7fb...)
+    // Retrieve the identity (e.g. eth|0xa7fb...)
     std::cout << "Retrieving your identity" << std::endl;
     const auto identity = [&auth_provider, &auth_info]() {
       switch (auth_provider) {
@@ -182,4 +182,4 @@ void launch(const ArgParser& arg_parser) {
     }
   }
 }
-} // namespace turnkey_flow
+} // namespace complete_flow

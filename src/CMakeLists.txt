@@ -9,6 +9,7 @@ add_library(
   batch_transcript.cpp
   bls_signature.cpp
   bls_signer.cpp
+  complete_flow.cpp
   contribution.cpp
   contribution_error.cpp
   contribution_receipt.cpp
@@ -25,7 +26,6 @@ add_library(
   server.cpp
   signing_browser.cpp
   transcript.cpp
-  turnkey_flow.cpp
   witness.cpp)
 
 add_dependencies(product_static libblst)

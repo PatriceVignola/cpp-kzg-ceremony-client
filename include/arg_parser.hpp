@@ -17,6 +17,12 @@ enum class EntropyType {
   Https,
 };
 
+enum class ClientMode {
+  Complete,
+  Airgapped,
+  Internet,
+};
+
 class ArgParser {
 public:
   ArgParser(int argc, const char* const* argv);
@@ -27,15 +33,22 @@ public:
   bool signing_disabled() const { return signing_disabled_; }
   std::vector<uint8_t> get_entropy() const;
   const absl::optional<uint16_t>& get_port() const { return port_; }
+  ClientMode get_client_mode() const { return client_mode_; }
+
+  const std::string& get_contribution_file_path() const {
+    return contribution_file_path_;
+  }
 
 private:
   AuthProvider auth_provider_;
   std::string sequencer_url_;
   std::string help_message_;
+  std::string contribution_file_path_;
   bool signing_disabled_;
   bool help_wanted_;
   EntropyType entropy_type_;
   absl::optional<uint16_t> port_;
+  ClientMode client_mode_;
 };
 
 #endif // ARG_PARSER_HPP
