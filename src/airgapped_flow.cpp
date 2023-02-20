@@ -109,7 +109,7 @@ void launch(const ArgParser& arg_parser) {
       !arg_parser.signing_disabled() && ecdsa_signature.empty()) {
 
     std::vector<absl::string_view> identity_parts =
-        absl::StrSplit(identity, "|");
+        absl::StrSplit(identity, '|');
 
     auto eth_address = identity_parts[1];
     const auto signing_url = absl::StrCat("http://localhost:", port,
