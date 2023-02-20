@@ -113,6 +113,8 @@ void launch(const ArgParser& arg_parser) {
              "you are done updating the contribution, overwrite this file with "
              "the updated version and press the `enter` key."
           << std::endl;
+
+      // NOLINTNEXTLINE(cert-err33-c)
       getchar();
 
       std::cout << "Reading the updated contribution file from `"
