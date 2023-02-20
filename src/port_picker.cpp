@@ -1,4 +1,5 @@
 #include "include/port_picker.hpp"
+#include <absl/cleanup/cleanup.h>
 #include <cstdint>
 
 #ifndef _WIN32
@@ -24,6 +25,8 @@ uint16_t pick_unused_port() {
     return default_port;
   }
 
+  auto sock_closer = absl::MakeCleanup([sock] { close(sock); });
+
   const int reuse_address = 1;
   if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse_address, sizeof(int)) <
       0) {
@@ -44,9 +47,6 @@ uint16_t pick_unused_port() {
               &len);
 
   uint16_t port = ntohs(socket_address.sin_port);
-
-  // TODO (PatriceVignola): Use an RAII wrapper once we start using abseil
-  close(sock);
 #endif
 
   return port;

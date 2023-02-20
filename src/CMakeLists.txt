@@ -1,6 +1,7 @@
 # Product static lib
 add_library(
   product_static STATIC
+  airgapped_flow.cpp
   arg_parser.cpp
   auth_browser.cpp
   auth_request_link.cpp
@@ -8,12 +9,14 @@ add_library(
   batch_transcript.cpp
   bls_signature.cpp
   bls_signer.cpp
+  complete_flow.cpp
   contribution.cpp
   contribution_error.cpp
   contribution_receipt.cpp
   github_user.cpp
   hex_util.cpp
   identity_fetcher.cpp
+  internet_flow.cpp
   port_picker.cpp
   pot_pubkey_message.cpp
   power.cpp
