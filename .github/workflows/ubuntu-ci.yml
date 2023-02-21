@@ -76,13 +76,13 @@ jobs:
         with:
           path: openssl
           key: ubuntu-${{ matrix.version }}-arm-openssl
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross make
       - name: Install OpenSSL
         run: |
           cd openssl
           make install
           cd ..
-      - run: apt update && apt --yes upgrade
-      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross
       - run: cp /usr/arm-linux-gnueabi/lib/ld-linux.so.3 /lib
       - run: chmod +x ./cpp-kzg-ceremony-client-test
       - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client-test
@@ -107,13 +107,13 @@ jobs:
         with:
           path: openssl
           key: ubuntu-${{ matrix.version }}-arm-openssl
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross make
       - name: Install OpenSSL
         run: |
           cd openssl
           make install
           cd ..
-      - run: apt update && apt --yes upgrade
-      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client --help
 
