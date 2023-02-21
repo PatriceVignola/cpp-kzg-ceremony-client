@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 project(cpp-kzg-ceremony-client)
 
+if("$ENV{CXX}" STREQUAL "arm-linux-gnueabi-g++")
+  set(CMAKE_SYSTEM_PROCESSOR "arm")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing")
+endif()
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
