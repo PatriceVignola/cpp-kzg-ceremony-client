@@ -28,7 +28,7 @@ jobs:
           path: openssl
           key: ubuntu-${{ matrix.version }}-arm-openssl
       - run: apt update && apt --yes upgrade
-      - run: apt --yes install build-essential libssl-dev git wget g++-arm-linux-gnueabi gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi openssl
+      - run: apt --yes install build-essential libssl-dev git wget g++-arm-linux-gnueabi gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi
       - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
       - run: chmod +x cmake-3.25.1-linux-x86_64.sh
       - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
@@ -63,8 +63,6 @@ jobs:
       matrix:
         version: ["20.04", "22.04"]
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu:${{ matrix.version }}
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
@@ -95,8 +93,6 @@ jobs:
       matrix:
         version: ["20.04", "22.04"]
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu:${{ matrix.version }}
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
