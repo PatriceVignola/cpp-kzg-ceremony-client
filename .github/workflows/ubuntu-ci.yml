@@ -29,9 +29,9 @@ jobs:
       - run: |
           git clone https://github.com/openssl/openssl --branch=openssl-3.0.8
           cd openssl
-          ./Configure linux-armv4
-          make
-          make install
+          CXX=arm-linux-gnueabi-g++ CC=arm-linux-gnueabi-gcc ./Configure linux-armv4
+          CXX=arm-linux-gnueabi-g++ CC=arm-linux-gnueabi-gcc make
+          CXX=arm-linux-gnueabi-g++ CC=arm-linux-gnueabi-gcc make install
           cd ..
       - run: PATH=$PWD/bin:$PATH ./build-arm.sh
       - name: Upload binaries
