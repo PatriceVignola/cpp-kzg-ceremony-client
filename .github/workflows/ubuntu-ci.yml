@@ -49,7 +49,7 @@ jobs:
       - name: Upload binaries
         uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-arm-binaries
+          name: ubuntu-${{ matrix.version }}-binaries
           path: |
             build/bin/cpp-kzg-ceremony-client
             build/bin/cpp-kzg-ceremony-client-test
@@ -61,59 +61,38 @@ jobs:
     needs: build-ubuntu
     strategy:
       matrix:
-        version: ["20.04", "22.04"]
+        version: ["20.04", "22.04", "22.10", "23.04"]
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.version }}
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-arm-binaries
-      - uses: uraimo/run-on-arch-action@v2
-        name: Run ARM commands
-        id: runarm
-        with:
-          arch: armv7
-          distro: ubuntu${{ matrix.version }}
-          setup: |
-            mkdir -p "${PWD}/artifacts"
-            cp cpp-kzg-ceremony-client-test ${PWD}/artifacts
-            cp initialContribution.json ${PWD}/artifacts
-            cp updatedContribution.json ${PWD}/artifacts
-          run: |
-            cd /artifacts
-            apt update && apt --yes upgrade
-            apt --yes install openssl
-            chmod +x ./cpp-kzg-ceremony-client-test
-            ./cpp-kzg-ceremony-client-test
+          name: ubuntu-${{ matrix.version }}-binaries
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi
+      - run: chmod +x ./cpp-kzg-ceremony-client-test
+      - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client-test
 
   sanity-check-ubuntu:
     name: Sanity Check
     needs: build-ubuntu
     strategy:
       matrix:
-        version: ["20.04", "22.04"]
+        version: ["20.04", "22.04", "22.10", "23.04"]
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.version }}
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-arm-binaries
-      - uses: uraimo/run-on-arch-action@v2
-        name: Run ARM commands
-        id: runarm
-        with:
-          arch: armv7
-          distro: ubuntu${{ matrix.version }}
-          setup: |
-            mkdir -p "${PWD}/artifacts"
-            cp cpp-kzg-ceremony-client ${PWD}/artifacts
-            cp initialContribution.json ${PWD}/artifacts
-            cp updatedContribution.json ${PWD}/artifacts
-          run: |
-            apt update && apt --yes upgrade
-            apt --yes install openssl
-            chmod +x ./cpp-kzg-ceremony-client
-            ./cpp-kzg-ceremony-client --help
+          name: ubuntu-${{ matrix.version }}-binaries
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client --help
 
   publish-ubuntu:
     needs: [test-ubuntu, sanity-check-ubuntu]
@@ -128,9 +107,9 @@ jobs:
         with:
           name: ubuntu-${{ matrix.version }}-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
-      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-arm.tar.gz cpp-kzg-ceremony-client
+      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-arm.tar.gz
+          files: cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-amd64.tar.gz
           token: ${{ secrets.PAT }}
