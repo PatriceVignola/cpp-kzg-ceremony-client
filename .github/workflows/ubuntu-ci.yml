@@ -83,7 +83,6 @@ jobs:
           cd openssl
           make install
           cd ..
-      - run: cp /usr/arm-linux-gnueabi/lib/ld-linux.so.3 /lib
       - run: chmod +x ./cpp-kzg-ceremony-client-test
       - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client-test
 
