@@ -37,7 +37,8 @@ jobs:
             ls $PWD/bin
             ln -s $PWD/bin /usr/local/bin/cmake
             chmod +x $PWD/bin/cmake
-            PATH=$PWD/bin:$PATH sudo ./build.sh
+            chmod +x /usr/local/bin/cmake
+            PATH=$PWD/bin:$PATH ./build.sh
             cp -R build /artifacts/build
       - name: Upload binaries
         uses: actions/upload-artifact@v3
