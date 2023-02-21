@@ -35,6 +35,7 @@ jobs:
             ls $PWD
             echo "Debug 2"
             ls $PWD/bin
+            ln -s $PWD/bin /usr/local/bin/cmake
             PATH=$PWD/bin:$PATH ./build.sh
             cp -R build /artifacts/build
       - name: Upload binaries
