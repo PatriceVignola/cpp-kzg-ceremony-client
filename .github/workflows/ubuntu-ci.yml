@@ -43,13 +43,13 @@ jobs:
       - name: Install OpenSSL
         run: |
           cd openssl
-          CXX=arm-linux-gnueabi-g++ CC=arm-linux-gnueabi-gcc make install
+          make install
           cd ..
       - run: PATH=$PWD/bin:$PATH ./build-arm.sh
       - name: Upload binaries
         uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-binaries
+          name: ubuntu-${{ matrix.version }}-arm-binaries
           path: |
             build/bin/cpp-kzg-ceremony-client
             build/bin/cpp-kzg-ceremony-client-test
@@ -69,7 +69,18 @@ jobs:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-binaries
+          name: ubuntu-${{ matrix.version }}-arm-binaries
+      - name: Cache OpenSSL
+        id: cache-openssl
+        uses: actions/cache@v3
+        with:
+          path: openssl
+          key: ubuntu-${{ matrix.version }}-arm-openssl
+      - name: Install OpenSSL
+        run: |
+          cd openssl
+          make install
+          cd ..
       - run: apt update && apt --yes upgrade
       - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross
       - run: cp /usr/arm-linux-gnueabi/lib/ld-linux.so.3 /lib
@@ -89,7 +100,18 @@ jobs:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-binaries
+          name: ubuntu-${{ matrix.version }}-arm-binaries
+      - name: Cache OpenSSL
+        id: cache-openssl
+        uses: actions/cache@v3
+        with:
+          path: openssl
+          key: ubuntu-${{ matrix.version }}-arm-openssl
+      - name: Install OpenSSL
+        run: |
+          cd openssl
+          make install
+          cd ..
       - run: apt update && apt --yes upgrade
       - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross
       - run: chmod +x ./cpp-kzg-ceremony-client
@@ -106,7 +128,7 @@ jobs:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-binaries
+          name: ubuntu-${{ matrix.version }}-arm-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
       - name: Create Release
