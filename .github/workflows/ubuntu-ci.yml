@@ -78,7 +78,14 @@ jobs:
           key: ubuntu-${{ matrix.version }}-arm-openssl
       - run: apt update && apt --yes upgrade
       - run: apt --yes install build-essential qemu-user g++-arm-linux-gnueabi gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi libc6-armel-cross make
+      - name: Install OpenSSL
+        run: |
+          cd openssl
+          make install
+          cd ..
+      - run: chmod +x ./cpp-kzg-ceremony-client
       - run: chmod +x ./cpp-kzg-ceremony-client-test
+      - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client --help
       - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client-test
 
   sanity-check-ubuntu:
@@ -103,6 +110,11 @@ jobs:
           key: ubuntu-${{ matrix.version }}-arm-openssl
       - run: apt update && apt --yes upgrade
       - run: apt --yes install build-essential qemu-user g++-arm-linux-gnueabi gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi libc6-armel-cross make
+      - name: Install OpenSSL
+        run: |
+          cd openssl
+          make install
+          cd ..
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client --help
 
