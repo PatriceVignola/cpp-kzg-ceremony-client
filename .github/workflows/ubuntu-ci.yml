@@ -71,7 +71,8 @@ jobs:
         with:
           name: ubuntu-${{ matrix.version }}-binaries
       - run: apt update && apt --yes upgrade
-      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi
+      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross
+      - run: cp /usr/arm-linux-gnueabi/lib/ld-linux.so.3 /lib
       - run: chmod +x ./cpp-kzg-ceremony-client-test
       - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client-test
 
@@ -90,7 +91,7 @@ jobs:
         with:
           name: ubuntu-${{ matrix.version }}-binaries
       - run: apt update && apt --yes upgrade
-      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi
+      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client --help
 

@@ -4,7 +4,6 @@ project(cpp-kzg-ceremony-client)
 if("$ENV{CXX}" MATCHES "arm-linux-gnueabi-g\\+\\+$")
   set(CMAKE_SYSTEM_PROCESSOR "arm")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing")
-  set(CMAKE_EXE_LINKER_FLAGS "-static")
 endif()
 
 set(CMAKE_CXX_STANDARD 14)
