@@ -77,7 +77,7 @@ jobs:
           path: openssl
           key: ubuntu-${{ matrix.version }}-arm-openssl
       - run: apt update && apt --yes upgrade
-      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross make
+      - run: apt --yes install build-essential qemu-user g++-arm-linux-gnueabi gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi libc6-armel-cross make
       - name: Install OpenSSL
         run: |
           cd openssl
@@ -108,7 +108,7 @@ jobs:
           path: openssl
           key: ubuntu-${{ matrix.version }}-arm-openssl
       - run: apt update && apt --yes upgrade
-      - run: apt --yes install qemu-user binutils-arm-linux-gnueabi libc6-armel-cross make
+      - run: apt --yes install build-essential qemu-user g++-arm-linux-gnueabi gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi libc6-armel-cross make
       - name: Install OpenSSL
         run: |
           cd openssl
