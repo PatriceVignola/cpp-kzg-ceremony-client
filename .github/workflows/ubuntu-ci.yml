@@ -28,17 +28,10 @@ jobs:
           run: |
             apt update && apt --yes upgrade
             apt --yes install build-essential libssl-dev git wget
-            wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
-            chmod +x cmake-3.25.1-linux-x86_64.sh
-            ./cmake-3.25.1-linux-x86_64.sh --skip-license
-            echo "Debug 1"
-            ls $PWD
-            echo "Debug 2"
-            ls $PWD/bin
-            ln -s $PWD/bin /usr/local/bin/cmake
-            chmod +x $PWD/bin/cmake
-            chmod +x /usr/local/bin/cmake
-            PATH=$PWD/bin:$PATH ./build.sh
+            wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1.tar.gz && \
+            tar -xzf cmake-3.25.1.tar.gz && \
+            cd cmake-3.25.1 && ./bootstrap && make && cd ..
+            PATH=$PWD/cmake-3.25.1/bin:$PATH ./build.sh
             cp -R build /artifacts/build
       - name: Upload binaries
         uses: actions/upload-artifact@v3
