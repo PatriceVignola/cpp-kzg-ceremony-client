@@ -15,37 +15,13 @@ jobs:
     name: Build
     strategy:
       matrix:
-        version: ["20.04", "22.04", "22.10", "23.04"]
+        version: ["20.04"]
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:${{ matrix.version }}
+      image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-build
     steps:
       - uses: actions/checkout@v2
-      - name: Cache OpenSSL
-        id: cache-openssl
-        uses: actions/cache@v3
-        with:
-          path: openssl
-          key: ubuntu-${{ matrix.version }}-arm-openssl
-      - run: apt update && apt --yes upgrade
-      - run: apt --yes install build-essential libssl-dev git wget g++-arm-linux-gnueabi gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi
-      - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
-      - run: chmod +x cmake-3.25.1-linux-x86_64.sh
-      - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
-      - name: Build OpenSSL
-        if: steps.cache-openssl.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/openssl/openssl --branch=openssl-3.0.8
-          cd openssl
-          CXX=arm-linux-gnueabi-g++ CC=arm-linux-gnueabi-gcc ./Configure linux-armv4
-          CXX=arm-linux-gnueabi-g++ CC=arm-linux-gnueabi-gcc make
-          cd ..
-      - name: Install OpenSSL
-        run: |
-          cd openssl
-          make install
-          cd ..
-      - run: PATH=$PWD/bin:$PATH ./build-arm.sh
+      - run: ./build-arm.sh
       - name: Upload binaries
         uses: actions/upload-artifact@v3
         with:
@@ -61,62 +37,34 @@ jobs:
     needs: build-ubuntu
     strategy:
       matrix:
-        version: ["20.04", "22.04", "22.10", "23.04"]
+        version: ["20.04"]
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:${{ matrix.version }}
+      image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
           name: ubuntu-${{ matrix.version }}-arm-binaries
-      - name: Cache OpenSSL
-        id: cache-openssl
-        uses: actions/cache@v3
-        with:
-          path: openssl
-          key: ubuntu-${{ matrix.version }}-arm-openssl
-      - run: apt update && apt --yes upgrade
-      - run: apt --yes install build-essential qemu-user g++-arm-linux-gnueabi gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi libc6-armel-cross make
-      - name: Install OpenSSL
-        run: |
-          cd openssl
-          make install
-          cd ..
-      - run: chmod +x ./cpp-kzg-ceremony-client
       - run: chmod +x ./cpp-kzg-ceremony-client-test
-      - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client --help
-      - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client-test
+      - run: ./cpp-kzg-ceremony-client-test
 
   sanity-check-ubuntu:
     name: Sanity Check
     needs: build-ubuntu
     strategy:
       matrix:
-        version: ["20.04", "22.04", "22.10", "23.04"]
+        version: ["20.04"]
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:${{ matrix.version }}
+      image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
           name: ubuntu-${{ matrix.version }}-arm-binaries
-      - name: Cache OpenSSL
-        id: cache-openssl
-        uses: actions/cache@v3
-        with:
-          path: openssl
-          key: ubuntu-${{ matrix.version }}-arm-openssl
-      - run: apt update && apt --yes upgrade
-      - run: apt --yes install build-essential qemu-user g++-arm-linux-gnueabi gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi libc6-armel-cross make
-      - name: Install OpenSSL
-        run: |
-          cd openssl
-          make install
-          cd ..
       - run: chmod +x ./cpp-kzg-ceremony-client
-      - run: qemu-arm -L /usr/arm-linux-gnueabi ./cpp-kzg-ceremony-client --help
+      - run: ./cpp-kzg-ceremony-client --help
 
   publish-ubuntu:
     needs: [test-ubuntu, sanity-check-ubuntu]
@@ -124,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ["20.04", "22.04", "22.10", "23.04"]
+        version: ["20.04"]
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3

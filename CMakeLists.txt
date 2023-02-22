@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 project(cpp-kzg-ceremony-client)
 
-if("$ENV{CXX}" MATCHES "arm-linux-gnueabi-g\\+\\+$")
+# For cross compiling
+if("$ENV{CXX}" MATCHES "arm-linux-gnueabihf-g\\+\\+$")
   set(CMAKE_SYSTEM_PROCESSOR "arm")
+endif()
+
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing")
 endif()
 
