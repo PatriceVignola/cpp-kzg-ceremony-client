@@ -52,6 +52,7 @@ jobs:
           dockerRunArgs: |
             --volume "${PWD}:/artifacts"
           run: |
+            apt-get update && apt-get --yes install openssl ca-certificates
             cd /artifacts
             ./cpp-kzg-ceremony-client-test
 
@@ -75,6 +76,7 @@ jobs:
           dockerRunArgs: |
             --volume "${PWD}:/artifacts"
           run: |
+            apt-get update && apt-get --yes install openssl ca-certificates
             cd /artifacts
             ./cpp-kzg-ceremony-client --help
 
