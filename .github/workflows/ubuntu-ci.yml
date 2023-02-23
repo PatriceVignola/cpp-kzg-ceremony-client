@@ -11,38 +11,12 @@ concurrency:
   group: ubuntu-ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build-ubuntu-amd64:
+  build-ubuntu:
     name: Build
     strategy:
       matrix:
         version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:${{ matrix.version }}
-    steps:
-      - uses: actions/checkout@v2
-      - run: apt update && apt --yes upgrade
-      - run: apt --yes install build-essential libssl-dev git wget
-      - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
-      - run: chmod +x cmake-3.25.1-linux-x86_64.sh
-      - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
-      - run: PATH=$PWD/bin:$PATH ./build.sh
-      - name: Upload binaries
-        uses: actions/upload-artifact@v3
-        with:
-          name: ubuntu-${{ matrix.version }}-amd64-binaries
-          path: |
-            build/bin/cpp-kzg-ceremony-client
-            build/bin/cpp-kzg-ceremony-client-test
-            build/bin/initialContribution.json
-            build/bin/updatedContribution.json
-
-  build-ubuntu-arm:
-    name: Build
-    strategy:
-      matrix:
-        version: ["20.04", "22.04", "22.10", "23.04"]
-        arch: ["armv7", "aarch64"]
+        arch: ["amd64", "armv7", "aarch64"]
     runs-on: ubuntu-latest
     container:
       image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-${{ matrix.arch }}-build
@@ -61,7 +35,7 @@ jobs:
 
   test-ubuntu-amd64:
     name: Test
-    needs: build-ubuntu-amd64
+    needs: build-ubuntu
     strategy:
       matrix:
         version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
@@ -80,7 +54,7 @@ jobs:
 
   sanity-check-ubuntu-amd64:
     name: Sanity Check
-    needs: build-ubuntu-amd64
+    needs: build-ubuntu
     strategy:
       matrix:
         version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
@@ -99,10 +73,10 @@ jobs:
 
   test-ubuntu-arm:
     name: Test
-    needs: build-ubuntu-arm
+    needs: build-ubuntu
     strategy:
       matrix:
-        version: ["20.04", "22.04"]
+        version: ["18.04", "20.04", "22.04"]
         arch: ["armv7", "aarch64"]
     runs-on: ubuntu-latest
     steps:
@@ -124,10 +98,10 @@ jobs:
 
   sanity-check-ubuntu-arm:
     name: Sanity Check
-    needs: build-ubuntu-arm
+    needs: build-ubuntu
     strategy:
       matrix:
-        version: ["20.04", "22.04"]
+        version: ["18.04", "20.04", "22.04"]
         arch: ["armv7", "aarch64"]
     runs-on: ubuntu-latest
     steps:
@@ -153,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ["20.04", "22.04", "22.10", "23.04"]
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
         arch: ["amd64", "armv7", "aarch64"]
     steps:
       - name: Download binaries

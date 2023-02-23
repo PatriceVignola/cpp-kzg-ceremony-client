@@ -136,21 +136,6 @@ Note that the same authentication provider has to be used on both the internet-c
 | Alpine Linux 3.10 | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.4.0/cpp-kzg-ceremony-client-v1.4.0-alpine-3.10.9-amd64.tar.gz)  |
 | Alpine Linux 3.9  | [Download](https://github.com/PatriceVignola/cpp-kzg-ceremony-client/releases/download/v1.4.0/cpp-kzg-ceremony-client-v1.4.0-alpine-3.9.6-amd64.tar.gz)   |
 
-## Dependencies
-
-### Ubuntu
-
-```
-apt update && apt --yes upgrade
-apt --yes install openssl
-```
-
-### Alpine Linux
-
-```
-apk --update add libstdc++
-```
-
 ## Build from source
 
 1. Clone the repo

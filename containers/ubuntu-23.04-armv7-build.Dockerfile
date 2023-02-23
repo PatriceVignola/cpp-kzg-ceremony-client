@@ -1,7 +1,6 @@
 FROM ubuntu:23.04
 ARG DEBIAN_FRONTEND=noninteractive
 RUN dpkg --add-architecture armhf
-RUN cat /etc/apt/sources.list
 RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu lunar main universe restricted multiverse" >  /etc/apt/sources.list
 RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu lunar-updates main universe restricted multiverse" >>  /etc/apt/sources.list
 RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu lunar-security main universe restricted multiverse" >>  /etc/apt/sources.list

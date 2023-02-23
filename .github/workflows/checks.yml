@@ -1,0 +1,54 @@
+name: Code Quality Checks
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+    branches: [master]
+  push:
+    branches: [master]
+    tags:
+      - "v*"
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  cmake-format:
+    name: Check CMake Files Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt install cmake-format
+      - run: |
+          find . -iname CMakeLists.txt -not \( -path "./build/*" -prune \) -o -iname "*.cmake" \
+            -not \( -path "./build/*" -prune \) \
+            | xargs cmake-format --check
+
+  cmake-lint:
+    name: Lint CMake Files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt install cmake-format
+      - run: |
+          find . -iname CMakeLists.txt -not \( -path "./build/*" -prune \) -o -iname "*.cmake" \
+            -not \( -path "./build/*" -prune \) \
+            | xargs cmake-lint
+
+  clang-format:
+    name: Check C++ Files Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run clang-format check
+        uses: jidicula/clang-format-action@v4.6.2
+        with:
+          clang-format-version: "14"
+          exclude-regex: ^\./build/.*$
+
+  clang-tidy:
+    name: Lint C++ Files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cmake -S . -B build/ -DCMAKE_BUILD_TYPE=Release
+      - run: ./build.sh
+      - run: ./clang-tidy.sh

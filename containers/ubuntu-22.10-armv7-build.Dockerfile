@@ -1,7 +1,6 @@
 FROM ubuntu:22.10
 ARG DEBIAN_FRONTEND=noninteractive
 RUN dpkg --add-architecture armhf
-RUN cat /etc/apt/sources.list
 RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu kinetic main universe restricted multiverse" >  /etc/apt/sources.list
 RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu kinetic-updates main universe restricted multiverse" >>  /etc/apt/sources.list
 RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu kinetic-security main universe restricted multiverse" >>  /etc/apt/sources.list

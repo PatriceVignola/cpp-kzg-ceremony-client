@@ -1,7 +1,6 @@
 FROM ubuntu:20.04
 ARG DEBIAN_FRONTEND=noninteractive
 RUN dpkg --add-architecture armhf
-RUN cat /etc/apt/sources.list
 RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal main universe restricted multiverse" >  /etc/apt/sources.list
 RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal-updates main universe restricted multiverse" >>  /etc/apt/sources.list
 RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal-security main universe restricted multiverse" >>  /etc/apt/sources.list
