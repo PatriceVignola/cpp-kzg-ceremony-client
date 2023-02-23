@@ -11,43 +11,109 @@ concurrency:
   group: ubuntu-ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build-ubuntu:
+  build-ubuntu-amd64:
     name: Build
     strategy:
       matrix:
-        version: ["20.04", "22.04", "22.10", "23.04"]
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
     runs-on: ubuntu-latest
     container:
-      image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-build
+      image: ubuntu:${{ matrix.version }}
     steps:
       - uses: actions/checkout@v2
-      - run: ./build-arm.sh
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install build-essential libssl-dev git wget
+      - run: wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
+      - run: chmod +x cmake-3.25.1-linux-x86_64.sh
+      - run: ./cmake-3.25.1-linux-x86_64.sh --skip-license
+      - run: PATH=$PWD/bin:$PATH ./build.sh
       - name: Upload binaries
         uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-armv7-binaries
+          name: ubuntu-${{ matrix.version }}-amd64-binaries
           path: |
             build/bin/cpp-kzg-ceremony-client
             build/bin/cpp-kzg-ceremony-client-test
             build/bin/initialContribution.json
             build/bin/updatedContribution.json
 
-  test-ubuntu:
+  build-ubuntu-arm:
+    name: Build
+    strategy:
+      matrix:
+        version: ["20.04", "22.04", "22.10", "23.04"]
+        arch: ["armv7", "aarch64"]
+    runs-on: ubuntu-latest
+    container:
+      image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-${{ matrix.arch }}-build
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./build-${{ matrix.arch }}.sh
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu-${{ matrix.version }}-${{ matrix.arch }}-binaries
+          path: |
+            build/bin/cpp-kzg-ceremony-client
+            build/bin/cpp-kzg-ceremony-client-test
+            build/bin/initialContribution.json
+            build/bin/updatedContribution.json
+
+  test-ubuntu-amd64:
     name: Test
-    needs: build-ubuntu
+    needs: build-ubuntu-amd64
+    strategy:
+      matrix:
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-${{ matrix.version }}-amd64-binaries
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install openssl
+      - run: chmod +x ./cpp-kzg-ceremony-client-test
+      - run: ./cpp-kzg-ceremony-client-test
+
+  sanity-check-ubuntu-amd64:
+    name: Sanity Check
+    needs: build-ubuntu-amd64
+    strategy:
+      matrix:
+        version: ["18.04", "20.04", "22.04", "22.10", "23.04"]
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.version }}
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-${{ matrix.version }}-amd64-binaries
+      - run: apt update && apt --yes upgrade
+      - run: apt --yes install openssl
+      - run: chmod +x ./cpp-kzg-ceremony-client
+      - run: ./cpp-kzg-ceremony-client --help
+
+  test-ubuntu-arm:
+    name: Test
+    needs: build-ubuntu-arm
     strategy:
       matrix:
         version: ["20.04", "22.04"]
+        arch: ["armv7", "aarch64"]
     runs-on: ubuntu-latest
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-armv7-binaries
+          name: ubuntu-${{ matrix.version }}-${{ matrix.arch }}-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client-test
       - uses: uraimo/run-on-arch-action@v2
         with:
-          arch: armv7
+          arch: ${{ matrix.arch }}
           distro: ubuntu${{ matrix.version }}
           dockerRunArgs: |
             --volume "${PWD}:/artifacts"
@@ -56,22 +122,23 @@ jobs:
             cd /artifacts
             ./cpp-kzg-ceremony-client-test
 
-  sanity-check-ubuntu:
+  sanity-check-ubuntu-arm:
     name: Sanity Check
-    needs: build-ubuntu
+    needs: build-ubuntu-arm
     strategy:
       matrix:
         version: ["20.04", "22.04"]
+        arch: ["armv7", "aarch64"]
     runs-on: ubuntu-latest
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-armv7-binaries
+          name: ubuntu-${{ matrix.version }}-${{ matrix.arch }}-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
       - uses: uraimo/run-on-arch-action@v2
         with:
-          arch: armv7
+          arch: ${{ matrix.arch }}
           distro: ubuntu${{ matrix.version }}
           dockerRunArgs: |
             --volume "${PWD}:/artifacts"
@@ -81,21 +148,22 @@ jobs:
             ./cpp-kzg-ceremony-client --help
 
   publish-ubuntu:
-    needs: [test-ubuntu, sanity-check-ubuntu]
+    needs: [test-ubuntu-amd64, sanity-check-ubuntu-amd64, test-ubuntu-arm, sanity-check-ubuntu-arm]
     if: startsWith(github.ref_name, 'v')
     runs-on: ubuntu-latest
     strategy:
       matrix:
         version: ["20.04", "22.04", "22.10", "23.04"]
+        arch: ["amd64", "armv7", "aarch64"]
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-armv7-binaries
+          name: ubuntu-${{ matrix.version }}-${{ matrix.arch }}-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
-      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
+      - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-${{ matrix.arch }}.tar.gz cpp-kzg-ceremony-client
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-amd64.tar.gz
+          files: cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-${{ matrix.arch }}.tar.gz
           token: ${{ secrets.PAT }}

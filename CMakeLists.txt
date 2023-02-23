@@ -6,7 +6,15 @@ if("$ENV{CXX}" MATCHES "arm-linux-gnueabihf-g\\+\\+$")
   set(CMAKE_SYSTEM_PROCESSOR "arm")
 endif()
 
+if("$ENV{CXX}" MATCHES "aarch64-linux-gnueabihf-g\\+\\+$")
+  set(CMAKE_SYSTEM_PROCESSOR "aarch64")
+endif()
+
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing")
+endif()
+
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing")
 endif()
 
