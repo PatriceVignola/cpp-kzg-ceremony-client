@@ -65,11 +65,17 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/Duthomhas/CSPRNG
   GIT_TAG 8768a94b4b04213c0798b80824a04ae4990e9847)
 
-# Abseil libraru
+# Abseil Library
 FetchContent_Declare(
   abseil
   GIT_REPOSITORY https://github.com/abseil/abseil-cpp
   GIT_TAG 20230125.0)
+
+# OpenSSL Library
+FetchContent_Declare(
+  openssl
+  GIT_REPOSITORY https://github.com/openssl/openssl
+  GIT_TAG openssl-3.0.8)
 
 # Download and extract dependencies.
 FetchContent_MakeAvailable(
@@ -82,8 +88,11 @@ FetchContent_MakeAvailable(
   googletest
   abseil)
 
-# csprng has a broken CMakeLists.txt file, so manaually download it instead
+# csprng has a broken CMakeLists.txt file, so manually download it instead
 FetchContent_Populate(csprng)
+
+# OpenSSL doesn't support CMake
+FetchContent_Populate(openssl)
 
 if(WIN32)
   set(LIB_BLST_PATH ${blst_BINARY_DIR}/blst.lib)
@@ -96,7 +105,7 @@ endif(WIN32)
 add_custom_command(
   OUTPUT ${LIB_BLST_PATH}
   WORKING_DIRECTORY ${blst_BINARY_DIR}
-  COMMAND ${BLST_BUILD_SCRIPT_PATH} -D__BLST_PORTABLE__
+  COMMAND ${BLST_BUILD_SCRIPT_PATH} -D__BLST_PORTABLE__ -w
   COMMENT "Building libblst")
 
 add_custom_target(

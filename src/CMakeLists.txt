@@ -30,6 +30,8 @@ add_library(
 
 add_dependencies(product_static libblst)
 
+include_directories(${openssl_SOURCE_DIR}/include)
+
 target_include_directories(
   product_static
   PUBLIC ${CMAKE_SOURCE_DIR}
