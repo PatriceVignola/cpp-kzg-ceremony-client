@@ -25,7 +25,7 @@ jobs:
       - name: Upload binaries
         uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-arm-binaries
+          name: ubuntu-${{ matrix.version }}-armv7-binaries
           path: |
             build/bin/cpp-kzg-ceremony-client
             build/bin/cpp-kzg-ceremony-client-test
@@ -43,9 +43,18 @@ jobs:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-arm-binaries
+          name: ubuntu-${{ matrix.version }}-armv7-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client-test
-      - run: docker run -v "$(pwd)":/usr/src --rm --privileged pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test ./cpp-kzg-ceremony-client-test
+      - uses: uraimo/run-on-arch-action@v2
+        name: Run tests
+        with:
+          arch: armv7
+          distro: ubuntu${{ matrix.version }}
+          dockerRunArgs: |
+            --volume "${PWD}:/artifacts"
+          run: |
+            cd /artifacts
+            ./cpp-kzg-ceremony-client-test
 
   sanity-check-ubuntu:
     name: Sanity Check
@@ -54,15 +63,22 @@ jobs:
       matrix:
         version: ["20.04"]
     runs-on: ubuntu-latest
-    container:
-      image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-arm-binaries
+          name: ubuntu-${{ matrix.version }}-armv7-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
-      - run: docker run -v "$(pwd)":/usr/src --rm --privileged pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test ./cpp-kzg-ceremony-client --help
+     - uses: uraimo/run-on-arch-action@v2
+        name: Run tests
+        with:
+          arch: armv7
+          distro: ubuntu${{ matrix.version }}
+          dockerRunArgs: |
+            --volume "${PWD}:/artifacts"
+          run: |
+            cd /artifacts
+            ./cpp-kzg-ceremony-client --help
 
   publish-ubuntu:
     needs: [test-ubuntu, sanity-check-ubuntu]
@@ -75,7 +91,7 @@ jobs:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
-          name: ubuntu-${{ matrix.version }}-arm-binaries
+          name: ubuntu-${{ matrix.version }}-armv7-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
       - run: tar -czvf cpp-kzg-ceremony-client-${{ github.ref_name }}-ubuntu-${{ matrix.version }}-amd64.tar.gz cpp-kzg-ceremony-client
       - name: Create Release
