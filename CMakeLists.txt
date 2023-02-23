@@ -6,7 +6,7 @@ if("$ENV{CXX}" MATCHES "arm-linux-gnueabihf-g\\+\\+$")
   set(CMAKE_SYSTEM_PROCESSOR "arm")
 endif()
 
-if("$ENV{CXX}" MATCHES "aarch64-linux-gnueabihf-g\\+\\+$")
+if("$ENV{CXX}" MATCHES "aarch64-linux-gnu-g\\+\\+$")
   set(CMAKE_SYSTEM_PROCESSOR "aarch64")
 endif()
 
