@@ -15,7 +15,7 @@ jobs:
     name: Build
     strategy:
       matrix:
-        version: ["20.04"]
+        version: ["20.04", "22.04", "22.10", "23.04"]
     runs-on: ubuntu-latest
     container:
       image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-build
@@ -37,7 +37,7 @@ jobs:
     needs: build-ubuntu
     strategy:
       matrix:
-        version: ["20.04"]
+        version: ["20.04", "22.04"]
     runs-on: ubuntu-latest
     steps:
       - name: Download binaries
@@ -61,7 +61,7 @@ jobs:
     needs: build-ubuntu
     strategy:
       matrix:
-        version: ["20.04"]
+        version: ["20.04", "22.04"]
     runs-on: ubuntu-latest
     steps:
       - name: Download binaries
@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ["20.04"]
+        version: ["20.04", "22.04", "22.10", "23.04"]
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
