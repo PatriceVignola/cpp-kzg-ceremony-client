@@ -41,6 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test
+      options: --platform arm
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
@@ -58,6 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test
+      options: --platform arm
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
