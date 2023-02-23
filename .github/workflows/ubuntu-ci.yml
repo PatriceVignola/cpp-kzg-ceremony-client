@@ -46,7 +46,6 @@ jobs:
           name: ubuntu-${{ matrix.version }}-armv7-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client-test
       - uses: uraimo/run-on-arch-action@v2
-        name: Run tests
         with:
           arch: armv7
           distro: ubuntu${{ matrix.version }}
@@ -70,15 +69,14 @@ jobs:
           name: ubuntu-${{ matrix.version }}-armv7-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
       - uses: uraimo/run-on-arch-action@v2
-          name: Run tests
-          with:
-            arch: armv7
-            distro: ubuntu${{ matrix.version }}
-            dockerRunArgs: |
-              --volume "${PWD}:/artifacts"
-            run: |
-              cd /artifacts
-              ./cpp-kzg-ceremony-client --help
+        with:
+          arch: armv7
+          distro: ubuntu${{ matrix.version }}
+          dockerRunArgs: |
+            --volume "${PWD}:/artifacts"
+          run: |
+            cd /artifacts
+            ./cpp-kzg-ceremony-client --help
 
   publish-ubuntu:
     needs: [test-ubuntu, sanity-check-ubuntu]
