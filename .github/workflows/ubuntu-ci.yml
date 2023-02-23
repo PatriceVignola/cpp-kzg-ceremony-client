@@ -39,15 +39,13 @@ jobs:
       matrix:
         version: ["20.04"]
     runs-on: ubuntu-latest
-    container:
-      image: pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v3
         with:
           name: ubuntu-${{ matrix.version }}-arm-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client-test
-      - run: ./cpp-kzg-ceremony-client-test
+      - run: docker run -v "$(pwd)":/usr/src --rm --privileged pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test ./cpp-kzg-ceremony-client-test
 
   sanity-check-ubuntu:
     name: Sanity Check
@@ -64,7 +62,7 @@ jobs:
         with:
           name: ubuntu-${{ matrix.version }}-arm-binaries
       - run: chmod +x ./cpp-kzg-ceremony-client
-      - run: ./cpp-kzg-ceremony-client --help
+      - run: docker run -v "$(pwd)":/usr/src --rm --privileged pavignol/cpp-kzg-ceremony-client:ubuntu-${{ matrix.version }}-armv7-test ./cpp-kzg-ceremony-client --help
 
   publish-ubuntu:
     needs: [test-ubuntu, sanity-check-ubuntu]
