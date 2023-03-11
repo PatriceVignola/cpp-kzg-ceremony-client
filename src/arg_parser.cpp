@@ -57,6 +57,21 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
                        "provided, a random port will be chosen.",
                        cxxopts::value<uint16_t>(), "");
 
+    options.add_option(
+        "", "", "sessionid",
+        "Manually specify the session id to use for authentication. The "
+        "session ID can be generated on a machine that has browser support, "
+        "and then manually entered here for machines without a browser.",
+        cxxopts::value<std::string>(), "");
+
+    options.add_option(
+        "", "", "nickname",
+        "Manually specify the nickname to use for authentication. For Ethereum "
+        "authentication, the address is required; for GitHub authentication, "
+        "the GitHub username is required instead. This option is required when "
+        "--sessionid is specified.",
+        cxxopts::value<std::string>(), "");
+
     options.add_option("", "h", "help", "Print usage", cxxopts::value<bool>(),
                        "");
 
@@ -119,6 +134,18 @@ ArgParser::ArgParser(int argc, const char* const* argv) {
     if (parse_result.count("port") > 0) {
       port_ = parse_result["port"].as<uint16_t>();
     }
+
+    if (parse_result.count("sessionid") > 0) {
+      session_id_ = parse_result["sessionid"].as<std::string>();
+
+      if (parse_result.count("nickname") > 0) {
+        nickname_ = parse_result["nickname"].as<std::string>();
+      } else {
+        throw std::runtime_error(
+            "--nickname is required when --sessionid is specified");
+      }
+    }
+
   } catch (const cxxopts::option_not_exists_exception& ex) {
     throw std::runtime_error(absl::StrCat(
         "error when parsing arguments: ", ex.what(), "\n", help_message_));

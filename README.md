@@ -55,7 +55,7 @@ More command-line options are also available:
 C++ KZG Ceremony Client
 
 Usage:
-  ./build/bin/cpp-kzg-ceremony-client [OPTION...]
+  ./cpp-kzg-ceremony-client [OPTION...]
 
   -s, --sequencer arg           URL of the sequencer to use (default: 
                                 https://seq.ceremony.ethereum.org)
@@ -90,6 +90,17 @@ Usage:
   -p, --port arg                Port to run the authentication server on. 
                                 If not provided, a random port will be 
                                 chosen.
+      --sessionid arg           Manually specify the session id to use for 
+                                authentication. The session ID can be 
+                                generated on a machine that has browser 
+                                support, and then manually entered here for 
+                                machines without a browser.
+      --nickname arg            Manually specify the nickname to use for 
+                                authentication. For Ethereum 
+                                authentication, the address is required; 
+                                for GitHub authentication, the GitHub 
+                                username is required instead. This option 
+                                is required when --sessionid is specified.
   -h, --help                    Print usage
 ```
 

@@ -34,6 +34,8 @@ public:
   std::vector<uint8_t> get_entropy() const;
   const absl::optional<uint16_t>& get_port() const { return port_; }
   ClientMode get_client_mode() const { return client_mode_; }
+  absl::string_view get_session_id() const { return session_id_; }
+  absl::string_view get_nickname() const { return nickname_; }
 
   const std::string& get_contribution_file_path() const {
     return contribution_file_path_;
@@ -49,6 +51,8 @@ private:
   EntropyType entropy_type_;
   absl::optional<uint16_t> port_;
   ClientMode client_mode_;
+  std::string session_id_;
+  std::string nickname_;
 };
 
 #endif // ARG_PARSER_HPP

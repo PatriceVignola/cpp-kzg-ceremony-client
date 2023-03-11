@@ -4,6 +4,7 @@ add_library(
   airgapped_flow.cpp
   arg_parser.cpp
   auth_browser.cpp
+  auth_helpers.cpp
   auth_request_link.cpp
   batch_contribution.cpp
   batch_transcript.cpp
