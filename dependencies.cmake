@@ -10,6 +10,9 @@ set(BUILD_SSL
 set(BUILD_TESTS
     OFF
     CACHE INTERNAL "")
+set(FETCHCONTENT_QUIET
+    OFF
+    CACHE INTERNAL "")
 
 # These options are defined in the cpr library, which we don't control
 # cmake-lint: disable=C0103
