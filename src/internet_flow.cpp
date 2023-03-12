@@ -1,6 +1,7 @@
 #include "include/arg_parser.hpp"
 #include "include/ascii_title.hpp"
 #include "include/auth_browser.hpp"
+#include "include/auth_helpers.hpp"
 #include "include/auth_info.hpp"
 #include "include/auth_request_link.hpp"
 #include "include/bls_signature.hpp"
@@ -46,36 +47,26 @@ void launch(const ArgParser& arg_parser) {
   bool contribution_successful = false;
 
   while (!contribution_successful) {
-    const auto auth_request_link = sequencer_client.get_auth_request_link();
+    absl::optional<AuthInfo> auth_info;
+    auto session_id = arg_parser.get_session_id();
+    auto nickname = arg_parser.get_nickname();
 
-    const auto auth_url = [&auth_provider, &auth_request_link]() {
-      switch (auth_provider) {
-      case AuthProvider::Ethereum:
-        return auth_request_link.get_eth_auth_url();
-      case AuthProvider::GitHub:
-        return auth_request_link.get_github_auth_url();
-      default:
-        throw std::runtime_error("Error: unsupported authentication provider");
-      }
-    }();
+    if (session_id.empty()) {
+      auth_info.emplace(auth_helpers::authenticate(
+          sequencer_client, auth_provider, auth_info_promise));
 
-    AuthBrowser auth_browser((std::string(auth_url)));
-    auto auth_future = auth_info_promise.get_future();
-    AuthInfo auth_info = auth_future.get();
-
-    if (!auth_info.get_error_message().empty()) {
-      throw std::runtime_error(auth_info.get_error_message());
+      session_id = auth_info->get_session_id();
+      nickname = auth_info->get_nickname();
     }
 
     // Retrieve the identity (e.g. eth|0xa7fb...)
     std::cout << "Retrieving your identity" << std::endl;
-    const auto identity = [&auth_provider, &auth_info]() {
+    const auto identity = [auth_provider, nickname]() {
       switch (auth_provider) {
       case AuthProvider::Ethereum:
-        return identity_fetcher::get_ethereum_identity(
-            auth_info.get_nickname());
+        return identity_fetcher::get_ethereum_identity(nickname);
       case AuthProvider::GitHub:
-        return identity_fetcher::get_github_identity(auth_info.get_nickname());
+        return identity_fetcher::get_github_identity(nickname);
       default:
         throw std::runtime_error("Error: unsupported authentication provider");
       }
@@ -83,8 +74,7 @@ void launch(const ArgParser& arg_parser) {
 
     try {
       // Wait until a contribution slot is available
-      auto batch_contribution =
-          sequencer_client.try_contribute(auth_info.get_session_id());
+      auto batch_contribution = sequencer_client.try_contribute(session_id);
 
       // Validate the powers
       batch_contribution.validate_powers();
@@ -137,8 +127,8 @@ void launch(const ArgParser& arg_parser) {
       batch_contribution.validate_powers();
 
       std::cout << "Submitting the updated contributions" << std::endl;
-      const auto contribution_receipt = sequencer_client.contribute(
-          auth_info.get_session_id(), batch_contribution);
+      const auto contribution_receipt =
+          sequencer_client.contribute(session_id, batch_contribution);
 
       std::cout << "Your contribution was successfully submitted! Here is "
                    "your contribution receipt:"
@@ -150,7 +140,15 @@ void launch(const ArgParser& arg_parser) {
 
       contribution_successful = true;
     } catch (const UnknownSessionIdError& ex) {
-      std::cout << "Session ID expired. Try authenticating again." << std::endl;
+      auto error_message =
+          absl::StrCat("Session ID `", session_id,
+                       "` is invalid or expired. Try authenticating again.");
+
+      if (!arg_parser.get_session_id().empty()) {
+        throw std::invalid_argument(error_message);
+      }
+
+      std::cout << error_message << std::endl;
       auth_info_promise = std::promise<AuthInfo>();
     }
   }
